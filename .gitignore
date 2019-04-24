@@ -1,0 +1,14 @@
+*.pyc
+.tox/
+tests/report.html
+*egg-info/
+
+#build/
+#docs/_build/
+#dist/
+#__pycache__/
+#venv
+#requirements.txt
+#.cache/
+#.coverage
+
