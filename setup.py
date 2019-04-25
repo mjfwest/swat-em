@@ -16,6 +16,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     #  packages=['swat_em'],
     package_data={'swat_em': ['themes/*', 'ui/*', 'ui/icons/*', 'ui/icons/Qt/*']},
+    platforms="any",
+    install_requires=['numpy', 'PyQt5', 'matplotlib'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
