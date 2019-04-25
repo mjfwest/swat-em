@@ -5,6 +5,9 @@ tests/report.html
 
 build/
 dist/
+TODO.txt
+upload.sh
+
 #docs/_build/
 #__pycache__/
 #venv
