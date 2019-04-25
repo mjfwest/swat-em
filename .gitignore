@@ -3,9 +3,9 @@
 tests/report.html
 *egg-info/
 
-#build/
+build/
+dist/
 #docs/_build/
-#dist/
 #__pycache__/
 #venv
 #requirements.txt
