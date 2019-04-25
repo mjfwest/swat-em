@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
-
-# Provides a central class for data 
+'''
+Provides a central class for data 
+'''
 import json
 import os
 import fractions
 import math
-#  import numpy as np
 import copy
 import string
 import gzip
-#  import pdb
-
-
 from swat_em import analyse
 
 

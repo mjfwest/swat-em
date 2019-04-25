@@ -2,12 +2,10 @@
 '''
 Provides functions for analyzing windings
 ''' 
-
 import numpy as np
 import fractions
 import math
 from collections import Counter
-#  import pdb
 
 
 def calc_q(Q, p, m):

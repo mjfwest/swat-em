@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
-
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
 from PyQt5.QtGui import QIntValidator
-#  from PyQt5.QtCore import QFile, QTextStream
 import sys
 import os
 import time
@@ -17,15 +14,9 @@ from swat_em import dialog_winding_layout
 from swat_em import dialog_factors
 from swat_em import dialog_settings
 from swat_em.config import get_config, save_config
-
-#  import pdb
-
-
 from swat_em import datamodel
 from swat_em import wdggenerator
 from swat_em import plots
-
-
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 
@@ -45,20 +36,12 @@ class MainWindow(QMainWindow):
         self.DIALOG_GenWinding = dialog_genwdg.GenWinding2(self.config)
         self.DIALOG_GenWindingCombinations = dialog_genwdg.GenWindingCombinations(self.config)
         self.DIALOG_AdditionalFactors = dialog_factors.Factors(self.config, self.data)
-        
-
-        # init line edits
-        #  self.lineEdit_Q.setValidator(QIntValidator()) # only integers allowed
-        #  self.lineEdit_P.setValidator(QIntValidator())
-        #  self.lineEdit_m.setValidator(QIntValidator())
-        #  self.lineEdit_Q.textChanged.connect(self.lineEdit_Q_changed)
 
         # Connect up the buttons.
         self.Button_exit.clicked.connect(self.close)
         self.Button_EditWindingLayout.clicked.connect(self.dialog_EditWindingLayout)
         self.Button_GenerateAutomatically.clicked.connect(self.dialog_GenWinding)
         self.Button_FindByTable.clicked.connect(self.dialog_GenWindingCombinations)
-        
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
@@ -83,7 +66,6 @@ class MainWindow(QMainWindow):
         self.checkBoxForceX.toggled.connect(self.update_plot_in_GUI)
         
 
-
         #  initial winding  -----------------------------------
         self.data.set_machinedata(Q = 12, p = 10/2, m = 3)
         wdglayout = wdggenerator.genwdg(
@@ -106,11 +88,8 @@ class MainWindow(QMainWindow):
         self.fig3 = plots.windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
         self.fig4 = plots.mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
         
-        self.update_data_in_GUI()
-        
+        self.update_data_in_GUI()        
         self.show()
-        
-    
 
 
     def dialog_GenWinding(self):
@@ -125,6 +104,7 @@ class MainWindow(QMainWindow):
             self.data.analyse_wdg()
             self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
             self.update_data_in_GUI()
+
 
     def dialog_GenWindingCombinations(self):
         '''
@@ -169,7 +149,6 @@ class MainWindow(QMainWindow):
             self.update_data_in_GUI()
 
 
-
     def update_data_in_GUI(self):
         '''
         plots all winding data in gui
@@ -189,7 +168,6 @@ class MainWindow(QMainWindow):
         #  self.lineEdit_Q.blockSignals(False)
         
         
-        
         # Update machine infos
         # TODO: fundamental windingfactor        
         bc, bc_str = self.data.get_basic_characteristics()
@@ -204,7 +182,6 @@ class MainWindow(QMainWindow):
         
         
     def update_plot_in_GUI(self):
-        
         # Update Figures
         idx = self.plot_tabs.currentIndex()
         # update only the current tab
@@ -227,7 +204,6 @@ class MainWindow(QMainWindow):
             self.fig4.plot_mmk()
             #  print('time for plotting:', time.time()-t1); t1 = time.time()
 
-        
         
     def save_to_file(self):
         '''
@@ -260,7 +236,6 @@ class MainWindow(QMainWindow):
 
     def load_from_file(self):
         if not self.data.actual_state_saved:
-            #  print('ask for saving')
             ok = QMessageBox.question(self, 'Exit program', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
             if ok == QMessageBox.Yes:
                 ret = self.save_to_file()
@@ -268,7 +243,7 @@ class MainWindow(QMainWindow):
                     return
             if ok == QMessageBox.Cancel: # cancel
                 return
-            
+
         
         options = QFileDialog.Options()
         #  options |= QFileDialog.DontUseNativeDialog  # use qt5 dialog instead of os default
@@ -302,7 +277,6 @@ class MainWindow(QMainWindow):
 
 
 def main():
-    
     # TODO: Eval command line arguments
     
     app = QApplication(sys.argv)
@@ -316,7 +290,6 @@ def main():
     #  app.setStyleSheet(stream.readAll())
     ex = MainWindow()
     sys.exit(app.exec_())
-
 
 
 if __name__ == '__main__':

@@ -8,10 +8,4 @@ dist/
 TODO.txt
 upload.sh
 
-#docs/_build/
-#__pycache__/
-#venv
-#requirements.txt
-#.cache/
-#.coverage
 
