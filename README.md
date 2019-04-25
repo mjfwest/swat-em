@@ -7,6 +7,21 @@ Specific Winding Analyse Tool for Electrical Machines
 Installation
 ------------
 
-From the project root directory::
+To install, you can do:
 
-    $ python setup.py install
+```
+pip install swat-em
+```
+
+or from the project root directory:
+```
+python setup.py install
+```
+
+Run the programm
+----------------
+
+Run the programm by starting it from the command line
+```
+swat-em
+```
