@@ -6,6 +6,20 @@ import os
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 #  import numpy as np
 
+
+def get_int_from_str(txt):
+    '''
+    converts txt to a integer number and returns this number
+    return None if txt is not a number
+    '''
+    try:
+        number = int(txt)
+        if number is not 0:
+            return number
+    except:
+        return None
+
+
 class layout(QDialog):
     '''
     This is a basic winding editor to define and change the 
@@ -120,11 +134,13 @@ class layout(QDialog):
                 item = self.table.item(layer, k)
                 if item:
                     txt = str(item.text())
-                    phase = int(txt)
-                    sign = 1 if phase > 0 else -1
-                    while len(S) < abs(phase):
-                        S.append([[],[]])
-                    S[abs(phase)-1][layer].append( (k+1)*sign )
+                    num = get_int_from_str(txt)
+                    if num:
+                        phase = num
+                        sign = 1 if phase > 0 else -1
+                        while len(S) < abs(phase):
+                            S.append([[],[]])
+                        S[abs(phase)-1][layer].append( (k+1)*sign )
         return S
         
 
@@ -141,9 +157,13 @@ class layout(QDialog):
                 item = self.table.item(layer, k)
                 if item:
                     txt = str(item.text())
-                    phase = abs(int(txt))
-                    col = get_phase_color(self.data.config, phase-1)
-                    item.setBackground(QtGui.QColor(col))
+                    num = get_int_from_str(txt)
+                    if num:
+                        phase = abs(num)
+                        col = get_phase_color(self.data.config, phase-1)
+                        item.setBackground(QtGui.QColor(col))
+                    else:
+                        item.setBackground(QtGui.QColor('white'))
         
         # Test for errors
         S = self.read_layout()        
