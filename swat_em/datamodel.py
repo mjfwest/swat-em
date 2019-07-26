@@ -10,6 +10,7 @@ import copy
 import string
 import gzip
 from swat_em import analyse
+import report as rep
 
 
 class datamodel:
@@ -124,36 +125,26 @@ class datamodel:
             self.results['basic_char'] = bc
         else:
             bc = self.results['basic_char']
-        txt = []
-        txt.append('q: ' + str(bc['q']))
-        txt.append('periodic: ' + str(bc['a']))
-        
-        txt.append('kw1: ')
-        for k in bc['kw1']:
-            txt[-1] += ( str(round(k, 3)) + ', ' )
-        txt[-1] = txt[-1][:-2]
-        
-        txt.append('lcm(Q,P): ' + str(bc['lcmQP']))
-        
-        txt.append('periodic base winding t: ' + str(bc['t']))
-        txt.append('parallel conection a: ' + str(bc['a']))
+
+        dat = [['Number of slots ',    rep.italic('Q: '),  str(self.machinedata['Q'])],
+               ['Number of poles ',    rep.italic('2p: '), str(2*self.machinedata['p'])],
+               ['Number of phases ',   rep.italic('m: '),  str(self.machinedata['m'])],
+               ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])],
+               ['periodic ',           rep.italic('a: '),  str(bc['a'])]]
+        for i, k in enumerate(bc['kw1']):
+            dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
+        dat.append(['lcm(Q, P) ', '', str(bc['lcmQP'])])
+        dat.append(['periodic base winding ', rep.italic('t: '), str(bc['t'])])
+        dat.append(['parallel connection ', rep.italic('a: '), str(bc['a'])])
         if bc['sym'] and bc['a']:
-            txt.append('symmetric: ' + str(bc['sym']))
-        else:            
-            #  txt.append('<span style=\" font-size:8pt; font-weight:600; color:#ff0000;\" >')
-            t = '<span style=\" color:#ff0000;\" >'
-            t += 'symmetric: ' + str(bc['sym'])
-            t += '</span>'
-            txt.append(t)
-
+            dat.append(['symmetric ', '', str(bc['sym'])])
+        else:
+            dat.append([rep.red('symmetric '), '', rep.red(str(bc['sym']))])
+        txt = rep.table(dat)
         if self.results['error']:
-            t = '<span style=\" color:#ff0000;\" >'
-            t += 'ERROR: ' + str(self.results['error'])
-            t += '</span>'
-            txt.append(t)
-
+            txt.append(rep.red('error: ' + str(self.results['error'])))
         
-        txt = '<br>'.join(txt)  # line break in html
+        txt = ''.join(txt)
         return bc, txt
         
     def calc_q(self):
