@@ -6,6 +6,8 @@ from PyQt5.QtGui import QIntValidator
 import sys
 import os
 import time
+import argparse
+
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from swat_em import dialog_genwdg
@@ -80,6 +82,10 @@ class MainWindow(QMainWindow):
         self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
         self.data.analyse_wdg()
         self.data.actual_state_saved = True # Simulate save state
+        
+        # output table
+        #  self.tableView_wdginfo.setAlternatingRowColors(True)
+        #  self.tableView_wdginfo.setStyleSheet("alternate-background-color: #DCDCDC;")
         
         
         # Plots
@@ -172,6 +178,26 @@ class MainWindow(QMainWindow):
         # TODO: fundamental windingfactor        
         bc, bc_str = self.data.get_basic_characteristics()
         #  self.textBrowser_wdginfo.setPlainText(bc_str)
+        
+        # New info in tableView
+        #  self.tableView_wdginfo.setColumnCount(3) 
+        #  self.tableView_wdginfo.setRowCount(3)
+        
+        #  descr = ['Number of slots', 'Number of phases', 'Number of Poles']
+        #  symb  = ['Q', 'm', '2p']
+        #  for k in range(len(descr)):
+            #  self.tableView_wdginfo.setItem(k, 0, QTableWidgetItem(descr[k]))
+            #  self.tableView_wdginfo.setItem(k, 1, QTableWidgetItem(symb[k]))
+
+        #  self.tableView_wdginfo.setItem(0, 2, QTableWidgetItem(str(self.data.machinedata['Q'])))
+        #  self.tableView_wdginfo.setItem(1, 2, QTableWidgetItem(str(self.data.machinedata['m'])))
+        #  self.tableView_wdginfo.setItem(2, 2, QTableWidgetItem(str(self.data.machinedata['p']*2)))
+        
+        #  for k in range(3):
+            #  self.tableView_wdginfo.resizeColumnToContents(k)
+        
+
+        
         self.textBrowser_wdginfo.setHtml(bc_str)
         self.update_plot_in_GUI()
         
@@ -277,19 +303,41 @@ class MainWindow(QMainWindow):
 
 
 def main():
-    # TODO: Eval command line arguments
+    # command line options
+    parser = argparse.ArgumentParser(
+        prog = 'SWAT-EM',
+        description='Generating and evaluating of windings for electrial machines', 
+        formatter_class=argparse.RawTextHelpFormatter)
     
-    app = QApplication(sys.argv)
-    #  file = QFile('themes/qdarkstyle_martin.qss')
-    #  file = QFile('themes/dark.qss')
-    #  file = QFile('themes/test.qss')
-    #  file = QFile('themes/DarkMonokai.qss')
+    parser.add_argument(action='store', nargs='?', default='', dest='arg_1', help='*.py scriptfile or *.wdg file')
+    parser.add_argument('--load', action='store', default='', dest='loadfile', help='Open an existing *.wdg file')
+    parser.add_argument('--script', action='store', default='', dest='scriptfile', help='Open an existing *.py script file')
+    args = parser.parse_args()
     
-    #  file.open(QFile.ReadOnly | QFile.Text)
-    #  stream = QTextStream(file)
-    #  app.setStyleSheet(stream.readAll())
-    ex = MainWindow()
-    sys.exit(app.exec_())
+    if len(args.arg_1) > 0:
+        #  print('my arg: ', args.arg_1)
+        ext = os.path.splitext(args.arg_1)[-1]
+        if ext.upper() == '.PY':
+            args.scriptfile = args.arg_1
+        elif ext.upper() == '.WDG':
+            args.loadfile = args.arg_1
+    
+    if args.scriptfile:
+        print('eval script file:', args.scriptfile)
+    else:
+        print('running GUI')
+        app = QApplication(sys.argv)
+        ex = MainWindow()
+        
+        if args.loadfile:
+            if os.path.isfile(args.loadfile):
+                ex.data.load_from_file(args.loadfile)
+                ex.data.set_filename(args.loadfile)
+                ex.update_data_in_GUI()
+            else:
+                raise(Exception, 'file not found:'.format(args.loadfile))
+        
+        sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
