@@ -239,7 +239,7 @@ def overlapping_fractional_slot_slayer(Q, P, m):
         phases[1], phases[2] = phases[2], phases[1]
     
     for k in range(len(phases)):
-        phases[k] = [phases[k]]
+        phases[k] = [phases[k], []]
     return phases
 
 '''
