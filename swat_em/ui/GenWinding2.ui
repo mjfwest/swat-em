@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>510</width>
-    <height>288</height>
+    <width>587</width>
+    <height>335</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -93,7 +93,7 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Number of Poles P</string>
+            <string>Number of Poles 2p</string>
            </property>
           </widget>
          </item>
@@ -209,7 +209,7 @@
        <property name="minimumSize">
         <size>
          <width>180</width>
-         <height>50</height>
+         <height>200</height>
         </size>
        </property>
       </widget>

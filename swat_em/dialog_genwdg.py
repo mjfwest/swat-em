@@ -199,7 +199,7 @@ class GenWindingCombinations(QDialog):
         self.table.setColumnCount(len(self.Plist))
         
         for i in range(len(self.Plist)):
-            table_header_item = QTableWidgetItem('P='+str(self.Plist[i]))
+            table_header_item = QTableWidgetItem('2p='+str(self.Plist[i]))
             myFont=QtGui.QFont()
             myFont.setBold(True)
             table_header_item.setFont(myFont)

@@ -84,7 +84,7 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Number of Poles P (min/max)</string>
+              <string>Number of Poles 2p (min/max)</string>
              </property>
             </widget>
            </item>
