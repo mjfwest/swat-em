@@ -10,7 +10,7 @@ import copy
 import string
 import gzip
 from swat_em import analyse
-import report as rep
+from swat_em import report as rep
 
 
 class datamodel:
