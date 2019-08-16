@@ -40,7 +40,7 @@ def red(text):
 def table(dat):
     txt = ['<table style="width:100%">']
     col1 = '#FFFFFF'
-    col2 = '#CBCBCB'
+    col2 = '#DDDADA'
     for i, d in enumerate(dat):
         col = col1 if i%2 != 0 else col2
         txt.append(table_row(d, col=col))
