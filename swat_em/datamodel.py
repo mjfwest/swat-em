@@ -74,7 +74,7 @@ class datamodel:
         self.actual_state_saved = False
         
         
-    def set_phases(self, S, wstep = None):
+    def set_phases(self, S, turns = 1, wstep = None):
         '''
         setting the winding layout 
 
@@ -88,6 +88,7 @@ class datamodel:
         wstep : winding step (slots as unit)
         ''' 
         self.machinedata['phases'] = S
+        self.machinedata['turns'] = turns
         self.actual_state_saved = False
         self.set_machinedata(m = len(S))
         self.machinedata['phasenames'] = [string.ascii_uppercase[k] for k in range(len(S))]
@@ -121,7 +122,8 @@ class datamodel:
                 self.machinedata['Q'],
                 2*self.machinedata['p'],
                 self.machinedata['m'],
-                self.machinedata['phases'])
+                self.machinedata['phases'],
+                self.machinedata['turns'])
             self.results['basic_char'] = bc
         else:
             bc = self.results['basic_char']
@@ -172,6 +174,7 @@ class datamodel:
         a, b, c, d = analyse.calc_kw(
             self.machinedata['Q'], 
             self.machinedata['phases'], 
+            self.machinedata['turns'],
             self.machinedata['p'], 
             self.config['N_nu_el'],
             self.config )
@@ -183,7 +186,8 @@ class datamodel:
         # mechanical winding factor
         a, b, c, d = analyse.calc_kw(
             self.machinedata['Q'], 
-            self.machinedata['phases'], 
+            self.machinedata['phases'],
+            self.machinedata['turns'], 
             1.0, 
             self.config['N_nu_mech'],
             self.config )
@@ -205,7 +209,8 @@ class datamodel:
         # MMK
         phi, MMK, theta = analyse.calc_MMK(self.machinedata['Q'],
                                            self.machinedata['m'],
-                                           self.machinedata['phases'])
+                                           self.machinedata['phases'],
+                                           self.machinedata['turns'])
         nu = list(range(self.config['max_nu_MMK']+1))
         HA = analyse.DFT(MMK[:-1])[:self.config['max_nu_MMK']+1]
         self.results['MMK'] = {}

@@ -78,7 +78,7 @@ class MainWindow(QMainWindow):
                             layers = 2)
         #  ----------------------------------------------------
         
-        self.data.set_phases(S = wdglayout['phases'], wstep = wdglayout['wstep'])
+        self.data.set_phases(S = wdglayout['phases'], turns=10, wstep = wdglayout['wstep'])
         self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
         self.data.analyse_wdg()
         self.data.actual_state_saved = True # Simulate save state

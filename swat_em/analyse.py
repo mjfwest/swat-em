@@ -11,9 +11,9 @@ from collections import Counter
 def calc_q(Q, p, m):
     return fractions.Fraction(Q / (m * 2*p)).limit_denominator(100)
 
-def get_basic_characteristics(Q, P, m, S):
+def get_basic_characteristics(Q, P, m, S, turns=1):
     q = fractions.Fraction(Q / (m * P)).limit_denominator(100)
-    Ei, kw = calc_star(Q, S, P/2, 1)
+    Ei, kw = calc_star(Q, S, turns, P/2, 1)
     a = wdg_get_periodic([Ei], S)
     a = a[0]  # phase 1
     sym = wdg_is_symmetric([Ei], m)
@@ -171,7 +171,7 @@ def calc_phaseangle_starvoltage(Ei):
     return phaseangle, sequence
 
 
-def calc_kw(Q, S, p, N_nu, config):
+def calc_kw(Q, S, turns, p, N_nu, config):
     '''
     Calculates the windingfactor, the slot voltage vectors. The 
     harmonic numbers are generated automatically.
@@ -182,6 +182,9 @@ def calc_kw(Q, S, p, N_nu, config):
              number of slots
     S :      list of lists
              winding layout
+    turns :  number or list of lists (shape of 'S')
+             number of turns. If turns is a list of lists, for each
+             coil side a specific number of turns is used
     p :      integer
              number of pole pairs
     N_nu:    integer
@@ -205,7 +208,7 @@ def calc_kw(Q, S, p, N_nu, config):
     Ei = [] # slot voltage vectors
     k = 1
     while len(wf) < N_nu:
-        a, b = calc_star(Q, S, p, k)
+        a, b = calc_star(Q, S, turns, p, k)
         if np.all(np.abs(b) > config['kw_min']):
             nu.append(k)
             wf.append(b)
@@ -222,7 +225,7 @@ def calc_kw(Q, S, p, N_nu, config):
     
    
 
-def calc_star(Q, S, p, nu):
+def calc_star(Q, S, turns, p, nu):
     '''
     Calculates the slot voltage vectors for the given winding layout 
 
@@ -232,6 +235,9 @@ def calc_star(Q, S, p, nu):
              number of slots
     S :      list of lists
              winding layout
+    turns :  number or list of lists (shape of 'S')
+             number of turns. If turns is a list of lists, for each
+             coil side a specific number of turns is used
     p :      integer
              number of pole pairs
     nu:      integer
@@ -247,21 +253,31 @@ def calc_star(Q, S, p, nu):
                kw[phase]
     '''
     S2 = []
+    turns2 = []
     for k in range(len(S)):
         S2.append( [item for sublist in S[k] for item in sublist] )  # flatten layers
-        S2[k] = sorted(S2[k], key=abs)  # sort to abs values (slots in sequence -1,2,2,-3,...
-
+        #  S2[k] = sorted(S2[k], key=abs)  # sort to abs values (slots in sequence -1,2,2,-3,...
+        idx = np.argsort(np.abs(S2[k]))
+        S2[k] = np.array(S2[k])[idx]
+        if hasattr(turns, '__iter__'):
+            turns2.append( [item for sublist in turns[k] for item in sublist] )  # flatten
+            turns2[k] =  np.array(turns2[k])[idx]
 
     Ei = []
     kw = []
-    for s in S2:
+    for i, s in enumerate(S2):
+        if hasattr(turns, '__iter__'):
+            turn = turns2[i]
+        else:
+            turn = turns
+        
         alpha = 2.*nu*p*np.pi/(Q) * np.abs(s)
         
         for k in range(len(s)):
             if s[k] < 0:
                 alpha[k] += np.pi           # negative Zeiger umklappen
         
-        a = ( np.exp(1j*alpha) )            # Spannungsvektoren berechnen
+        a = ( turn*np.exp(1j*alpha) )            # Spannungsvektoren berechnen
         if np.sum(a) != 0.0:
             b = np.abs(np.sum(a)) / np.sum(np.abs(a))
         else:
@@ -272,7 +288,7 @@ def calc_star(Q, S, p, nu):
 
 
 
-def calc_MMK(Q, m, S, N = 3601, angle = 0):
+def calc_MMK(Q, m, S, turns = 1, N = 3601, angle = 0):
     '''
     Calculates the magneto-motoric force (MMK) 
 
@@ -284,6 +300,9 @@ def calc_MMK(Q, m, S, N = 3601, angle = 0):
              number of phases
     S :      list of lists
              winding layout
+    turns :  number or list of lists (shape of 'S')
+             number of turns. If turns is a list of lists, for each
+             coil side a specific number of turns is used
     N :      integer
              number of values for the MMK curve
     angle:   float
@@ -297,9 +316,15 @@ def calc_MMK(Q, m, S, N = 3601, angle = 0):
                   effective current for each slot
     '''
     S2 = []
+    turns2 = []
     for k in range(len(S)):
         S2.append( [item for sublist in S[k] for item in sublist] )  # flatten layers
-        S2[k] = sorted(S2[k], key=abs)  # sort to abs values (slots in sequence -1,2,2,-3,...
+        #  S2[k] = sorted(S2[k], key=abs)  # sort to abs values (slots in sequence -1,2,2,-3,...
+        idx = np.argsort(np.abs(S2[k]))
+        S2[k] = np.array(S2[k])[idx]
+        if hasattr(turns, '__iter__'):
+            turns2.append( [item for sublist in turns[k] for item in sublist] )  # flatten
+            turns2[k] =  np.array(turns2[k])[idx]
         
     # step function
     def h(x):
@@ -313,10 +338,16 @@ def calc_MMK(Q, m, S, N = 3601, angle = 0):
     theta = np.zeros(Q)
     for k1 in range(m):
         phase = S2[k1]
+        
         for k2 in range(len(phase)):
+            if hasattr(turns, '__iter__'):
+                turn = turns2[k1][k2]
+            else:
+                turn = turns
+            
             idx = np.abs(phase[k2])
             VZ = np.sign(phase[k2])
-            theta[idx-1] += VZ*I[k1]
+            theta[idx-1] += VZ*I[k1]*turn
     MMK = np.zeros(np.shape(phi))
     for k in range(Q):
         MMK += theta[k] * h(phi-2*np.pi/Q*k)
