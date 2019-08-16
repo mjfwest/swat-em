@@ -630,9 +630,9 @@
    <addaction name="actionload"/>
    <addaction name="actionprint_report"/>
    <addaction name="separator"/>
+   <addaction name="actionShow_winding_layout"/>
    <addaction name="actionGenerate_winding"/>
    <addaction name="actionGenerate_winding_combinations"/>
-   <addaction name="actionShow_winding_layout"/>
    <addaction name="separator"/>
    <addaction name="actionSettings"/>
    <addaction name="actionProgram_Info"/>
