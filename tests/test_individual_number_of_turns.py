@@ -46,7 +46,7 @@ def test_doza():
         data.set_machinedata(Q = Q, p = p, m = m)
         data.set_phases(S, turns = turns)
         data.analyse_wdg()
-        data.save_to_file('doza_{}.wdg'.format(dz[k]))
+        #  data.save_to_file('doza_{}.wdg'.format(dz[k]))
         bc, txt = data.get_basic_characteristics()
         #  print(bc)
 
