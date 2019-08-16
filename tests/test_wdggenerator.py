@@ -53,7 +53,7 @@ def test1():
     assert kw7 == np.round(data.results['kw_el'][idx][1], 4) # phase V
     assert kw7 == np.round(data.results['kw_el'][idx][2], 4) # phase W
     
-    bc = swat_em.analyse.get_basic_characteristics(Q, m, 2*p, wdglayout)
+    bc, txt = data.get_basic_characteristics()
     print(bc)
 
 
