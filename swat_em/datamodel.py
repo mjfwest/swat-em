@@ -129,8 +129,7 @@ class datamodel:
         dat = [['Number of slots ',    rep.italic('Q: '),  str(self.machinedata['Q'])],
                ['Number of poles ',    rep.italic('2p: '), str(2*self.machinedata['p'])],
                ['Number of phases ',   rep.italic('m: '),  str(self.machinedata['m'])],
-               ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])],
-               ['periodic ',           rep.italic('a: '),  str(bc['a'])]]
+               ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])]]
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
         dat.append(['lcm(Q, P) ', '', str(bc['lcmQP'])])

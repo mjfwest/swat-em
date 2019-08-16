@@ -15,10 +15,7 @@ def get_basic_characteristics(Q, P, m, S):
     q = fractions.Fraction(Q / (m * P)).limit_denominator(100)
     Ei, kw = calc_star(Q, S, P/2, 1)
     a = wdg_get_periodic([Ei], S)
-    if a:
-        a = min(a) if len(a) > 0 else 1
-    else:
-        a = 1
+    a = a[0]  # phase 1
     sym = wdg_is_symmetric([Ei], m)
     t = math.gcd(int(Q), int(P/2))
     lcmQP = int(np.lcm(int(Q), int(P)))
@@ -35,6 +32,8 @@ def wdg_get_periodic(Ei, S):
     Ei :     list of lists of lists
              voltage vectors for every phase and every slot
              Ei[nu][phase][slot]
+    S :      list of lists
+             winding layout
              
     Returns
     -------
@@ -48,53 +47,31 @@ def wdg_get_periodic(Ei, S):
     if len(Ei[0]) == 0:
         return 1
     
-    # This is correct for all tooth coil windings but not for full pitch windings
-    Ei = Ei[0] # only for fundamental
-    S = [item for sublist in S for item in sublist]  # flatten layers
     periodic = []
-    for ei in Ei:
-        angles = [np.round(np.angle(k)/np.pi*180, 4) for k in ei]
-        c = Counter(angles)
-        a = min(c.values()) if len(c.values()) > 0 else 1
-        periodic.append( a )
-    
-    #  Ei = np.array(Ei[0]) # only for fundamental
-    #  S = np.array(S)
-
-    # This is correct for full pitch windings but not for tooth-coil windings
-    #  Ei = Ei[0] # only for fundamental
-    #  periodic = []
-    #  for km in range(len(Ei)):
-        #  ei = np.array(Ei[km]).flatten()
-        #  s = [item for sublist in S[km] for item in sublist]  # flatten layers
-        #  s = np.array(s)
-        #  angles_pos = np.round(np.angle(ei[s>0])/np.pi*180, 4)
-        #  angles_neg = np.round(np.angle(ei[s<0])/np.pi*180, 4)
-        #  c_pos = Counter(angles_pos)
-        #  c_neg = Counter(angles_neg)
-        #  a_pos = min(c_pos.values()) if len(c_pos.values()) > 0 else 1
-        #  a_neg = min(c_neg.values()) if len(c_neg.values()) > 0 else 1
-        #  periodic.append( min([a_pos, a_neg]) )
-    
-    
-    # T
-    #  Ei = Ei[0] # only for fundamental
-    #  periodic = []
-    #  for ei in Ei:
-        #  angles = [np.round(np.angle(k)/np.pi*180, 4) for k in ei]
-        #  c = Counter(angles)
-        #  a = max(c.values()) if len(c.values()) > 0 else 1
-        #  a = a/2
-        #  if a<1:
-            #  a = 1
-        #  a = int(a)
-        #  periodic.append( a )
-    
-    #  Ei = np.array(Ei[0]) # only for fundamental
-    #  S = np.array(S)
-    
-    
-    
+    # for each phase
+    for km in range(len(S)):
+        ei = Ei[0][km] # only for fundamental
+        S2 = S[km]
+        S2 = [item for sublist in S2 for item in sublist]  # flatten layers
+        ei_pos = []; ei_neg = []
+        for i, s in enumerate(S2):
+            if s>0:
+                ei_pos.append(ei[i])  # phasors of pos. coil sides
+            else:
+                ei_neg.append(ei[i])
+        if len(ei_pos) != len(ei_neg):
+            periodic.append(1)
+        else:
+            a_max = 0
+            #  a_list = [1]
+            for k in range(len(ei_pos)):   # all combinations of connections of coil sides
+                angles = np.angle(ei_pos + np.roll(ei_neg, k))
+                angles = np.round(angles, 4)
+                c = Counter(angles)
+                a = min(c.values())
+                if a > a_max:
+                    a_max = a
+            periodic.append( a_max )
     return periodic
 
 
