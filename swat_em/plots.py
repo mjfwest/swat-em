@@ -8,6 +8,7 @@ Provides functions for plotting
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QFont
 from swat_em.config import get_phase_color
+from swat_em import analyse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 #  from matplotlib.figure import Figure
@@ -17,7 +18,7 @@ from matplotlib.backends.backend_qt5agg import (
 #  import matplotlib.patches as patches
 import numpy as np
 
-#  import time
+import time
 
 
 
@@ -371,7 +372,7 @@ class mmk:
         self.layout.addWidget(self.toolbar1)
         
     
-    def plot_mmk(self):
+    def plot_mmk(self, phase = 0, small_update = False):
         '''
         Plottet MMF-Kurve
 
@@ -382,54 +383,64 @@ class mmk:
         plot_MMK_greater_than : scalar, float
                                 Plotte alle Oberschwingungen mit der Amplitude größer als
         '''
-        
+
         plot_MMK_greater_than = 0.15
 
-        plt.figure(4)
-        plt.clf()
-        
-        MMK =  self.data.results['MMK']['MMK']
-        phi = np.array(self.data.results['MMK']['phi'])
-        theta = self.data.results['MMK']['theta']           
-
-        plt.plot( phi, MMK, linewidth = self.data.config['plt']['lw'], label = 'MMF')
-        
-        
-        #  plt.xlim(xmin=0, xmax=max(phi/np.pi*180))
-        plt.grid(True)
-        #  plt.title('Felderregerkurve')
-        plt.ylabel('MMF in A')
-        plt.xlabel('circumferential Stator in deg')
-
-        # Plotte Oberschwingungen
+        #  MMK =  self.data.results['MMK']['MMK']
+        #  phi = np.array(self.data.results['MMK']['phi'])
+        #  theta = self.data.results['MMK']['theta'] 
+        phi, MMK, theta = analyse.calc_MMK(self.data.machinedata['Q'],
+                                   self.data.machinedata['m'],
+                                   self.data.machinedata['phases'],
+                                   self.data.machinedata['turns'],
+                                   angle = phase)          
+        phi = np.array(phi)
         nu = np.array(self.data.results['MMK']['nu'])
-        HA = self.data.results['MMK']['HA']
-
+        HA = analyse.DFT(MMK[:-1])[:len(nu)]
         A = np.abs(HA)
         phase = np.angle(HA)
 
+        plt.figure(4)
+        if not small_update:
+            plt.clf()
+        plt.subplot(211)
+        ax1 = plt.gca()
+        ax1.lines = []           # remove all existing lines (faster than plt.clf())
+        ax1.set_prop_cycle(None) # reset color cycler
+        plt.plot( phi, MMK, linewidth = self.data.config['plt']['lw'], label = 'MMF')
+        plt.grid(True)
+        plt.ylabel('MMF in A')
+        #  plt.xlabel('circumferential Stator in deg')
+        
+        
+        # Plotte Oberschwingungen
         for n, a, p in zip(nu, A, phase):
             if 1/max(A)*a > plot_MMK_greater_than:
                 plt.plot( phi, a*np.cos(n*phi/phi[-1]*2*np.pi + p), '--', label='$\\nu={}$'.format(n), linewidth=self.data.config['plt']['lw_thin'])
-
         leg = plt.legend(loc='upper right',labelspacing=0)
         plt.xlim(min(phi), max(phi))
         
-        #  ax = plt.gca()
-        #  ax2 = ax.twinx()
-        #  ax2.stem(range(len(theta)), theta, 'r', markerfmt=' ')            
-
-        plt.tight_layout()
-        self.canvas1.draw()
+        plt.subplot(212)
+        ax2 = plt.gca()
+        ax2.patches = []         # remove all existing bars
+        ax2.set_prop_cycle(None) # reset color cycler
+        plt.grid(True)
+        ax2.set_axisbelow(True)
+        plt.ylabel('Current in slot in A')
+        plt.xlabel('circumferential Stator in deg')
+        plt.bar(range(len(theta)), theta, 0.5)  
+        plt.xlim(min(phi), max(phi))
         
+        if not small_update:
+            plt.tight_layout()
+        self.canvas1.draw()
+
         
         # update table:
         self.table.setRowCount(len(A)-1)
         self.table.setColumnCount(3)
-        
         self.table.setHorizontalHeaderLabels(['nu', 'Amp', '[%]'])
         #  self.table.setVerticalHeaderLabels(['']*np.shape(kw)[0])
-        
         
         for k1 in range(1, len(A)):
             self.table.setItem(k1-1, 0, QTableWidgetItem(str(nu[k1])))
@@ -443,9 +454,3 @@ class mmk:
             self.table.resizeColumnToContents(k1)
 
 
-        
-        #  afont = QFont()
-        #  afont.setBold(True)
-        
-        #  for k in range(self.data.machinedata['m'] + 1):
-            #  self.table.horizontalHeaderItem(k).setFont(afont)

@@ -2,7 +2,7 @@
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
-from PyQt5.QtGui import QIntValidator
+from PyQt5.QtGui import QIntValidator, QDoubleValidator
 import sys
 import os
 import time
@@ -89,6 +89,16 @@ class MainWindow(QMainWindow):
         
         
         # Plots
+        self.MMK_phase_edit.setValidator(QDoubleValidator(0, 360, 1))
+        self.MMK_phase_edit.setText(str(0.000))
+        
+        #  self.MMK_phase_slider.valueChanged.connect(self.update_plot_in_GUI)
+        self.MMK_phase_slider.valueChanged.connect(self.update_MMK_phase_edit)
+        
+        self.MMK_phase_edit.textEdited.connect(self.update_MMK_phase_slider)
+        self.MMK_phase_edit.textChanged.connect(lambda: self.update_plot_in_GUI(small_update = True))
+        
+        
         self.fig1 = plots.slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
         self.fig2 = plots.slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
         self.fig3 = plots.windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
@@ -96,6 +106,16 @@ class MainWindow(QMainWindow):
         
         self.update_data_in_GUI()        
         self.show()
+    
+    
+    def update_MMK_phase_edit(self):
+        '''slider for MMK phase moved'''
+        self.MMK_phase_edit.setText(str(self.MMK_phase_slider.value()))
+
+
+    def update_MMK_phase_slider(self):
+        '''lineedit for MMK phase changed'''
+        self.MMK_phase_slider.setValue(float(self.MMK_phase_edit.text()))
 
 
     def dialog_GenWinding(self):
@@ -159,44 +179,7 @@ class MainWindow(QMainWindow):
         '''
         plots all winding data in gui
         '''
-        t1 = time.time()
-        # Update line edits
-        #  self.lineEdit_P.blockSignals(True)  # turn off signals to prevent trigger during update
-        #  self.lineEdit_P.setText(str(int(self.data.machinedata['p']*2)))
-        #  self.lineEdit_P.blockSignals(False)
-        
-        #  self.lineEdit_m.blockSignals(True)
-        #  self.lineEdit_m.setText(str(self.data.machinedata['m']))
-        #  self.lineEdit_m.blockSignals(False)
-        
-        #  self.lineEdit_Q.blockSignals(True)
-        #  self.lineEdit_Q.setText(str(self.data.machinedata['Q']))
-        #  self.lineEdit_Q.blockSignals(False)
-        
-        
-        # Update machine infos
-        # TODO: fundamental windingfactor        
         bc, bc_str = self.data.get_basic_characteristics()
-        #  self.textBrowser_wdginfo.setPlainText(bc_str)
-        
-        # New info in tableView
-        #  self.tableView_wdginfo.setColumnCount(3) 
-        #  self.tableView_wdginfo.setRowCount(3)
-        
-        #  descr = ['Number of slots', 'Number of phases', 'Number of Poles']
-        #  symb  = ['Q', 'm', '2p']
-        #  for k in range(len(descr)):
-            #  self.tableView_wdginfo.setItem(k, 0, QTableWidgetItem(descr[k]))
-            #  self.tableView_wdginfo.setItem(k, 1, QTableWidgetItem(symb[k]))
-
-        #  self.tableView_wdginfo.setItem(0, 2, QTableWidgetItem(str(self.data.machinedata['Q'])))
-        #  self.tableView_wdginfo.setItem(1, 2, QTableWidgetItem(str(self.data.machinedata['m'])))
-        #  self.tableView_wdginfo.setItem(2, 2, QTableWidgetItem(str(self.data.machinedata['p']*2)))
-        
-        #  for k in range(3):
-            #  self.tableView_wdginfo.resizeColumnToContents(k)
-        
-
         
         self.textBrowser_wdginfo.setHtml(bc_str)
         self.update_plot_in_GUI()
@@ -207,28 +190,29 @@ class MainWindow(QMainWindow):
         self.comboBox_star_harmonics.blockSignals(False)
         
         
-    def update_plot_in_GUI(self):
+    def update_plot_in_GUI(self, small_update = False):
+        '''
+        update the current figure
+        if 'small_update' is True, only new lines/bars are plottet and not the 
+        all axes etc. --> speed up, for MMK-phase slider for example
+        '''
         # Update Figures
         idx = self.plot_tabs.currentIndex()
+        t1 = time.time()
         # update only the current tab
         if idx == 0:
             self.fig1.plot_slots(self.data.machinedata['Q'])
-            #  print('time for plotting:', time.time()-t1); t1 = time.time()
             self.fig1.plot_coilsides()
-            #  print('time for plotting:', time.time()-t1); t1 = time.time()
         if idx == 1: 
-            
             self.fig2.plot_star(harmonic_idx = self.comboBox_star_harmonics.currentIndex(), ForceX = self.checkBoxForceX.isChecked())
-            #  print('time for plotting:', time.time()-t1); t1 = time.time()
         if idx == 2:
             if self.radioButton_electrical.isChecked():
                 self.fig3.plot_windingfactor(mechanical=False)
             elif self.radioButton_mechanical.isChecked():
                 self.fig3.plot_windingfactor(mechanical=True)
-            #  print('time for plotting:', time.time()-t1); t1 = time.time()
         if idx == 3:  
-            self.fig4.plot_mmk()
-            #  print('time for plotting:', time.time()-t1); t1 = time.time()
+            self.fig4.plot_mmk(float(self.MMK_phase_edit.text()), small_update = small_update)
+        print('duration for plot:', time.time()-t1)
 
         
     def save_to_file(self):

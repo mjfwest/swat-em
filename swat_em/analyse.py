@@ -306,7 +306,7 @@ def calc_MMK(Q, m, S, turns = 1, N = 3601, angle = 0):
     N :      integer
              number of values for the MMK curve
     angle:   float
-             actual phase of the current system
+             actual phase of the current system in deg
              
     Returns
     -------
@@ -334,7 +334,7 @@ def calc_MMK(Q, m, S, turns = 1, N = 3601, angle = 0):
     I = []
     km = 2 if m%2 == 0 else 1
     for k in range(m):
-        I.append( np.cos( 2*np.pi/(m*km)*k - angle ) )
+        I.append( np.cos( 2*np.pi/(m*km)*k - angle/180*np.pi ) )
     theta = np.zeros(Q)
     for k1 in range(m):
         phase = S2[k1]
