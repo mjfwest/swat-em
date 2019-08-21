@@ -376,6 +376,35 @@ class datamodel:
 
 
 
+class project:
+    '''
+    Provides all data-objects (all winding in workspace)
+    '''
+    def __init__(self):
+        self.models = []
+        
+    
+    def add_model(self, data):
+        self.models.append(data)
+
+    def get_header(self):
+        header = []
+        for i, data in enumerate(self.models):
+            bc, txt = data.get_basic_characteristics()
+            print(bc)
+            header.append('#{}, Q={}, 2p={}, kw1={:.3f}'.format(i+1, data.machinedata['Q'], \
+            data.machinedata['p'], bc['kw1'][0]))
+        return header
+
+    def get_model_by_index(self, idx):
+        return self.models[idx]
+
+    def delete_model_by_index(self, idx):
+        del self.models[idx]
+    
+    def clone_by_index(self, idx):
+        data = copy.deepcopy(self.models[idx])
+        self.models.append(data)
 
 
 

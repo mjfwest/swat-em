@@ -113,7 +113,8 @@ class slot_plot:
     
 
                         
-    def plot_coilsides(self):
+    def plot_coilsides(self, data):
+        self.data = data
         S = self.data.machinedata['phases']
         Q = self.data.machinedata['Q']
         self.devide = 'v' if self.data.machinedata['wstep'] == 1 else 'h'
@@ -194,7 +195,8 @@ class slot_star:
         self.layout.addWidget(self.toolbar1)
         
     
-    def plot_star(self, harmonic_idx = 0, ForceX = None):
+    def plot_star(self, data, harmonic_idx = 0, ForceX = None):
+        self.data = data
         if harmonic_idx < 0:
             harmonic_idx = 0
         
@@ -299,7 +301,8 @@ class windingfactor:
         self.layout.addWidget(self.toolbar1)
         
     
-    def plot_windingfactor(self, mechanical = False):
+    def plot_windingfactor(self, data, mechanical = False):
+        self.data = data
         plt.figure(3)
         plt.clf()
         
@@ -372,7 +375,7 @@ class mmk:
         self.layout.addWidget(self.toolbar1)
         
     
-    def plot_mmk(self, phase = 0, small_update = False):
+    def plot_mmk(self, data, phase = 0, small_update = False):
         '''
         Plottet MMF-Kurve
 
@@ -383,7 +386,7 @@ class mmk:
         plot_MMK_greater_than : scalar, float
                                 Plotte alle Oberschwingungen mit der Amplitude größer als
         '''
-
+        self.data = data
         plot_MMK_greater_than = 0.15
 
         #  MMK =  self.data.results['MMK']['MMK']

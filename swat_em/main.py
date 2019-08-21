@@ -30,6 +30,7 @@ class MainWindow(QMainWindow):
         self.data = datamodel.datamodel()
         self.config = get_config(default = False)
         self.data.set_config(self.config)
+        self.project = datamodel.project()
 
         # Set up the user interface from Designer.
         uic.loadUi(os.path.join(__dir__, 'ui/MainWindow.ui'), self)
@@ -39,11 +40,14 @@ class MainWindow(QMainWindow):
         self.DIALOG_GenWindingCombinations = dialog_genwdg.GenWindingCombinations(self.config)
         self.DIALOG_AdditionalFactors = dialog_factors.Factors(self.config, self.data)
 
-        # Connect up the buttons.
+        # Connect the buttons
         self.Button_exit.clicked.connect(self.close)
         self.Button_EditWindingLayout.clicked.connect(self.dialog_EditWindingLayout)
         self.Button_GenerateAutomatically.clicked.connect(self.dialog_GenWinding)
         self.Button_FindByTable.clicked.connect(self.dialog_GenWindingCombinations)
+        
+        self.projectlist_Button_delete.clicked.connect(self.projectlist_delete)
+        self.projectlist_Button_clone.clicked.connect(self.projectlist_clone)
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
@@ -57,6 +61,9 @@ class MainWindow(QMainWindow):
         self.actionShow_winding_layout.triggered.connect(self.dialog_EditWindingLayout)
         self.actionAdditional_factors.triggered.connect(self.dialog_AdditionalFactors)
         self.actionSettings.triggered.connect(self.dialog_settings)
+        
+        # Connect project models
+        self.project_listWidget.currentRowChanged.connect(self.update_project)
         
         # TODO
         self.actionprint_report.triggered.connect(lambda: QMessageBox.information(self, 'Information', 'Not implemented yet'))
@@ -77,11 +84,58 @@ class MainWindow(QMainWindow):
                             w = 1, 
                             layers = 2)
         #  ----------------------------------------------------
+        self.data.set_phases(S = wdglayout['phases'], turns=10, wstep = wdglayout['wstep'])
+        self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
+        self.data.analyse_wdg()
+        self.data.actual_state_saved = True # Simulate save state
+        self.project.add_model(self.data)
+        
+        
+        
+        
+        self.data = datamodel.datamodel()
+        self.data.set_config(self.config)
+        self.data.set_machinedata(Q = 18, p = 2/2, m = 3)
+        wdglayout = wdggenerator.genwdg(
+                            self.data.machinedata['Q'], 
+                            2*self.data.machinedata['p'], 
+                            self.data.machinedata['m'], 
+                            w = 7, 
+                            layers = 2)
+        #  ----------------------------------------------------
+        self.data.set_phases(S = wdglayout['phases'], turns=10, wstep = wdglayout['wstep'])
+        self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
+        self.data.analyse_wdg()
+        self.data.actual_state_saved = True # Simulate save state
+        self.project.add_model(self.data)
+        
+        
+       
+        
+        
+        
+        self.data = datamodel.datamodel()
+        self.data.set_config(self.config)
+        self.data.set_machinedata(Q = 6, p = 4/2, m = 3)
+        wdglayout = wdggenerator.genwdg(
+                            self.data.machinedata['Q'], 
+                            2*self.data.machinedata['p'], 
+                            self.data.machinedata['m'], 
+                            w = 1, 
+                            layers = 2)
+        #  ----------------------------------------------------
         
         self.data.set_phases(S = wdglayout['phases'], turns=10, wstep = wdglayout['wstep'])
         self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
         self.data.analyse_wdg()
         self.data.actual_state_saved = True # Simulate save state
+        self.project.add_model(self.data)
+        
+        
+        
+        
+        
+        
         
         # output table
         #  self.tableView_wdginfo.setAlternatingRowColors(True)
@@ -104,8 +158,36 @@ class MainWindow(QMainWindow):
         self.fig3 = plots.windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
         self.fig4 = plots.mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
         
+        self.update_project_list()
+        
         self.update_data_in_GUI()        
         self.show()
+    
+    
+    def update_project_list(self):
+        '''fill the list of all data objects'''
+        self.project_listWidget.clear()            # clear existing data
+        for i, item in enumerate(self.project.get_header()):
+            self.project_listWidget.addItem(item)
+        self.project_listWidget.setCurrentRow(i)   # last item is current model
+    
+    def update_project(self, idx):
+        '''update the clicked data object form the project'''
+        print('update')
+        self.data = self.project.get_model_by_index(idx)
+        self.update_data_in_GUI()  # update all data output and figures
+    
+    def projectlist_delete(self):
+        if self.project_listWidget.count() > 1:
+            idx = self.project_listWidget.currentRow()
+            self.project.delete_model_by_index(idx)
+            self.update_project_list()
+    
+    def projectlist_clone(self):
+        idx = self.project_listWidget.currentRow()
+        self.project.clone_by_index(idx)
+        self.update_project_list()
+
     
     
     def update_MMK_phase_edit(self):
@@ -202,16 +284,16 @@ class MainWindow(QMainWindow):
         # update only the current tab
         if idx == 0:
             self.fig1.plot_slots(self.data.machinedata['Q'])
-            self.fig1.plot_coilsides()
+            self.fig1.plot_coilsides(self.data)
         if idx == 1: 
-            self.fig2.plot_star(harmonic_idx = self.comboBox_star_harmonics.currentIndex(), ForceX = self.checkBoxForceX.isChecked())
+            self.fig2.plot_star(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(), ForceX = self.checkBoxForceX.isChecked())
         if idx == 2:
             if self.radioButton_electrical.isChecked():
-                self.fig3.plot_windingfactor(mechanical=False)
+                self.fig3.plot_windingfactor(self.data, mechanical=False)
             elif self.radioButton_mechanical.isChecked():
-                self.fig3.plot_windingfactor(mechanical=True)
+                self.fig3.plot_windingfactor(self.data, mechanical=True)
         if idx == 3:  
-            self.fig4.plot_mmk(float(self.MMK_phase_edit.text()), small_update = small_update)
+            self.fig4.plot_mmk(self.data, float(self.MMK_phase_edit.text()), small_update = small_update)
         print('duration for plot:', time.time()-t1)
 
         
