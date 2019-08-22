@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
-from PyQt5.QtGui import QIntValidator, QDoubleValidator
+from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox, QListWidgetItem, QMenu, QAction
+from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon
+from PyQt5 import QtCore
 import sys
 import os
 import time
@@ -15,7 +16,7 @@ from swat_em import dialog_about
 from swat_em import dialog_winding_layout
 from swat_em import dialog_factors
 from swat_em import dialog_settings
-from swat_em.config import get_config, save_config
+from swat_em.config import config, save_config
 from swat_em import datamodel
 from swat_em import wdggenerator
 from swat_em import plots
@@ -26,19 +27,17 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        
+
         self.data = datamodel.datamodel()
-        self.config = get_config(default = False)
-        self.data.set_config(self.config)
         self.project = datamodel.project()
 
         # Set up the user interface from Designer.
         uic.loadUi(os.path.join(__dir__, 'ui/MainWindow.ui'), self)
         self.setWindowTitle('SWAT')
 
-        self.DIALOG_GenWinding = dialog_genwdg.GenWinding2(self.config)
-        self.DIALOG_GenWindingCombinations = dialog_genwdg.GenWindingCombinations(self.config)
-        self.DIALOG_AdditionalFactors = dialog_factors.Factors(self.config, self.data)
+        self.DIALOG_GenWinding = dialog_genwdg.GenWinding2()
+        self.DIALOG_GenWindingCombinations = dialog_genwdg.GenWindingCombinations()
+        self.DIALOG_AdditionalFactors = dialog_factors.Factors(self.data)
 
         # Connect the buttons
         self.Button_exit.clicked.connect(self.close)
@@ -63,8 +62,28 @@ class MainWindow(QMainWindow):
         self.actionSettings.triggered.connect(self.dialog_settings)
         
         # Connect project models
-        self.project_listWidget.currentRowChanged.connect(self.update_project)
+        self.project_listWidget.currentRowChanged.connect(self.update_project) 
+        self.project_listWidget.itemChanged.connect(self.projectlist_rename)    # item renamed
+
+
+                        
+        # context-menu on project models
+        self.project_listWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+        self.actionClone = QAction("clone", self.project_listWidget, 
+                   icon=QIcon(os.path.join(__dir__,'ui/icons/clone.png')))
+        self.project_listWidget.addAction(self.actionClone)
+        self.actionClone.triggered.connect(self.projectlist_clone)
         
+        self.actionDelete = QAction("delete", self.project_listWidget, 
+                   icon=QIcon(os.path.join(__dir__,'ui/icons/delete.png')))        
+        self.project_listWidget.addAction(self.actionDelete)
+        self.actionDelete.triggered.connect(self.projectlist_delete)
+
+        
+
+
+
         # TODO
         self.actionprint_report.triggered.connect(lambda: QMessageBox.information(self, 'Information', 'Not implemented yet'))
         self.actionHelp.triggered.connect(lambda: QMessageBox.information(self, 'Information', 'Not implemented yet'))
@@ -75,72 +94,20 @@ class MainWindow(QMainWindow):
         self.checkBoxForceX.toggled.connect(self.update_plot_in_GUI)
         
 
-        #  initial winding  -----------------------------------
-        self.data.set_machinedata(Q = 12, p = 10/2, m = 3)
-        wdglayout = wdggenerator.genwdg(
-                            self.data.machinedata['Q'], 
-                            2*self.data.machinedata['p'], 
-                            self.data.machinedata['m'], 
-                            w = 1, 
-                            layers = 2)
-        #  ----------------------------------------------------
-        self.data.set_phases(S = wdglayout['phases'], turns=10, wstep = wdglayout['wstep'])
-        self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
-        self.data.analyse_wdg()
-        self.data.actual_state_saved = True # Simulate save state
+        #  initial windings  -----------------------------------
+        self.data = datamodel.datamodel()
+        self.data.genwdg(Q = 12, P = 10, m = 3, w = 1, layers = 2)
         self.project.add_model(self.data)
-        
-        
-        
+
+        self.data = datamodel.datamodel()
+        self.data.genwdg(Q = 18, P = 2, m = 3, w = 7, layers = 2)
+        self.project.add_model(self.data)
         
         self.data = datamodel.datamodel()
-        self.data.set_config(self.config)
-        self.data.set_machinedata(Q = 18, p = 2/2, m = 3)
-        wdglayout = wdggenerator.genwdg(
-                            self.data.machinedata['Q'], 
-                            2*self.data.machinedata['p'], 
-                            self.data.machinedata['m'], 
-                            w = 7, 
-                            layers = 2)
-        #  ----------------------------------------------------
-        self.data.set_phases(S = wdglayout['phases'], turns=10, wstep = wdglayout['wstep'])
-        self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
-        self.data.analyse_wdg()
-        self.data.actual_state_saved = True # Simulate save state
+        self.data.genwdg(Q = 6, P = 4, m = 3, w = 1, layers = 2, turns = 10)
         self.project.add_model(self.data)
-        
-        
-       
-        
-        
-        
-        self.data = datamodel.datamodel()
-        self.data.set_config(self.config)
-        self.data.set_machinedata(Q = 6, p = 4/2, m = 3)
-        wdglayout = wdggenerator.genwdg(
-                            self.data.machinedata['Q'], 
-                            2*self.data.machinedata['p'], 
-                            self.data.machinedata['m'], 
-                            w = 1, 
-                            layers = 2)
-        #  ----------------------------------------------------
-        
-        self.data.set_phases(S = wdglayout['phases'], turns=10, wstep = wdglayout['wstep'])
-        self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
-        self.data.analyse_wdg()
-        self.data.actual_state_saved = True # Simulate save state
-        self.project.add_model(self.data)
-        
-        
-        
-        
-        
-        
-        
-        # output table
-        #  self.tableView_wdginfo.setAlternatingRowColors(True)
-        #  self.tableView_wdginfo.setStyleSheet("alternate-background-color: #DCDCDC;")
-        
+        self.project.set_actual_state_saved()  # only for the initial winding
+
         
         # Plots
         self.MMK_phase_edit.setValidator(QDoubleValidator(0, 360, 1))
@@ -167,8 +134,10 @@ class MainWindow(QMainWindow):
     def update_project_list(self):
         '''fill the list of all data objects'''
         self.project_listWidget.clear()            # clear existing data
-        for i, item in enumerate(self.project.get_header()):
-            self.project_listWidget.addItem(item)
+        for i, item in enumerate(self.project.get_titles()):
+            widgetitem = QListWidgetItem(item)
+            widgetitem.setFlags(widgetitem.flags() | QtCore.Qt.ItemIsEditable)
+            self.project_listWidget.addItem(widgetitem)
         self.project_listWidget.setCurrentRow(i)   # last item is current model
     
     def update_project(self, idx):
@@ -188,6 +157,10 @@ class MainWindow(QMainWindow):
         self.project.clone_by_index(idx)
         self.update_project_list()
 
+    def projectlist_rename(self):
+        idx = self.project_listWidget.currentRow()
+        newname = self.project_listWidget.item(idx).text()
+        self.project.rename_by_index(idx, newname)
     
     
     def update_MMK_phase_edit(self):
@@ -248,11 +221,13 @@ class MainWindow(QMainWindow):
 
 
     def dialog_settings(self):
-        DIALOG_Settings = dialog_settings.Settings(self.config)
+        global config
+        config
+        DIALOG_Settings = dialog_settings.Settings(config)
         ret = DIALOG_Settings.run()
         if ret:
-            self.config = ret
-            save_config(self.config)
+            config = ret
+            save_config(config)
             self.data.analyse_wdg()   # recalc the winding model
             self.update_data_in_GUI()
 
@@ -301,11 +276,11 @@ class MainWindow(QMainWindow):
         '''
         returns True if file is saved
         '''
-        if not self.data.filename:
+        if not self.project.filename:
             ret = self.save_as_to_file()
             return ret
         else:
-            self.data.save_to_file(self.data.filename)
+            self.project.save_to_file(self.project.filename)
             return True
 
 
@@ -319,15 +294,15 @@ class MainWindow(QMainWindow):
         if filename:
             if not filename.endswith('.wdg'):
                 filename += '.wdg'
-            self.data.set_filename(filename) 
-            self.data.save_to_file(self.data.filename)
+            self.project.set_filename(filename) 
+            self.project.save_to_file(self.project.filename)
             return True
         else:
             return False
 
 
     def load_from_file(self):
-        if not self.data.actual_state_saved:
+        if not self.project.get_actual_state_saved():
             ok = QMessageBox.question(self, 'Exit program', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
             if ok == QMessageBox.Yes:
                 ret = self.save_to_file()
@@ -341,8 +316,9 @@ class MainWindow(QMainWindow):
         #  options |= QFileDialog.DontUseNativeDialog  # use qt5 dialog instead of os default
         filename, _ = QFileDialog.getOpenFileName(self,"Open winding file", "","Winding Files (*.wdg)", options=options)
         if filename:
-            self.data.load_from_file(filename)
-            self.data.set_filename(filename)
+            self.project.load_from_file(filename)
+            self.project.set_filename(filename)
+            self.update_project_list()
             self.update_data_in_GUI()
         
     
@@ -350,7 +326,7 @@ class MainWindow(QMainWindow):
         # Exit programm
         
         # Ask for saving
-        if self.data.actual_state_saved:
+        if self.project.get_actual_state_saved():
             event.accept() # let the window close
         else:
             #  print('ask for saving')
