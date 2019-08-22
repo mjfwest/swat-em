@@ -45,14 +45,14 @@ def get_init_config():
     return copy.deepcopy(config)
 
 
-def get_phase_color(config, num):
+def get_phase_color(num):
     cols = config['plt']['phase_colors']
     while num > len(cols):
         num -= len(cols)    # periodic colors
     return cols[num]
 
 
-def get_config(default = True):
+def get_config(default = False):
     '''
     Returns the configuration dictionary
     
@@ -122,7 +122,7 @@ def load_config():
         return get_init_config()        
     return config
 
-
+config = get_config()
 
 
     

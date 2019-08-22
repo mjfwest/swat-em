@@ -12,7 +12,6 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from swat_em.datamodel import datamodel
-from swat_em.config import get_init_config
 import swat_em.analyse
 import numpy as np
 
@@ -42,7 +41,6 @@ def test_doza():
                  [[za,zb,zb,za], [za,zb,zb,za]]]
 
         data = datamodel()
-        data.set_config(get_init_config())
         data.set_machinedata(Q = Q, p = p, m = m)
         data.set_phases(S, turns = turns)
         data.analyse_wdg()

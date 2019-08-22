@@ -8,15 +8,14 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
-
+from swat_em.config import config
 #  sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 
 
 class Factors(QDialog):
-    def __init__(self, data, config):
-        self.config = config
+    def __init__(self, data):
         self.data = data
         super().__init__()
        
