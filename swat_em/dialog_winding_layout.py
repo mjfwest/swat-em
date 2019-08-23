@@ -160,7 +160,7 @@ class layout(QDialog):
                     num = get_int_from_str(txt)
                     if num:
                         phase = abs(num)
-                        col = get_phase_color(config, phase-1)
+                        col = get_phase_color(phase-1)
                         item.setBackground(QtGui.QColor(col))
                     else:
                         item.setBackground(QtGui.QColor('white'))
