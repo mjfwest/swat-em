@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>587</width>
-    <height>385</height>
+    <height>405</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -227,22 +227,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
@@ -269,6 +253,25 @@
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
      </attribute>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
   </layout>
