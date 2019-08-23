@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icons/slot.png</normaloff>icons/slot.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
@@ -47,7 +51,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/slot.svg.png</normaloff>icons/slot.svg.png</iconset>
+         <normaloff>icons/slot.png</normaloff>icons/slot.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Winding layout</string>
@@ -91,7 +95,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/star.svg.png</normaloff>icons/star.svg.png</iconset>
+         <normaloff>icons/star.png</normaloff>icons/star.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Slot voltage phasors</string>
@@ -212,7 +216,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/windingfactor.svg.png</normaloff>icons/windingfactor.svg.png</iconset>
+         <normaloff>icons/windingfactor.png</normaloff>icons/windingfactor.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Winding factor</string>
@@ -342,7 +346,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/MMK.svg.png</normaloff>icons/MMK.svg.png</iconset>
+         <normaloff>icons/MMK.png</normaloff>icons/MMK.png</iconset>
        </attribute>
        <attribute name="title">
         <string>MMF</string>
@@ -523,6 +527,9 @@
               <height>24</height>
              </size>
             </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -560,6 +567,50 @@
               <width>24</width>
               <height>24</height>
              </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="projectlist_Button_notes">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/notes.png</normaloff>icons/notes.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -847,7 +898,14 @@
     <addaction name="actionHelp"/>
     <addaction name="actionProgram_Info"/>
    </widget>
+   <widget class="QMenu" name="menuedit">
+    <property name="title">
+     <string>edit</string>
+    </property>
+    <addaction name="actionundo"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuedit"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -865,6 +923,7 @@
    <addaction name="actionsave"/>
    <addaction name="actionsave_as"/>
    <addaction name="actionload"/>
+   <addaction name="actionundo"/>
    <addaction name="actionprint_report"/>
    <addaction name="separator"/>
    <addaction name="actionShow_winding_layout"/>
@@ -1005,6 +1064,18 @@
    </property>
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionundo">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Qt/edit-undo.png</normaloff>icons/Qt/edit-undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
    </property>
   </action>
  </widget>

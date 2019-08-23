@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
 
         # Set up the user interface from Designer.
         uic.loadUi(os.path.join(__dir__, 'ui/MainWindow.ui'), self)
-        self.setWindowTitle('SWAT')
+        self.setWindowTitle('SWAT-EM')
 
         self.DIALOG_GenWinding = dialog_genwdg.GenWinding2()
         self.DIALOG_GenWindingCombinations = dialog_genwdg.GenWindingCombinations()
@@ -60,6 +60,7 @@ class MainWindow(QMainWindow):
         self.actionShow_winding_layout.triggered.connect(self.dialog_EditWindingLayout)
         self.actionAdditional_factors.triggered.connect(self.dialog_AdditionalFactors)
         self.actionSettings.triggered.connect(self.dialog_settings)
+        self.actionundo.triggered.connect(self.undo)
         
         # Connect project models
         self.project_listWidget.currentRowChanged.connect(self.update_project) 
@@ -80,6 +81,9 @@ class MainWindow(QMainWindow):
         self.project_listWidget.addAction(self.actionDelete)
         self.actionDelete.triggered.connect(self.projectlist_delete)
 
+        
+
+        #  self.projectlist_Button_notes.clicked.connect(self.undo)
         
 
 
@@ -127,8 +131,25 @@ class MainWindow(QMainWindow):
         
         self.update_project_list()
         
-        self.update_data_in_GUI()        
+        self.update_data_in_GUI()    
+        self.project.reset_state()
+        self.actionundo.setDisabled(True)
         self.show()
+    
+    
+    def save_state(self):
+        '''save the actual state of the project models for undo operation'''
+        self.project.save_state()
+        self.actionundo.setDisabled(False)
+        
+    
+    def undo(self):
+        '''undo the last operation (restore state)'''
+        self.project.undo()
+        self.update_project_list()
+        self.update_project()
+        if self.project.get_number_of_saved_state() < 1:
+            self.actionundo.setDisabled(True) # no more states to restore
     
     
     def update_project_list(self):
@@ -140,24 +161,28 @@ class MainWindow(QMainWindow):
             self.project_listWidget.addItem(widgetitem)
         self.project_listWidget.setCurrentRow(i)   # last item is current model
     
-    def update_project(self, idx):
+    def update_project(self, idx = None):
         '''update the clicked data object form the project'''
-        print('update')
+        if not idx:
+            idx = self.project_listWidget.currentRow()
         self.data = self.project.get_model_by_index(idx)
         self.update_data_in_GUI()  # update all data output and figures
     
     def projectlist_delete(self):
         if self.project_listWidget.count() > 1:
+            self.save_state()  # for undo
             idx = self.project_listWidget.currentRow()
             self.project.delete_model_by_index(idx)
             self.update_project_list()
     
     def projectlist_clone(self):
+        self.save_state()  # for undo
         idx = self.project_listWidget.currentRow()
         self.project.clone_by_index(idx)
         self.update_project_list()
 
     def projectlist_rename(self):
+        self.save_state()  # for undo
         idx = self.project_listWidget.currentRow()
         newname = self.project_listWidget.item(idx).text()
         self.project.rename_by_index(idx, newname)
@@ -179,6 +204,7 @@ class MainWindow(QMainWindow):
         '''
         ret = self.DIALOG_GenWinding.run()
         if ret:
+            self.save_state()
             wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'])
             self.data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
             self.data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
@@ -193,6 +219,7 @@ class MainWindow(QMainWindow):
         '''
         ret = self.DIALOG_GenWindingCombinations.run()
         if ret:
+            self.save_state()
             wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'])
             self.data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
             self.data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
@@ -209,6 +236,7 @@ class MainWindow(QMainWindow):
         ret = DIALOG_EditWindingLayout.run()
 
         if ret:
+            self.save_state()
             self.data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
             self.data.set_phases(ret['phases'], wstep = ret['w'])            
             self.data.analyse_wdg()
@@ -255,7 +283,7 @@ class MainWindow(QMainWindow):
         '''
         # Update Figures
         idx = self.plot_tabs.currentIndex()
-        t1 = time.time()
+        #  t1 = time.time()
         # update only the current tab
         if idx == 0:
             self.fig1.plot_slots(self.data.machinedata['Q'])
@@ -269,7 +297,7 @@ class MainWindow(QMainWindow):
                 self.fig3.plot_windingfactor(self.data, mechanical=True)
         if idx == 3:  
             self.fig4.plot_mmk(self.data, float(self.MMK_phase_edit.text()), small_update = small_update)
-        print('duration for plot:', time.time()-t1)
+        #  print('duration for plot:', time.time()-t1)
 
         
     def save_to_file(self):

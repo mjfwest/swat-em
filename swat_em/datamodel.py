@@ -13,6 +13,7 @@ from swat_em import analyse
 from swat_em import report as rep
 from swat_em import wdggenerator
 from swat_em.config import config
+import gc
 
 
 
@@ -429,6 +430,23 @@ class project:
     def __init__(self):
         self.models = []
         self.filename = None
+        self.state = []
+        
+    def save_state(self):
+        self.state.append(copy.deepcopy(self.models))
+    
+    def reset_state(self):
+        self.state = []
+        
+    def get_number_of_saved_state(self):
+        return len(self.state)
+    
+    def undo(self):
+        print('undo')
+        if len(self.state) > 0:
+            print('pop')
+            self.models = self.state.pop(-1)
+            gc.collect()  # force to free memory
     
     def set_filename(self, filename):
         '''saves the filename if a the data is load from file or
