@@ -16,9 +16,9 @@
    id="svg625"
    sodipodi:docname="windingfactor.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   inkscape:export-filename="/home/martin/Arbeitsdaten/Skripte/Python-Skripte/04_Programme_mit_GUI/SWAT-EM/swat/ui/icons/windingfactor.svg.png"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-filename="/home/martin/Arbeitsdaten/Skripte/Python-Skripte/04_Programme_mit_GUI/SWAT-EM/swat_em/ui/icons/windingfactor.png"
+   inkscape:export-xdpi="128"
+   inkscape:export-ydpi="128">
   <metadata
      id="metadata629">
     <rdf:RDF>
@@ -40,16 +40,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1029"
+     inkscape:window-width="829"
+     inkscape:window-height="457"
      id="namedview627"
      showgrid="true"
      units="px"
      inkscape:zoom="8"
-     inkscape:cx="20.309971"
-     inkscape:cy="29.169202"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:cx="-8.252529"
+     inkscape:cy="28.669202"
+     inkscape:window-x="654"
+     inkscape:window-y="479"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg625">
     <inkscape:grid

@@ -489,6 +489,95 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/table.png</normaloff>icons/table.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="projectlist_Button_notes">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/notes.png</normaloff>icons/notes.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <widget class="QPushButton" name="projectlist_Button_clone">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -572,63 +661,6 @@
              <bool>true</bool>
             </property>
            </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="projectlist_Button_notes">
-            <property name="minimumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>icons/notes.png</normaloff>icons/notes.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>false</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>
@@ -963,7 +995,7 @@
   <action name="actionGenerate_winding">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/edit-find.png</normaloff>icons/Qt/edit-find.png</iconset>
+     <normaloff>icons/generator.png</normaloff>icons/generator.png</iconset>
    </property>
    <property name="text">
     <string>Generate winding</string>
@@ -1033,7 +1065,7 @@
   <action name="actionShow_winding_layout">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/draw-freehand.png</normaloff>icons/Qt/draw-freehand.png</iconset>
+     <normaloff>icons/edit_manually.png</normaloff>icons/edit_manually.png</iconset>
    </property>
    <property name="text">
     <string>Edit winding layout</string>
@@ -1045,7 +1077,7 @@
   <action name="actionGenerate_winding_combinations">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/edit-web-search.png</normaloff>icons/Qt/edit-web-search.png</iconset>
+     <normaloff>icons/table.png</normaloff>icons/table.png</iconset>
    </property>
    <property name="text">
     <string>Find winding</string>
