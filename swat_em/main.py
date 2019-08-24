@@ -23,6 +23,7 @@ from swat_em import plots
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 
+MSG_TIME = 3000   # time in which the message is displayed in the statusbar
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -196,12 +197,15 @@ class MainWindow(QMainWindow):
             self.save_undo_state()  # for undo
             idx = self.project_listWidget.currentRow()
             self.project.delete_model_by_index(idx)
+            self.statusbar.showMessage('winding deleted', MSG_TIME)
             self.update_project_list()
+            self.statusbar.showMessage('winding cloned', MSG_TIME)
     
     def projectlist_clone(self):
         self.save_undo_state()  # for undo
         idx = self.project_listWidget.currentRow()
         self.project.clone_by_index(idx)
+        self.statusbar.showMessage('winding cloned', MSG_TIME)
         self.update_project_list(switch_to_new = True)
 
     def projectlist_rename(self):
@@ -353,6 +357,7 @@ class MainWindow(QMainWindow):
             return ret
         else:
             self.project.save_to_file(self.project.filename)
+            self.statusbar.showMessage('Project saved as ' + self.project.filename, MSG_TIME)
             return True
 
 
@@ -368,6 +373,7 @@ class MainWindow(QMainWindow):
                 filename += '.wdg'
             self.project.set_filename(filename) 
             self.project.save_to_file(self.project.filename)
+            self.statusbar.showMessage('Project saved as ' + self.project.filename, MSG_TIME)
             return True
         else:
             return False
@@ -389,6 +395,7 @@ class MainWindow(QMainWindow):
         filename, _ = QFileDialog.getOpenFileName(self,"Open winding file", "","Winding Files (*.wdg)", options=options)
         if filename:
             self.project.load_from_file(filename)
+            self.statusbar.showMessage('Project loaded: ' + filename, MSG_TIME)
             self.project.set_filename(filename)
             self.update_project_list()
             self.update_data_in_GUI()
