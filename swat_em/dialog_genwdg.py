@@ -95,7 +95,7 @@ class GenWinding2(QDialog):
                         else:
                             self.table.setItem(kl, abs(cs)-1, QTableWidgetItem('-' + str(km+1)))
                         self.table.item(kl, abs(cs)-1).setBackground(QtGui.QColor(col))
-                        #  self.table.item(kl, abs(cs)-1).setFlags(Qt.ItemIsEditable)
+
 
             for k1 in range(self.data.machinedata['Q']):
                 #  self.table.resizeColumnToContents(k1)
@@ -105,7 +105,13 @@ class GenWinding2(QDialog):
     def run(self):
         ok = self.exec_()
         if ok:
-            ret = {'Q': self.Q, 'P': self.P, 'm': self.m, 'w': self.w, 'layers': self.layers}
+            if self.radioButton_overwrite_winding.isChecked():
+                overwrite = True
+            else:
+                overwrite = False
+            self.layers = 2
+            ret = {'Q': self.Q, 'P': self.P, 'm': self.m, 'w': self.w, 
+            'layers': self.layers, 'overwrite': overwrite}
             return ret
         else:
             return None
@@ -288,6 +294,10 @@ class GenWindingCombinations(QDialog):
         self.generate()
         ok = self.exec_()
         if ok:
+            if self.radioButton_overwrite_winding.isChecked():
+                overwrite = True
+            else:
+                overwrite = False
             row, column = self.combination_selected()
             if row is not None:
                 ret = {}
@@ -296,6 +306,7 @@ class GenWindingCombinations(QDialog):
                 ret['m'] = self.data[row][column].machinedata['m']
                 ret['w'] = self.data[row][column].machinedata['wstep']
                 ret['layers'] = self.layers
+                ret['overwrite'] = overwrite
                 return ret
             else:
                 return None

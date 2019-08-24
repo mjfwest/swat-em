@@ -900,9 +900,10 @@
    </widget>
    <widget class="QMenu" name="menuedit">
     <property name="title">
-     <string>edit</string>
+     <string>Edit</string>
     </property>
     <addaction name="actionundo"/>
+    <addaction name="actionredo"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuedit"/>
@@ -924,8 +925,9 @@
    <addaction name="actionsave_as"/>
    <addaction name="actionload"/>
    <addaction name="actionundo"/>
-   <addaction name="actionprint_report"/>
+   <addaction name="actionredo"/>
    <addaction name="separator"/>
+   <addaction name="actionprint_report"/>
    <addaction name="actionShow_winding_layout"/>
    <addaction name="actionGenerate_winding"/>
    <addaction name="actionGenerate_winding_combinations"/>
@@ -1076,6 +1078,18 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionredo">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Qt/edit-redo.png</normaloff>icons/Qt/edit-redo.png</iconset>
+   </property>
+   <property name="text">
+    <string>redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>
