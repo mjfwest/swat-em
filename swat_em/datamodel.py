@@ -9,11 +9,12 @@ import math
 import copy
 import string
 import gzip
+import gc
 from swat_em import analyse
 from swat_em import report as rep
 from swat_em import wdggenerator
 from swat_em.config import config
-import gc
+
 
 
 
@@ -433,18 +434,20 @@ class project:
         self.state = []
         
     def save_state(self):
+        '''saves the actual state of the models for undo function'''
         self.state.append(copy.deepcopy(self.models))
     
     def reset_state(self):
+        '''delete all existings state saves - no undo possible any more'''
         self.state = []
         
     def get_number_of_saved_state(self):
+        '''return the number of state saves = number of possible undo opserations'''
         return len(self.state)
     
     def undo(self):
-        print('undo')
+        '''restores the last state'''
         if len(self.state) > 0:
-            print('pop')
             self.models = self.state.pop(-1)
             gc.collect()  # force to free memory
     
@@ -460,7 +463,7 @@ class project:
         titles = [data.title for data in self.models]
         i = 0
         while True:
-            name = 'untiteld' + str(i)
+            name = 'untitled' + str(i)
             if name not in titles:
                 return name
             i += 1

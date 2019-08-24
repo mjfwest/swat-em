@@ -411,7 +411,6 @@ class mmk:
         ax1.lines = []           # remove all existing lines (faster than plt.clf())
         ax1.set_prop_cycle(None) # reset color cycler
         plt.plot( phi, MMK, linewidth = config['plt']['lw'], label = 'MMF')
-        print('lw:', config['plt']['lw'])
         plt.grid(True)
         plt.ylabel('MMF in A')
         #  plt.xlabel('circumferential Stator in deg')
