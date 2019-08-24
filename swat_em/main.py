@@ -61,6 +61,7 @@ class MainWindow(QMainWindow):
         self.actionAdditional_factors.triggered.connect(self.dialog_AdditionalFactors)
         self.actionSettings.triggered.connect(self.dialog_settings)
         self.actionundo.triggered.connect(self.undo)
+        self.actionredo.triggered.connect(self.redo)
         
         # Connect project models
         self.project_listWidget.currentRowChanged.connect(self.update_project) 
@@ -82,9 +83,7 @@ class MainWindow(QMainWindow):
         self.actionDelete.triggered.connect(self.projectlist_delete)
 
         
-
-        #  self.projectlist_Button_notes.clicked.connect(self.undo)
-        
+   
 
 
 
@@ -132,34 +131,58 @@ class MainWindow(QMainWindow):
         self.update_project_list()
         
         self.update_data_in_GUI()    
-        self.project.reset_state()
+        self.project.reset_undo_state()
         self.actionundo.setDisabled(True)
+        self.actionredo.setDisabled(True)
         self.show()
     
     
-    def save_state(self):
+    def save_undo_state(self):
         '''save the actual state of the project models for undo operation'''
-        self.project.save_state()
+        self.project.save_undo_state()
         self.actionundo.setDisabled(False)
+        self.project.reset_redo_state() # redo states aren't valid any more
+        self.actionredo.setDisabled(True)
         
     
     def undo(self):
         '''undo the last operation (restore state)'''
+        self.project.save_redo_state()
+        self.actionredo.setDisabled(False)
         self.project.undo()
         self.update_project_list()
         self.update_project()
-        if self.project.get_number_of_saved_state() < 1:
+        if self.project.get_num_undo_state() < 1:
             self.actionundo.setDisabled(True) # no more states to restore
     
+    def redo(self):
+        self.project.save_undo_state()
+        self.actionundo.setDisabled(False)
+        self.project.redo()
+        self.update_project_list()
+        self.update_project()
+        if self.project.get_num_redo_state() < 1:
+            self.actionredo.setDisabled(True) # no more states to restore
     
-    def update_project_list(self):
-        '''fill the list of all data objects'''
+    
+    def update_project_list(self, switch_to_new = False):
+        '''fill the list of all data objects
+        if 'switch_to_new = True: mark the last (new) object in project list 
+        and show the content of it. If False: The last idx is marked again'''
+        idx = self.project_listWidget.currentRow() # save current idx
         self.project_listWidget.clear()            # clear existing data
+        self.project_listWidget.blockSignals(True)
         for i, item in enumerate(self.project.get_titles()):
             widgetitem = QListWidgetItem(item)
             widgetitem.setFlags(widgetitem.flags() | QtCore.Qt.ItemIsEditable)
             self.project_listWidget.addItem(widgetitem)
-        self.project_listWidget.setCurrentRow(i)   # last item is current model
+        self.project_listWidget.blockSignals(False)
+        if switch_to_new:
+            idx = i
+        else:
+            idx = i if i < idx else idx
+            idx = 0 if idx < 0 else idx
+        self.project_listWidget.setCurrentRow(idx)   # last item is current model
     
     def update_project(self, idx = None):
         '''update the clicked data object form the project'''
@@ -170,19 +193,19 @@ class MainWindow(QMainWindow):
     
     def projectlist_delete(self):
         if self.project_listWidget.count() > 1:
-            self.save_state()  # for undo
+            self.save_undo_state()  # for undo
             idx = self.project_listWidget.currentRow()
             self.project.delete_model_by_index(idx)
             self.update_project_list()
     
     def projectlist_clone(self):
-        self.save_state()  # for undo
+        self.save_undo_state()  # for undo
         idx = self.project_listWidget.currentRow()
         self.project.clone_by_index(idx)
-        self.update_project_list()
+        self.update_project_list(switch_to_new = True)
 
     def projectlist_rename(self):
-        self.save_state()  # for undo
+        self.save_undo_state()  # for undo
         idx = self.project_listWidget.currentRow()
         newname = self.project_listWidget.item(idx).text()
         self.project.rename_by_index(idx, newname)
@@ -204,12 +227,19 @@ class MainWindow(QMainWindow):
         '''
         ret = self.DIALOG_GenWinding.run()
         if ret:
-            self.save_state()
+            self.save_undo_state()
             wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'])
-            self.data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
-            self.data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
-            self.data.analyse_wdg()
-            self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
+            
+            data = datamodel.datamodel()
+            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
+            data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
+            data.analyse_wdg()
+            data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
+            if ret['overwrite']:
+                self.data = data
+            else:
+                self.project.add_model(data)
+                self.update_project_list(switch_to_new = True)
             self.update_data_in_GUI()
 
 
@@ -219,12 +249,19 @@ class MainWindow(QMainWindow):
         '''
         ret = self.DIALOG_GenWindingCombinations.run()
         if ret:
-            self.save_state()
+            self.save_undo_state()
             wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'])
-            self.data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
-            self.data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
-            self.data.analyse_wdg()
-            self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
+            
+            data = datamodel.datamodel()
+            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
+            data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
+            data.analyse_wdg()
+            data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
+            if ret['overwrite']:
+                self.data = data
+            else:
+                self.project.add_model(data)
+                self.update_project_list(switch_to_new = True)
             self.update_data_in_GUI()
 
 
@@ -236,11 +273,18 @@ class MainWindow(QMainWindow):
         ret = DIALOG_EditWindingLayout.run()
 
         if ret:
-            self.save_state()
-            self.data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
-            self.data.set_phases(ret['phases'], wstep = ret['w'])            
-            self.data.analyse_wdg()
-            #  self.data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
+            self.save_undo_state()
+            
+            data = datamodel.datamodel()
+            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
+            data.set_phases(ret['phases'], wstep = ret['w'])            
+            data.analyse_wdg()
+            #  data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
+            if ret['overwrite']:
+                self.data = data 
+            else:
+                self.project.add_model(data)
+                self.update_project_list(switch_to_new = True)
             self.update_data_in_GUI()
 
 

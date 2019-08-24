@@ -431,24 +431,43 @@ class project:
     def __init__(self):
         self.models = []
         self.filename = None
-        self.state = []
+        self.undo_state = []
+        self.redo_state = []
         
-    def save_state(self):
+    def save_undo_state(self):
         '''saves the actual state of the models for undo function'''
-        self.state.append(copy.deepcopy(self.models))
+        self.undo_state.append(copy.deepcopy(self.models))
     
-    def reset_state(self):
-        '''delete all existings state saves - no undo possible any more'''
-        self.state = []
-        
-    def get_number_of_saved_state(self):
-        '''return the number of state saves = number of possible undo opserations'''
-        return len(self.state)
+    def save_redo_state(self):
+        '''saves the actual state of the models for redo function'''
+        self.redo_state.append(copy.deepcopy(self.models))
+    
+    def reset_undo_state(self):
+        '''delete all existings undo state saves - no undo possible any more'''
+        self.undo_state = []
+    
+    def reset_redo_state(self):
+        '''delete all existings redo state saves - no redo possible any more'''
+        self.redo_state = []
+    
+    def get_num_undo_state(self):
+        '''return the number of undo state saves = number of possible undo opserations'''
+        return len(self.undo_state)
+    
+    def get_num_redo_state(self):
+        '''return the number of redo state saves = number of possible redo opserations'''
+        return len(self.redo_state)
     
     def undo(self):
         '''restores the last state'''
-        if len(self.state) > 0:
-            self.models = self.state.pop(-1)
+        if self.get_num_undo_state() > 0:
+            self.models = self.undo_state.pop(-1)
+            gc.collect()  # force to free memory
+    
+    def redo(self):
+        '''restores the last state'''
+        if self.get_num_redo_state() > 0:
+            self.models = self.redo_state.pop(-1)
             gc.collect()  # force to free memory
     
     def set_filename(self, filename):
