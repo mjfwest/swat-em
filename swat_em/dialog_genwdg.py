@@ -4,6 +4,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog, QApplication, QMessageBox, QTableWidgetItem
 from PyQt5.QtGui import QIntValidator
 from PyQt5 import QtGui
+from PyQt5 import QtCore
 #  from PyQt5.QtCore import Qt
 import sys
 import os
@@ -97,7 +98,7 @@ class GenWinding2(QDialog):
                             self.table.setItem(kl, abs(cs)-1, QTableWidgetItem('-' + str(km+1)))
                         self.table.item(kl, abs(cs)-1).setBackground(QtGui.QColor(col))
                         #  self.table.item(kl, abs(cs)-1).setFlags(Qt.ItemIsEditable)
-
+                        self.table.item(kl, abs(cs)-1).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             for k1 in range(self.data.machinedata['Q']):
                 #  self.table.resizeColumnToContents(k1)
                 self.table.setColumnWidth(k1, 25)
@@ -239,7 +240,7 @@ class GenWindingCombinations(QDialog):
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#E6C3AD'))
                         else:
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#BCFFBC'))
-
+                        self.table.item(iQ, iP).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled) # note editable
 
         for iP, kP in enumerate(self.Plist):
             self.table.resizeColumnToContents(iP)
@@ -279,6 +280,7 @@ class GenWindingCombinations(QDialog):
                             self.table.setItem(kl, abs(cs)-1, QTableWidgetItem('-' + str(km+1)))
                         if abs(cs) <= d.machinedata['Q']: # for non-valid windings there could be a slot-number that is bigger than the number of slots
                             self.table.item(kl, abs(cs)-1).setBackground(QtGui.QColor(col))
+                        self.table.item(kl, abs(cs)-1).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled) # note editable
                         
             for k1 in range(d.machinedata['Q']):
                 self.table.resizeColumnToContents(k1)

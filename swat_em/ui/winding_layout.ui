@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>926</width>
-    <height>468</height>
+    <height>489</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -246,7 +246,7 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QTableWidget" name="tableWindingLayout">
      <property name="minimumSize">
       <size>
@@ -259,7 +259,7 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer">
@@ -282,6 +282,13 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Change the defintion of the coil sides in this table by hand</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
