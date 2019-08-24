@@ -480,7 +480,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Winding Systems</string>
+         <string>Workspace</string>
         </property>
        </widget>
       </item>
@@ -488,6 +488,38 @@
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/new.png</normaloff>icons/new.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QPushButton" name="pushButton">
             <property name="minimumSize">
@@ -723,6 +755,28 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="0">
+     <widget class="QTextBrowser" name="textBrowser_wdginfo">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>230</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>210</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QGroupBox" name="groupBox_3">
       <property name="sizePolicy">
@@ -865,28 +919,6 @@
         </layout>
        </item>
       </layout>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QTextBrowser" name="textBrowser_wdginfo">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>230</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>210</width>
-        <height>16777215</height>
-       </size>
-      </property>
      </widget>
     </item>
    </layout>
