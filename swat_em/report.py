@@ -36,6 +36,11 @@ def red(text):
     txt.append('</span>')
     return ''.join(txt)
 
+def italic(text):
+    return '<i>' + text + '</i>'
+
+def bold(text):
+    return '<b>' + text + '</b>'
 
 def table(dat):
     txt = ['<table style="width:100%">']

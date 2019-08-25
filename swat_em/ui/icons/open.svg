@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with matplotlib (https://matplotlib.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="48"
+   version="1.1"
+   viewBox="0 0 48 48"
+   width="48"
+   id="svg625"
+   sodipodi:docname="open.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:export-filename="/home/martin/Arbeitsdaten/Skripte/Python-Skripte/04_Programme_mit_GUI/SWAT-EM/swat_em/ui/icons/open.png"
+   inkscape:export-xdpi="128"
+   inkscape:export-ydpi="128">
+  <metadata
+     id="metadata629">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1029"
+     id="namedview627"
+     showgrid="true"
+     units="px"
+     inkscape:zoom="2.828427"
+     inkscape:cx="-24.221033"
+     inkscape:cy="5.3657285"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg625">
+    <inkscape:grid
+       type="xygrid"
+       id="grid1825" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4"
+     style="stroke-linecap:butt;stroke-linejoin:round">
+    <style
+       type="text/css"
+       id="style2">
+*{stroke-linecap:butt;stroke-linejoin:round;}
+  </style>
+    <clipPath
+       id="p71700fa865"
+       style="stroke-linecap:butt;stroke-linejoin:round">
+      <rect
+         height="318.85715"
+         width="447.42856"
+         x="0"
+         y="0"
+         id="rect167"
+         style="stroke-linecap:butt;stroke-linejoin:round" />
+    </clipPath>
+  </defs>
+  <defs
+     id="defs623">
+    <clipPath
+       id="p596afcd40e"
+       style="stroke-linecap:butt;stroke-linejoin:round">
+      <rect
+         height="328.328"
+         width="400.51999"
+         x="64.599998"
+         y="51.167999"
+         id="rect620"
+         style="stroke-linecap:butt;stroke-linejoin:round" />
+    </clipPath>
+  </defs>
+  <g
+     id="g834" />
+  <path
+     style="fill:#5fa4d2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="m 3,68 v 32 H 39 V 73 H 19 l -3,-5 z"
+     id="path919"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccc" />
+  <path
+     style="fill:#36688a;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 3,100 7,-22 h 36 l -7,22 z"
+     id="path904"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     sodipodi:nodetypes="ccccccc"
+     inkscape:connector-curvature="0"
+     id="path906"
+     d="M 3,8 V 40 H 39 V 13 H 19 L 16,8 Z"
+     style="fill:#36688a;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path
+     sodipodi:nodetypes="ccccc"
+     inkscape:connector-curvature="0"
+     id="path909"
+     d="M 3,40 10,18 H 46 L 39,40 Z"
+     style="fill:#5fa4d2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+</svg>

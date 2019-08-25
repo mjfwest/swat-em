@@ -1,10 +1,10 @@
 from PyQt5 import uic
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QMessageBox
-from swat_em.config import get_phase_color
+from swat_em.config import get_phase_color, config
 import os
 __dir__ = os.path.dirname(os.path.abspath(__file__))
-#  import numpy as np
+
 
 
 def get_int_from_str(txt):
@@ -98,7 +98,7 @@ class layout(QDialog):
 
      
         for km, ph in enumerate(phases):
-            col = get_phase_color(self.data.config, km)
+            col = get_phase_color(km)
             for kl in range(len(ph)):
                 layer = ph[kl]
                 for cs in layer:
@@ -160,7 +160,7 @@ class layout(QDialog):
                     num = get_int_from_str(txt)
                     if num:
                         phase = abs(num)
-                        col = get_phase_color(self.data.config, phase-1)
+                        col = get_phase_color(phase-1)
                         item.setBackground(QtGui.QColor(col))
                     else:
                         item.setBackground(QtGui.QColor('white'))
@@ -206,6 +206,10 @@ class layout(QDialog):
     def run(self):
         ok = self.exec_()
         if ok:
+            if self.radioButton_overwrite_winding.isChecked():
+                overwrite = True
+            else:
+                overwrite = False
             phases = self.read_layout()
             layer1 = False; layer2 = False  # test if single or double layer winding
             for s in phases:
@@ -222,7 +226,8 @@ class layout(QDialog):
             p = self.data.machinedata['p']
             m = self.data.machinedata['m']
             w = self.data.machinedata['wstep']       
-            ret = {'phases': phases, 'Q': Q, 'P': 2*p, 'm': m, 'w': w, 'layers': layers}
+            ret = {'phases': phases, 'Q': Q, 'P': 2*p, 'm': m, 'w': w, 
+            'layers': layers, 'overwrite': overwrite}
             return ret
         else:
             return None

@@ -6,65 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1001</width>
-    <height>696</height>
+    <width>973</width>
+    <height>773</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icons/app_icon.png</normaloff>icons/app_icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
      <number>9</number>
     </property>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="Button_exit">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Exit</string>
-      </property>
-      <property name="icon">
-       <iconset theme="application-exit">
-        <normaloff>.</normaloff>.</iconset>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="title">
-       <string>Winding Information</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_8">
-       <item row="0" column="0">
-        <widget class="QTextBrowser" name="textBrowser_wdginfo">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="0" column="1" rowspan="4">
+    <item row="0" column="1" rowspan="5">
      <widget class="QTabWidget" name="plot_tabs">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>2</horstretch>
+        <horstretch>10</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
@@ -89,7 +51,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/slot.svg.png</normaloff>icons/slot.svg.png</iconset>
+         <normaloff>icons/slot.png</normaloff>icons/slot.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Winding layout</string>
@@ -133,7 +95,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/star.svg.png</normaloff>icons/star.svg.png</iconset>
+         <normaloff>icons/star.png</normaloff>icons/star.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Slot voltage phasors</string>
@@ -209,9 +171,6 @@
                 <height>16777215</height>
                </size>
               </property>
-              <property name="selectionBehavior">
-               <enum>QAbstractItemView::SelectRows</enum>
-              </property>
               <attribute name="verticalHeaderVisible">
                <bool>false</bool>
               </attribute>
@@ -257,7 +216,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/windingfactor.svg.png</normaloff>icons/windingfactor.svg.png</iconset>
+         <normaloff>icons/windingfactor.png</normaloff>icons/windingfactor.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Winding factor</string>
@@ -387,7 +346,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/MMK.svg.png</normaloff>icons/MMK.svg.png</iconset>
+         <normaloff>icons/MMK.png</normaloff>icons/MMK.png</iconset>
        </attribute>
        <attribute name="title">
         <string>MMF</string>
@@ -422,9 +381,6 @@
              <width>16777215</width>
              <height>16777215</height>
             </size>
-           </property>
-           <property name="selectionBehavior">
-            <enum>QAbstractItemView::SelectRows</enum>
            </property>
            <attribute name="verticalHeaderVisible">
             <bool>false</bool>
@@ -513,124 +469,367 @@
       </widget>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QGroupBox" name="groupBox_3">
-      <property name="title">
-       <string>Generate/Modify winding</string>
+    <item row="3" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Workspace</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QPushButton" name="projectlist_Button_new">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/new.png</normaloff>icons/new.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="projectlist_Button_manual">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/edit_manually.png</normaloff>icons/edit_manually.png</iconset>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="projectlist_Button_auto">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/generator.png</normaloff>icons/generator.png</iconset>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="projectlist_Button_table">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/table.png</normaloff>icons/table.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="projectlist_Button_notes">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>add note for winding</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/notes.png</normaloff>icons/notes.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="projectlist_Button_clone">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>clone winding</string>
+            </property>
+            <property name="statusTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/clone.png</normaloff>icons/clone.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="projectlist_Button_delete">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>delete winding</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/delete.png</normaloff>icons/delete.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QListWidget" name="project_listWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="resizeMode">
+           <enum>QListView::Fixed</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QPushButton" name="Button_EditWindingLayout">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>icons/Qt/draw-freehand.png</normaloff>icons/Qt/draw-freehand.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Generate by hand</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QPushButton" name="Button_GenerateAutomatically">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>icons/Qt/edit-find.png</normaloff>icons/Qt/edit-find.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Generate automatically</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QPushButton" name="Button_FindByTable">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>icons/Qt/edit-web-search.png</normaloff>icons/Qt/edit-web-search.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>Find by table</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-      </layout>
+      <property name="text">
+       <string>Winding Information</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QPushButton" name="Button_exit">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Exit</string>
+      </property>
+      <property name="icon">
+       <iconset theme="application-exit">
+        <normaloff>.</normaloff>.</iconset>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QTextBrowser" name="textBrowser_wdginfo">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>350</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>250</width>
+        <height>16777215</height>
+       </size>
+      </property>
      </widget>
     </item>
    </layout>
@@ -640,7 +839,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1001</width>
+     <width>973</width>
      <height>20</height>
     </rect>
    </property>
@@ -674,7 +873,15 @@
     <addaction name="actionHelp"/>
     <addaction name="actionProgram_Info"/>
    </widget>
+   <widget class="QMenu" name="menuedit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionundo"/>
+    <addaction name="actionredo"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuedit"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -692,8 +899,11 @@
    <addaction name="actionsave"/>
    <addaction name="actionsave_as"/>
    <addaction name="actionload"/>
-   <addaction name="actionprint_report"/>
    <addaction name="separator"/>
+   <addaction name="actionundo"/>
+   <addaction name="actionredo"/>
+   <addaction name="separator"/>
+   <addaction name="actionprint_report"/>
    <addaction name="actionShow_winding_layout"/>
    <addaction name="actionGenerate_winding"/>
    <addaction name="actionGenerate_winding_combinations"/>
@@ -709,7 +919,7 @@
   <action name="actionload">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/document-open.png</normaloff>icons/Qt/document-open.png</iconset>
+     <normaloff>icons/open.png</normaloff>icons/open.png</iconset>
    </property>
    <property name="text">
     <string>load</string>
@@ -729,7 +939,7 @@
   <action name="actionGenerate_winding">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/edit-find.png</normaloff>icons/Qt/edit-find.png</iconset>
+     <normaloff>icons/generator.png</normaloff>icons/generator.png</iconset>
    </property>
    <property name="text">
     <string>Generate winding</string>
@@ -741,7 +951,7 @@
   <action name="actionsave">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/document-save.png</normaloff>icons/Qt/document-save.png</iconset>
+     <normaloff>icons/save.png</normaloff>icons/save.png</iconset>
    </property>
    <property name="text">
     <string>save</string>
@@ -753,7 +963,7 @@
   <action name="actionsave_as">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/document-save-as.png</normaloff>icons/Qt/document-save-as.png</iconset>
+     <normaloff>icons/save_as.png</normaloff>icons/save_as.png</iconset>
    </property>
    <property name="text">
     <string>save as</string>
@@ -772,7 +982,7 @@
   <action name="actionProgram_Info">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/help-about.png</normaloff>icons/Qt/help-about.png</iconset>
+     <normaloff>icons/info.png</normaloff>icons/info.png</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -799,7 +1009,7 @@
   <action name="actionShow_winding_layout">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/draw-freehand.png</normaloff>icons/Qt/draw-freehand.png</iconset>
+     <normaloff>icons/edit_manually.png</normaloff>icons/edit_manually.png</iconset>
    </property>
    <property name="text">
     <string>Edit winding layout</string>
@@ -811,7 +1021,7 @@
   <action name="actionGenerate_winding_combinations">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/edit-web-search.png</normaloff>icons/Qt/edit-web-search.png</iconset>
+     <normaloff>icons/table.png</normaloff>icons/table.png</iconset>
    </property>
    <property name="text">
     <string>Find winding</string>
@@ -828,10 +1038,34 @@
   <action name="actionSettings">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/configure.png</normaloff>icons/Qt/configure.png</iconset>
+     <normaloff>icons/settings.png</normaloff>icons/settings.png</iconset>
    </property>
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionundo">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/undo.png</normaloff>icons/undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionredo">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/redo.png</normaloff>icons/redo.png</iconset>
+   </property>
+   <property name="text">
+    <string>redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>

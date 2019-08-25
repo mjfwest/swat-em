@@ -6,7 +6,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from swat_em.wdggenerator import genwdg
 from swat_em.datamodel import datamodel
-from swat_em.config import get_init_config
 import swat_em.analyse
 import numpy as np
 import pdb
@@ -27,7 +26,6 @@ def test_parallel_circuit():
         ret = genwdg(Q[k], P[k], m[k], wstep[k], layers[k])
 
         data = datamodel()
-        data.set_config(get_init_config())
         data.set_machinedata(Q = Q[k], p = P[k]/2, m = m[k])
         data.set_phases(ret['phases'])
         bc, txt = data.get_basic_characteristics()

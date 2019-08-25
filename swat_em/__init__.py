@@ -2,7 +2,7 @@
 
 import os
 __title__ = 'SWAT-EM - Specific Winding Analyse Tool for electrical machines'
-__version__ = '0.1.4'
+__version__ = '0.2.0'
 __author__ = 'Martin Baun'
 __license__ = 'GPLv3'
 __copyright__ = 'Copyright 2018-2019 Martin Baun'

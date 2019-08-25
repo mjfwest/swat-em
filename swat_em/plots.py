@@ -8,7 +8,7 @@ Provides functions for plotting
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
-from swat_em.config import get_phase_color
+from swat_em.config import get_phase_color, config
 from swat_em import analyse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -35,7 +35,7 @@ class slot_plot:
         self.Q = 0
         self.slot = {}
         self.devide = 'h'  # slot devide h (horizontal) or v (vertical
-        self.fig = plt.figure(1, dpi=self.data.config['plt']['DPI'])
+        self.fig = plt.figure(1, dpi=config['plt']['DPI'])
         self.fig.clf()
         self.canvas1 = FigureCanvas(self.fig)
         self.layout.addWidget(self.canvas1)
@@ -114,7 +114,8 @@ class slot_plot:
     
 
                         
-    def plot_coilsides(self):
+    def plot_coilsides(self, data):
+        self.data = data
         S = self.data.machinedata['phases']
         Q = self.data.machinedata['Q']
         self.devide = 'v' if self.data.machinedata['wstep'] == 1 else 'h'
@@ -149,7 +150,7 @@ class slot_plot:
                          dy, 
                          txt, horizontalalignment='center',
                          verticalalignment='center',
-                         color = get_phase_color(self.data.config, phase-1),
+                         color = get_phase_color(phase-1),
                          rasterized=False,
                          weight = 'bold')
         
@@ -183,7 +184,7 @@ class slot_star:
         self.data = data
         self.table = table
 
-        self.fig = plt.figure(2, dpi=self.data.config['plt']['DPI'])
+        self.fig = plt.figure(2, dpi=config['plt']['DPI'])
         self.fig.clf()
         plt.subplots_adjust(left=0, bottom=0, right=1, top=1)
         self.canvas1 = FigureCanvas(self.fig)
@@ -195,7 +196,8 @@ class slot_star:
         self.layout.addWidget(self.toolbar1)
         
     
-    def plot_star(self, harmonic_idx = 0, ForceX = None):
+    def plot_star(self, data, harmonic_idx = 0, ForceX = None):
+        self.data = data
         if harmonic_idx < 0:
             harmonic_idx = 0
         
@@ -228,16 +230,16 @@ class slot_star:
                 if max(v.imag) > ylim[1]:
                     ylim[1] = max(v.imag)
                 
-                plt.arrow( old.real, old.imag, vek[k].real, vek[k].imag, head_width=0.08, fc=color, ec=color, linewidth=self.data.config['plt']['lw'])
+                plt.arrow( old.real, old.imag, vek[k].real, vek[k].imag, head_width=0.08, fc=color, ec=color, linewidth=config['plt']['lw'])
                 old = v[k]
-            plt.plot( [0.0, v[-1].real], [0.0, v[-1].imag], '--', color = color, linewidth=self.data.config['plt']['lw'])
+            plt.plot( [0.0, v[-1].real], [0.0, v[-1].imag], '--', color = color, linewidth=config['plt']['lw'])
         
         if ForceX:
             angle_phase1 = np.angle(np.sum(self.data.results['Ei_el'][harmonic_idx][0]))
         else:
             angle_phase1 = None
         for k in range(len(self.data.results['Ei_el'][harmonic_idx])):
-            plot_vek(self.data.results['Ei_el'][harmonic_idx][k], color = get_phase_color(self.data.config, k), dangle = angle_phase1)
+            plot_vek(self.data.results['Ei_el'][harmonic_idx][k], color = get_phase_color(k), dangle = angle_phase1)
 
         plt.axis('equal')
         ax = plt.gca()
@@ -292,7 +294,7 @@ class windingfactor:
         self.data = data
         self.table = table
 
-        self.fig = plt.figure(3, dpi=self.data.config['plt']['DPI'])
+        self.fig = plt.figure(3, dpi=config['plt']['DPI'])
         self.fig.clf()
         self.canvas1 = FigureCanvas(self.fig)
         self.layout.addWidget(self.canvas1)
@@ -303,7 +305,8 @@ class windingfactor:
         self.layout.addWidget(self.toolbar1)
         
     
-    def plot_windingfactor(self, mechanical = False):
+    def plot_windingfactor(self, data, mechanical = False):
+        self.data = data
         plt.figure(3)
         plt.clf()
         
@@ -321,7 +324,7 @@ class windingfactor:
             dx = nu[1] - nu[0]
             x = nu - dx/N/1.5 + dx/N/1.5*k
             plt.bar( x, np.abs(kw[:,k]), (dx)/1.5/N, label = 'Phase '+str(k+1),
-                color = get_phase_color(self.data.config, k))
+                color = get_phase_color(k))
 
         #  plt.title('Windingfactor')
         plt.xlabel('ordinal number $\\nu$')
@@ -366,7 +369,7 @@ class mmk:
         self.data = data
         self.table = table
 
-        self.fig = plt.figure(4, dpi=self.data.config['plt']['DPI'])
+        self.fig = plt.figure(4, dpi=config['plt']['DPI'])
         self.fig.clf()
         plt.subplots_adjust(left=0, bottom=0, right=1, top=1)
         self.canvas1 = FigureCanvas(self.fig)
@@ -378,7 +381,7 @@ class mmk:
         self.layout.addWidget(self.toolbar1)
         
     
-    def plot_mmk(self, phase = 0, small_update = False):
+    def plot_mmk(self, data, phase = 0, small_update = False):
         '''
         Plottet MMF-Kurve
 
@@ -389,7 +392,7 @@ class mmk:
         plot_MMK_greater_than : scalar, float
                                 Plotte alle Oberschwingungen mit der Amplitude größer als
         '''
-
+        self.data = data
         plot_MMK_greater_than = 0.15
 
         #  MMK =  self.data.results['MMK']['MMK']
@@ -413,7 +416,7 @@ class mmk:
         ax1 = plt.gca()
         ax1.lines = []           # remove all existing lines (faster than plt.clf())
         ax1.set_prop_cycle(None) # reset color cycler
-        plt.plot( phi, MMK, linewidth = self.data.config['plt']['lw'], label = 'MMF')
+        plt.plot( phi, MMK, linewidth = config['plt']['lw'], label = 'MMF')
         plt.grid(True)
         plt.ylabel('MMF in A')
         #  plt.xlabel('circumferential Stator in deg')
@@ -422,7 +425,7 @@ class mmk:
         # Plotte Oberschwingungen
         for n, a, p in zip(nu, A, phase):
             if 1/max(A)*a > plot_MMK_greater_than:
-                plt.plot( phi, a*np.cos(n*phi/phi[-1]*2*np.pi + p), '--', label='$\\nu={}$'.format(n), linewidth=self.data.config['plt']['lw_thin'])
+                plt.plot( phi, a*np.cos(n*phi/phi[-1]*2*np.pi + p), '--', label='$\\nu={}$'.format(n), linewidth=config['plt']['lw_thin'])
         leg = plt.legend(loc='upper right',labelspacing=0)
         plt.xlim(min(phi), max(phi))
         

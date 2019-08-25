@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with matplotlib (https://matplotlib.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="48"
+   version="1.1"
+   viewBox="0 0 48 48"
+   width="48"
+   id="svg625"
+   sodipodi:docname="generator.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:export-filename="/home/martin/Arbeitsdaten/Skripte/Python-Skripte/04_Programme_mit_GUI/SWAT-EM/swat_em/ui/icons/generator.png"
+   inkscape:export-xdpi="128"
+   inkscape:export-ydpi="128">
+  <metadata
+     id="metadata629">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1319"
+     inkscape:window-height="978"
+     id="namedview627"
+     showgrid="true"
+     units="px"
+     inkscape:zoom="11.313708"
+     inkscape:cx="26.181943"
+     inkscape:cy="17.434384"
+     inkscape:window-x="439"
+     inkscape:window-y="57"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg625">
+    <inkscape:grid
+       type="xygrid"
+       id="grid1825" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4"
+     style="stroke-linecap:butt;stroke-linejoin:round">
+    <style
+       type="text/css"
+       id="style2">
+*{stroke-linecap:butt;stroke-linejoin:round;}
+  </style>
+    <clipPath
+       id="p71700fa865"
+       style="stroke-linecap:butt;stroke-linejoin:round">
+      <rect
+         height="318.85715"
+         width="447.42856"
+         x="0"
+         y="0"
+         id="rect167"
+         style="stroke-linecap:butt;stroke-linejoin:round" />
+    </clipPath>
+  </defs>
+  <defs
+     id="defs623">
+    <clipPath
+       id="p596afcd40e"
+       style="stroke-linecap:butt;stroke-linejoin:round">
+      <rect
+         height="328.328"
+         width="400.51999"
+         x="64.599998"
+         y="51.167999"
+         id="rect620"
+         style="stroke-linecap:butt;stroke-linejoin:round" />
+    </clipPath>
+  </defs>
+  <rect
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect827"
+     width="44"
+     height="40"
+     x="2"
+     y="2" />
+  <g
+     id="g834" />
+  <rect
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect915"
+     width="23"
+     height="20"
+     x="25"
+     y="28" />
+  <rect
+     ry="0"
+     style="opacity:1;fill:none;fill-opacity:1;stroke:#5fa4d2;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect860-3"
+     width="44"
+     height="40"
+     x="2"
+     y="2" />
+  <rect
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect915-7"
+     width="23"
+     height="20"
+     x="25"
+     y="28" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.85624504px;line-height:125%;font-family:Lato;-inkscape-font-specification:'Lato, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#666666;fill-opacity:1;stroke:none;stroke-width:0.54640609px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+     x="25.672211"
+     y="45.618721"
+     id="text913"><tspan
+       sodipodi:role="line"
+       id="tspan911"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.85624504px;font-family:Lato;-inkscape-font-specification:'Lato, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#666666;fill-opacity:1;stroke-width:0.54640609px;stroke-linecap:butt;stroke-linejoin:round;"
+       x="25.672211"
+       y="45.618721">W</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:49.91707993px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#36688a;fill-opacity:1;stroke:none;stroke-width:1.24792695px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+     x="6.2437778"
+     y="16.234972"
+     id="text875"
+     transform="scale(0.7612785,1.3135797)"><tspan
+       sodipodi:role="line"
+       id="tspan873"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16.63902664px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#36688a;fill-opacity:1;stroke:none;stroke-width:1.24792695px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;"
+       x="6.2437778"
+       y="16.234972">AUTO</tspan></text>
+  <rect
+     style="opacity:1;fill:#36688a;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect845"
+     width="5"
+     height="5"
+     x="-25"
+     y="13" />
+</svg>

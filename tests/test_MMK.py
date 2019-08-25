@@ -7,7 +7,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 #  from swat.wdggenerator import genwdg, overlapping_fractional_slot_slayer, overlapping_fractional_slot_dlayer
 from swat_em.wdggenerator import genwdg
 from swat_em.datamodel import datamodel
-from swat_em.config import get_init_config
 import swat_em.analyse
 import numpy as np
 import pdb
@@ -25,7 +24,6 @@ def test1():
     ret = genwdg(Q, 2*p, m, wstep, layers)
     wdglayout = ret['phases']
     data = datamodel()
-    data.set_config(get_init_config())
     data.set_machinedata(Q = Q, p = p, m = m)
     data.set_phases(wdglayout)
     data.analyse_wdg()
@@ -65,7 +63,6 @@ def test2():
     ret = genwdg(Q, 2*p, m, wstep, layers)
     wdglayout = ret['phases']
     data = datamodel()
-    data.set_config(get_init_config())
     data.set_machinedata(Q = Q, p = p, m = m)
     data.set_phases(wdglayout)
     data.analyse_wdg()
@@ -104,7 +101,6 @@ def test3():
     ret = genwdg(Q, 2*p, m, wstep, layers)
     wdglayout = ret['phases']
     data = datamodel()
-    data.set_config(get_init_config())
     data.set_machinedata(Q = Q, p = p, m = m)
     data.set_phases(wdglayout)
     data.analyse_wdg()

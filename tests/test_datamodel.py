@@ -2,7 +2,6 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from swat_em.config import get_init_config
 import pdb
 
 from swat_em import datamodel
@@ -10,7 +9,6 @@ from swat_em import datamodel
 def test1():
     print('Test saving and loading of data files inc. results and options')
     data = datamodel.datamodel()
-    data.set_config(get_init_config())
     data.set_machinedata(Q = 12, p = 5, m = 3)
 
     U = [[1,8],[-2,-7]]
@@ -26,7 +24,6 @@ def test1():
     os.remove('savefile.wdg')
 
     assert data.machinedata == data2.machinedata
-    #  assert data.config == data2.config
     assert data.results == data2.results
 
 

@@ -12,15 +12,39 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from swat_em import wdggenerator
 from swat_em import datamodel
-from swat_em.config import get_config, get_phase_color
+from swat_em.config import config, get_phase_color
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 
+class NewWinding(QDialog):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi(os.path.join(__dir__, 'ui/choose_generator.ui'), self)
+        self.generator = None
+
+        self.Button_EditWindingLayout.clicked.connect(lambda: self.ret(generator = 0))
+        self.Button_GenerateAutomatically.clicked.connect(lambda: self.ret(generator = 1))
+        self.Button_FindByTable.clicked.connect(lambda: self.ret(generator = 2))
+    
+    def run(self):
+        ok = self.exec_()
+        if ok:
+            return self.generator
+        else:
+            return None
+    
+    def ret(self, generator):
+        '''saves the choosen generator and say "ok" to the dialog'''
+        self.generator = generator
+        self.accept()
+
+        
+
+
 
 class GenWinding2(QDialog):
-    def __init__(self, config):
-        self.config = config
+    def __init__(self):
         super().__init__()
        
         # Set up the user interface from Designer.
@@ -88,7 +112,7 @@ class GenWinding2(QDialog):
             self.table.setColumnCount(self.data.machinedata['Q'])
             
             for km, ph in enumerate(self.data.machinedata['phases']):
-                col = get_phase_color(self.config, km)
+                col = get_phase_color(km)
                 for kl in range(len(ph)):
                     layer = ph[kl]
                     for cs in layer:
@@ -107,7 +131,12 @@ class GenWinding2(QDialog):
     def run(self):
         ok = self.exec_()
         if ok:
-            ret = {'Q': self.Q, 'P': self.P, 'm': self.m, 'w': self.w, 'layers': self.layers}
+            if self.radioButton_overwrite_winding.isChecked():
+                overwrite = True
+            else:
+                overwrite = False
+            ret = {'Q': self.Q, 'P': self.P, 'm': self.m, 'w': self.w, 
+            'layers': self.layers, 'overwrite': overwrite}
             return ret
         else:
             return None
@@ -116,8 +145,7 @@ class GenWinding2(QDialog):
 
 
 class GenWindingCombinations(QDialog):
-    def __init__(self, config):
-        self.config = config
+    def __init__(self):
         super().__init__()
        
         uic.loadUi(os.path.join(__dir__, 'ui/GenCombinations.ui'), self)
@@ -179,7 +207,6 @@ class GenWindingCombinations(QDialog):
             self.data.append([])
             for iP, kP in enumerate(self.Plist):
                 d = datamodel.datamodel()
-                d.set_config(get_config())
                 d.set_machinedata(Q = kQ, m = self.m, p = kP/2)
                 ret = wdggenerator.genwdg(kQ, kP, self.m, wstep, self.layers)
                 d.set_phases(S = ret['phases'], wstep = ret['wstep'])
@@ -270,7 +297,7 @@ class GenWindingCombinations(QDialog):
             self.table.setRowCount(self.layers)
             self.table.setColumnCount(d.machinedata['Q'])            
             for km, ph in enumerate(d.machinedata['phases']):
-                col = get_phase_color(d.config, km)
+                col = get_phase_color(km)
                 for kl in range(len(ph)):
                     layer = ph[kl]
                     for cs in layer:
@@ -293,6 +320,10 @@ class GenWindingCombinations(QDialog):
         self.generate()
         ok = self.exec_()
         if ok:
+            if self.radioButton_overwrite_winding.isChecked():
+                overwrite = True
+            else:
+                overwrite = False
             row, column = self.combination_selected()
             if row is not None:
                 ret = {}
@@ -301,6 +332,7 @@ class GenWindingCombinations(QDialog):
                 ret['m'] = self.data[row][column].machinedata['m']
                 ret['w'] = self.data[row][column].machinedata['wstep']
                 ret['layers'] = self.layers
+                ret['overwrite'] = overwrite
                 return ret
             else:
                 return None
