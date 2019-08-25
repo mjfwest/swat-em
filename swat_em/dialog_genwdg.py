@@ -109,7 +109,6 @@ class GenWinding2(QDialog):
                 overwrite = True
             else:
                 overwrite = False
-            self.layers = 2
             ret = {'Q': self.Q, 'P': self.P, 'm': self.m, 'w': self.w, 
             'layers': self.layers, 'overwrite': overwrite}
             return ret
