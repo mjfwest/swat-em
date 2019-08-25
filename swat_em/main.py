@@ -53,9 +53,13 @@ class MainWindow(QMainWindow):
         # Connect the buttons
         self.Button_exit.clicked.connect(self.close)
         
+        self.projectlist_Button_new.clicked.connect(self.dialog_new_winding)
         self.projectlist_Button_delete.clicked.connect(self.projectlist_delete)
         self.projectlist_Button_clone.clicked.connect(self.projectlist_clone)
         self.projectlist_Button_notes.clicked.connect(self.dialog_get_notes)
+        self.projectlist_Button_manual.clicked.connect(self.dialog_EditWindingLayout)
+        self.projectlist_Button_auto.clicked.connect(self.dialog_GenWinding)
+        self.projectlist_Button_table.clicked.connect(self.dialog_GenWindingCombinations)
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
@@ -308,7 +312,22 @@ class MainWindow(QMainWindow):
             self.data.set_notes(text)
             self.update_data_in_GUI()
         
-        
+    def dialog_new_winding(self):
+        '''
+        dialog to generate a new winding
+        wraps the user input to the existing generators
+        '''
+        dialog = dialog_genwdg.NewWinding()
+        ret = dialog.run()
+        if ret is not None:
+            if ret == 0:   # trigger the different generators
+                self.dialog_EditWindingLayout()
+            elif ret == 1:
+                self.dialog_GenWinding()
+            elif ret == 2:
+                self.dialog_GenWindingCombinations()
+            else:
+                raise(Exception, 'winding generator {} not implemented'.format(ret))
 
 
     def dialog_settings(self):

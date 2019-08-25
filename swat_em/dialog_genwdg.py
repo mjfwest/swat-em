@@ -16,6 +16,31 @@ from swat_em.config import config, get_phase_color
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 
+class NewWinding(QDialog):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi(os.path.join(__dir__, 'ui/choose_generator.ui'), self)
+        self.generator = None
+
+        self.Button_EditWindingLayout.clicked.connect(lambda: self.ret(generator = 0))
+        self.Button_GenerateAutomatically.clicked.connect(lambda: self.ret(generator = 1))
+        self.Button_FindByTable.clicked.connect(lambda: self.ret(generator = 2))
+    
+    def run(self):
+        ok = self.exec_()
+        if ok:
+            return self.generator
+        else:
+            return None
+    
+    def ret(self, generator):
+        '''saves the choosen generator and say "ok" to the dialog'''
+        self.generator = generator
+        self.accept()
+
+        
+
+
 
 class GenWinding2(QDialog):
     def __init__(self):
