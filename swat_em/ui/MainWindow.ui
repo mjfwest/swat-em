@@ -171,6 +171,9 @@
                 <height>16777215</height>
                </size>
               </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
               <attribute name="verticalHeaderVisible">
                <bool>false</bool>
               </attribute>
@@ -381,6 +384,9 @@
              <width>16777215</width>
              <height>16777215</height>
             </size>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
            </property>
            <attribute name="verticalHeaderVisible">
             <bool>false</bool>
