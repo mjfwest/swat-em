@@ -1,16 +1,25 @@
 # -*- coding: utf-8 -*-
-
-from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox, QListWidgetItem, QMenu, QAction
-from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon
-from PyQt5 import QtCore
 import sys
 import os
-import time
-import argparse
-
+from PyQt5 import uic
+from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog,\
+                            QInputDialog, QMessageBox, QListWidgetItem,\
+                            QMenu, QAction, QSplashScreen
+from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon,QPixmap
+from PyQt5 import QtCore
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+__dir__ = os.path.dirname(os.path.abspath(__file__))
+
+# Create a splash screen while loading the librarys because this
+# takes some time
+app = QApplication([])  # temp. app needed for splash
+splash_pix = QPixmap(os.path.join(__dir__, 'ui/bitmaps/splash.png'))
+splash = QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
+splash.show()
+
+import time
+import argparse
 from swat_em import dialog_genwdg
 from swat_em import dialog_about
 from swat_em import dialog_winding_layout
@@ -21,9 +30,9 @@ from swat_em import datamodel
 from swat_em import wdggenerator
 from swat_em import plots
 
-__dir__ = os.path.dirname(os.path.abspath(__file__))
-
 MSG_TIME = 3000   # time in which the message is displayed in the statusbar
+
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -48,6 +57,7 @@ class MainWindow(QMainWindow):
         
         self.projectlist_Button_delete.clicked.connect(self.projectlist_delete)
         self.projectlist_Button_clone.clicked.connect(self.projectlist_clone)
+        self.projectlist_Button_notes.clicked.connect(self.dialog_get_notes)
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
@@ -92,7 +102,7 @@ class MainWindow(QMainWindow):
         self.actionprint_report.triggered.connect(lambda: QMessageBox.information(self, 'Information', 'Not implemented yet'))
         self.actionHelp.triggered.connect(lambda: QMessageBox.information(self, 'Information', 'Not implemented yet'))
         
-        self.plot_tabs.currentChanged.connect(self.update_plot_in_GUI)
+        self.plot_tabs.currentChanged.connect(lambda: self.update_plot_in_GUI(small_update = False))
         self.radioButton_electrical.toggled.connect(self.update_plot_in_GUI)
         self.comboBox_star_harmonics.currentIndexChanged.connect(self.update_plot_in_GUI)
         self.checkBoxForceX.toggled.connect(self.update_plot_in_GUI)
@@ -111,7 +121,7 @@ class MainWindow(QMainWindow):
         self.data.genwdg(Q = 6, P = 4, m = 3, w = 1, layers = 2, turns = 10)
         self.project.add_model(self.data)
         self.project.set_actual_state_saved()  # only for the initial winding
-
+        
         
         # Plots
         self.MMK_phase_edit.setValidator(QDoubleValidator(0, 360, 1))
@@ -119,10 +129,8 @@ class MainWindow(QMainWindow):
         
         #  self.MMK_phase_slider.valueChanged.connect(self.update_plot_in_GUI)
         self.MMK_phase_slider.valueChanged.connect(self.update_MMK_phase_edit)
-        
         self.MMK_phase_edit.textEdited.connect(self.update_MMK_phase_slider)
         self.MMK_phase_edit.textChanged.connect(lambda: self.update_plot_in_GUI(small_update = True))
-        
         
         self.fig1 = plots.slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
         self.fig2 = plots.slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
@@ -130,9 +138,8 @@ class MainWindow(QMainWindow):
         self.fig4 = plots.mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
         
         self.update_project_list()
-        
-        self.update_data_in_GUI()    
-        self.project.reset_undo_state()
+        #  self.update_data_in_GUI()     # not neccessary because of 'update_project_list()
+        self.project.reset_undo_state()  # init-winding shouldn't undoable
         self.actionundo.setDisabled(True)
         self.actionredo.setDisabled(True)
         self.show()
@@ -152,16 +159,16 @@ class MainWindow(QMainWindow):
         self.actionredo.setDisabled(False)
         self.project.undo()
         self.update_project_list()
-        self.update_project()
+        #  self.update_project()
         if self.project.get_num_undo_state() < 1:
             self.actionundo.setDisabled(True) # no more states to restore
-    
+        
     def redo(self):
         self.project.save_undo_state()
         self.actionundo.setDisabled(False)
         self.project.redo()
         self.update_project_list()
-        self.update_project()
+        #  self.update_project()
         if self.project.get_num_redo_state() < 1:
             self.actionredo.setDisabled(True) # no more states to restore
     
@@ -170,9 +177,9 @@ class MainWindow(QMainWindow):
         '''fill the list of all data objects
         if 'switch_to_new = True: mark the last (new) object in project list 
         and show the content of it. If False: The last idx is marked again'''
+        self.project_listWidget.blockSignals(True)
         idx = self.project_listWidget.currentRow() # save current idx
         self.project_listWidget.clear()            # clear existing data
-        self.project_listWidget.blockSignals(True)
         for i, item in enumerate(self.project.get_titles()):
             widgetitem = QListWidgetItem(item)
             widgetitem.setFlags(widgetitem.flags() | QtCore.Qt.ItemIsEditable)
@@ -296,6 +303,14 @@ class MainWindow(QMainWindow):
         ret = self.DIALOG_AdditionalFactors.run()
 
 
+    def dialog_get_notes(self):
+        '''dialog asks user to type notes and stores it to datamodel'''
+        text, okPressed = QInputDialog.getMultiLineText(self, 
+            'Notes','Type your notes for the winding:', self.data.notes)
+        if okPressed:
+            self.data.notes = text
+
+
     def dialog_settings(self):
         global config
         config
@@ -337,7 +352,8 @@ class MainWindow(QMainWindow):
             self.fig1.plot_slots(self.data.machinedata['Q'])
             self.fig1.plot_coilsides(self.data)
         if idx == 1: 
-            self.fig2.plot_star(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(), ForceX = self.checkBoxForceX.isChecked())
+            self.fig2.plot_star(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
+            ForceX = self.checkBoxForceX.isChecked())
         if idx == 2:
             if self.radioButton_electrical.isChecked():
                 self.fig3.plot_windingfactor(self.data, mechanical=False)
@@ -457,7 +473,7 @@ def main():
                 ex.update_data_in_GUI()
             else:
                 raise(Exception, 'file not found:'.format(args.loadfile))
-        
+        splash.close()
         sys.exit(app.exec_())
 
 
