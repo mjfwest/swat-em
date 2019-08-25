@@ -51,7 +51,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/app_icon.png</normaloff>icons/app_icon.png</iconset>
+         <normaloff>icons/slot.png</normaloff>icons/slot.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Winding layout</string>
@@ -709,7 +709,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>175</width>
+            <width>215</width>
             <height>16777215</height>
            </size>
           </property>
@@ -769,12 +769,12 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>300</height>
+        <height>350</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>210</width>
+        <width>250</width>
         <height>16777215</height>
        </size>
       </property>

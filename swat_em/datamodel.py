@@ -195,7 +195,8 @@ class datamodel:
             txt.append(rep.red('error: ' + str(self.results['error'])))
         
         if len(self.notes) > 0:
-            txt.append('Notes:<br>')
+            #  txt.append('<br><br>' + rep.bold(Notes) + ':<br>')
+            txt.append(rep.bold('<br><br>Notes<br>'))
             txt.append(rep.italic(self.notes))
         
         txt = ''.join(txt)

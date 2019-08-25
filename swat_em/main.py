@@ -22,6 +22,7 @@ import time
 import argparse
 from swat_em import dialog_genwdg
 from swat_em import dialog_about
+from swat_em import dialog_notes
 from swat_em import dialog_winding_layout
 from swat_em import dialog_factors
 from swat_em import dialog_settings
@@ -105,6 +106,7 @@ class MainWindow(QMainWindow):
         #  initial windings  -----------------------------------
         self.data = datamodel.datamodel()
         self.data.genwdg(Q = 12, P = 10, m = 3, w = 1, layers = 2)
+        self.data.set_notes('Winding example for a tooth-coil-winding for 12 slots, 10 poles machine')
         self.project.add_model(self.data)
 
         self.data = datamodel.datamodel()
@@ -299,12 +301,14 @@ class MainWindow(QMainWindow):
 
     def dialog_get_notes(self):
         '''dialog asks user to type notes and stores it to datamodel'''
-        text, okPressed = QInputDialog.getMultiLineText(self, 
-            'Notes','Type your notes for the winding:', self.data.notes)
-        if okPressed:
+        dialog = dialog_notes.get_notes(self.data.notes)
+        text = dialog.run()
+        if text is not None:
             self.save_undo_state()
-            self.data.notes = text
+            self.data.set_notes(text)
             self.update_data_in_GUI()
+        
+        
 
 
     def dialog_settings(self):

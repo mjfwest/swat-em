@@ -45,9 +45,9 @@
      id="namedview627"
      showgrid="true"
      units="px"
-     inkscape:zoom="5.656854"
-     inkscape:cx="-0.69006762"
-     inkscape:cy="24.748619"
+     inkscape:zoom="7.9999996"
+     inkscape:cx="12.53511"
+     inkscape:cy="25.165253"
      inkscape:window-x="84"
      inkscape:window-y="156"
      inkscape:window-maximized="0"
@@ -92,6 +92,13 @@
   </defs>
   <g
      id="g834" />
+  <rect
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect828"
+     width="35"
+     height="38.625"
+     x="5"
+     y="4.3749995" />
   <path
      sodipodi:nodetypes="cc"
      style="fill:none;fill-rule:evenodd;stroke:#36688a;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"

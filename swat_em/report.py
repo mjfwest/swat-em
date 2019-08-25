@@ -39,6 +39,8 @@ def red(text):
 def italic(text):
     return '<i>' + text + '</i>'
 
+def bold(text):
+    return '<b>' + text + '</b>'
 
 def table(dat):
     txt = ['<table style="width:100%">']
