@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>icons/slot.png</normaloff>icons/slot.png</iconset>
+    <normaloff>icons/app_icon.png</normaloff>icons/app_icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -51,7 +51,7 @@
        </property>
        <attribute name="icon">
         <iconset>
-         <normaloff>icons/slot.png</normaloff>icons/slot.png</iconset>
+         <normaloff>icons/app_icon.png</normaloff>icons/app_icon.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Winding layout</string>
@@ -566,6 +566,9 @@
               <height>24</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>add note for winding</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -988,6 +991,7 @@
    <addaction name="actionsave"/>
    <addaction name="actionsave_as"/>
    <addaction name="actionload"/>
+   <addaction name="separator"/>
    <addaction name="actionundo"/>
    <addaction name="actionredo"/>
    <addaction name="separator"/>
@@ -1007,7 +1011,7 @@
   <action name="actionload">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/document-open.png</normaloff>icons/Qt/document-open.png</iconset>
+     <normaloff>icons/open.png</normaloff>icons/open.png</iconset>
    </property>
    <property name="text">
     <string>load</string>
@@ -1039,7 +1043,7 @@
   <action name="actionsave">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/document-save.png</normaloff>icons/Qt/document-save.png</iconset>
+     <normaloff>icons/save.png</normaloff>icons/save.png</iconset>
    </property>
    <property name="text">
     <string>save</string>
@@ -1051,7 +1055,7 @@
   <action name="actionsave_as">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/document-save-as.png</normaloff>icons/Qt/document-save-as.png</iconset>
+     <normaloff>icons/save_as.png</normaloff>icons/save_as.png</iconset>
    </property>
    <property name="text">
     <string>save as</string>
@@ -1070,7 +1074,7 @@
   <action name="actionProgram_Info">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/help-about.png</normaloff>icons/Qt/help-about.png</iconset>
+     <normaloff>icons/info.png</normaloff>icons/info.png</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -1126,7 +1130,7 @@
   <action name="actionSettings">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/configure.png</normaloff>icons/Qt/configure.png</iconset>
+     <normaloff>icons/settings.png</normaloff>icons/settings.png</iconset>
    </property>
    <property name="text">
     <string>Settings</string>
@@ -1135,7 +1139,7 @@
   <action name="actionundo">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/edit-undo.png</normaloff>icons/Qt/edit-undo.png</iconset>
+     <normaloff>icons/undo.png</normaloff>icons/undo.png</iconset>
    </property>
    <property name="text">
     <string>undo</string>
@@ -1147,7 +1151,7 @@
   <action name="actionredo">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/edit-redo.png</normaloff>icons/Qt/edit-redo.png</iconset>
+     <normaloff>icons/redo.png</normaloff>icons/redo.png</iconset>
    </property>
    <property name="text">
     <string>redo</string>

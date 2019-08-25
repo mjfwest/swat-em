@@ -27,7 +27,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -45,9 +45,9 @@
      id="namedview627"
      showgrid="true"
      units="px"
-     inkscape:zoom="3.9999998"
-     inkscape:cx="27.891632"
-     inkscape:cy="-1.392635"
+     inkscape:zoom="11.313708"
+     inkscape:cx="26.181943"
+     inkscape:cy="17.434384"
      inkscape:window-x="439"
      inkscape:window-y="57"
      inkscape:window-maximized="0"
@@ -90,6 +90,13 @@
          style="stroke-linecap:butt;stroke-linejoin:round" />
     </clipPath>
   </defs>
+  <rect
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect827"
+     width="44"
+     height="40"
+     x="2"
+     y="2" />
   <g
      id="g834" />
   <rect
@@ -116,25 +123,32 @@
      y="28" />
   <text
      xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.85624504px;line-height:125%;font-family:Lato;-inkscape-font-specification:'Lato, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#5fa4d2;fill-opacity:1;stroke:none;stroke-width:0.54640609px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.85624504px;line-height:125%;font-family:Lato;-inkscape-font-specification:'Lato, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#666666;fill-opacity:1;stroke:none;stroke-width:0.54640609px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
      x="25.672211"
      y="45.618721"
      id="text913"><tspan
        sodipodi:role="line"
        id="tspan911"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.85624504px;font-family:Lato;-inkscape-font-specification:'Lato, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#5fa4d2;fill-opacity:1;stroke-width:0.54640609px;stroke-linecap:butt;stroke-linejoin:round"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.85624504px;font-family:Lato;-inkscape-font-specification:'Lato, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#666666;fill-opacity:1;stroke-width:0.54640609px;stroke-linecap:butt;stroke-linejoin:round;"
        x="25.672211"
        y="45.618721">W</tspan></text>
   <text
      xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:49.91707993px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#5fa4d2;fill-opacity:1;stroke:none;stroke-width:1.24792695px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     style="font-style:normal;font-weight:normal;font-size:49.91707993px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#36688a;fill-opacity:1;stroke:none;stroke-width:1.24792695px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
      x="6.2437778"
      y="16.234972"
      id="text875"
      transform="scale(0.7612785,1.3135797)"><tspan
        sodipodi:role="line"
        id="tspan873"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16.63902664px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#5fa4d2;fill-opacity:1;stroke:none;stroke-width:1.24792695px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16.63902664px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#36688a;fill-opacity:1;stroke:none;stroke-width:1.24792695px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;"
        x="6.2437778"
        y="16.234972">AUTO</tspan></text>
+  <rect
+     style="opacity:1;fill:#36688a;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect845"
+     width="5"
+     height="5"
+     x="-25"
+     y="13" />
 </svg>
