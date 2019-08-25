@@ -51,9 +51,6 @@ class MainWindow(QMainWindow):
 
         # Connect the buttons
         self.Button_exit.clicked.connect(self.close)
-        self.Button_EditWindingLayout.clicked.connect(self.dialog_EditWindingLayout)
-        self.Button_GenerateAutomatically.clicked.connect(self.dialog_GenWinding)
-        self.Button_FindByTable.clicked.connect(self.dialog_GenWindingCombinations)
         
         self.projectlist_Button_delete.clicked.connect(self.projectlist_delete)
         self.projectlist_Button_clone.clicked.connect(self.projectlist_clone)
@@ -92,9 +89,6 @@ class MainWindow(QMainWindow):
                    icon=QIcon(os.path.join(__dir__,'ui/icons/delete.png')))        
         self.project_listWidget.addAction(self.actionDelete)
         self.actionDelete.triggered.connect(self.projectlist_delete)
-
-        
-   
 
 
 
@@ -308,7 +302,9 @@ class MainWindow(QMainWindow):
         text, okPressed = QInputDialog.getMultiLineText(self, 
             'Notes','Type your notes for the winding:', self.data.notes)
         if okPressed:
+            self.save_undo_state()
             self.data.notes = text
+            self.update_data_in_GUI()
 
 
     def dialog_settings(self):

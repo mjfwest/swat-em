@@ -194,6 +194,10 @@ class datamodel:
         if self.results['error']:
             txt.append(rep.red('error: ' + str(self.results['error'])))
         
+        if len(self.notes) > 0:
+            txt.append('Notes:<br>')
+            txt.append(rep.italic(self.notes))
+        
         txt = ''.join(txt)
         return bc, txt
         
