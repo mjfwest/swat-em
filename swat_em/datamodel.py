@@ -503,7 +503,6 @@ class project:
             data.actual_state_saved = False
         self.models.append(data)
         
-
     def get_titles(self):
         '''returns the title of all models'''
         return [data.title for data in self.models]
@@ -527,6 +526,10 @@ class project:
         '''change the title of the model with the index 'idx' 
         with name 'newname' '''
         self.models[idx].set_title(newname)
+    
+    def replace_model_by_index(self, newmodel, idx):
+        '''replaces the model of index 'idx' with 'newmodel' '''
+        self.models[idx] = newmodel
 
     def set_actual_state_saved(self):
         '''marks all models as saved'''
