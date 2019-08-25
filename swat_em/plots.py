@@ -7,6 +7,7 @@ Provides functions for plotting
 
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QFont
+from PyQt5 import QtCore
 from swat_em.config import get_phase_color, config
 from swat_em import analyse
 import matplotlib as mpl
@@ -269,6 +270,9 @@ class slot_star:
             self.table.setItem(km, 0, QTableWidgetItem(str(km+1)))
             self.table.setItem(km, 1, QTableWidgetItem(str(round(A,1))))
             self.table.setItem(km, 2, QTableWidgetItem(str(round(ph,1))))
+            
+            for i in range(3): # set all cells as not editable
+                self.table.item(km, i).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
 
         for k1 in range(len(ei)):
             self.table.resizeColumnToContents(k1)
@@ -342,6 +346,8 @@ class windingfactor:
             self.table.setItem(k1, 0, QTableWidgetItem(str(nu[k1])))
             for k2 in range(np.shape(kw)[1]):
                 self.table.setItem(k1, k2+1, QTableWidgetItem(str(round(kw[k1,k2],3))))
+                # set all cells as not editable
+                self.table.item(k1, k2+1).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
         for k1 in range(np.shape(kw)[0]):
             self.table.resizeColumnToContents(k1)
 
@@ -451,8 +457,8 @@ class mmk:
             a_rel = 100.0/max(A)*a
             self.table.setItem(k1-1, 1, QTableWidgetItem(str(round(a, 3))))
             self.table.setItem(k1-1, 2, QTableWidgetItem(str(round(a_rel, 1))))
-            #  for k2 in range(np.shape(kw)[1]):
-                #  self.table.setItem(k1, k2+1, QTableWidgetItem(str(round(kw[k1,k2],3))))
+            for i in range(3): # set all cells as not editable
+                self.table.item(k1-1, i).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
         for k1 in range(3):
             self.table.resizeColumnToContents(k1)
 
