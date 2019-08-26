@@ -248,6 +248,7 @@ class MainWindow(QMainWindow):
             data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
             if ret['overwrite']:
                 self.data = data
+                self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
             else:
                 self.project.add_model(data)
                 self.update_project_list(switch_to_new = True)
@@ -270,6 +271,7 @@ class MainWindow(QMainWindow):
             data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
             if ret['overwrite']:
                 self.data = data
+                self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
             else:
                 self.project.add_model(data)
                 self.update_project_list(switch_to_new = True)
@@ -293,6 +295,7 @@ class MainWindow(QMainWindow):
             #  data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
             if ret['overwrite']:
                 self.data = data 
+                self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
             else:
                 self.project.add_model(data)
                 self.update_project_list(switch_to_new = True)
