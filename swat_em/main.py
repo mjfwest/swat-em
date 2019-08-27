@@ -109,17 +109,18 @@ class MainWindow(QMainWindow):
 
         #  initial windings  -----------------------------------
         self.data = datamodel.datamodel()
-        self.data.genwdg(Q = 12, P = 10, m = 3, w = 1, layers = 2)
-        self.data.set_notes('Winding example for a tooth-coil-winding for 12 slots, 10 poles machine')
+        self.data.genwdg(Q = 12, P = 2, m = 3, w = -1, layers = 1)
+        self.data.set_notes('Winding example for a overlapping single layer winding \
+        for a 12 slots, 10 poles machine')
+        self.data.set_title('12-2 overlapping winding')
         self.project.add_model(self.data)
 
         self.data = datamodel.datamodel()
-        self.data.genwdg(Q = 18, P = 2, m = 3, w = 7, layers = 2)
+        self.data.genwdg(Q = 9, P = 8, m = 3, w = 1, layers = 2, turns = 10)
+        self.data.set_notes('Winding example for a tooth-coil-winding for 9 slots, 8 poles machine')
+        self.data.set_title('9-8 tooth-coil winding')
         self.project.add_model(self.data)
         
-        self.data = datamodel.datamodel()
-        self.data.genwdg(Q = 6, P = 4, m = 3, w = 1, layers = 2, turns = 10)
-        self.project.add_model(self.data)
         self.project.set_actual_state_saved()  # only for the initial winding
         
         
