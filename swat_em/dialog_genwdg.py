@@ -14,7 +14,10 @@ from swat_em import wdggenerator
 from swat_em import datamodel
 from swat_em.config import config, get_phase_color
 
-__dir__ = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    __dir__ = sys._MEIPASS   # for pyinstaller
+else:
+    __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 
 class NewWinding(QDialog):

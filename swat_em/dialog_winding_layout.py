@@ -3,7 +3,11 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QMessageBox
 from swat_em.config import get_phase_color, config
 import os
-__dir__ = os.path.dirname(os.path.abspath(__file__))
+import sys
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    __dir__ = sys._MEIPASS   # for pyinstaller
+else:
+    __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 
 

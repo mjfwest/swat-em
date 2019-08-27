@@ -1,7 +1,11 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog
 import os
-__dir__ = os.path.dirname(os.path.abspath(__file__))
+import sys
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    __dir__ = sys._MEIPASS   # for pyinstaller
+else:
+    __dir__ = os.path.dirname(os.path.abspath(__file__))
 import swat_em
 
 class about(QDialog):

@@ -10,7 +10,10 @@ from matplotlib.backends.backend_qt5agg import (
     NavigationToolbar2QT as NavigationToolbar)
 from swat_em.config import config
 #  sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-__dir__ = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    __dir__ = sys._MEIPASS   # for pyinstaller
+else:
+    __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 
 

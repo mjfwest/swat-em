@@ -6,7 +6,10 @@ import sys
 import os
 from swat_em import config
 
-__dir__ = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    __dir__ = sys._MEIPASS   # for pyinstaller
+else:
+    __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 class Settings(QDialog):
     def __init__(self, config):
