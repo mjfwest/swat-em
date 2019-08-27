@@ -29,7 +29,7 @@ class layout(QDialog):
         self.data = data
         super().__init__()
         # Set up the user interface from Designer.
-        uic.loadUi(os.path.join(__dir__, 'ui/winding_layout.ui'), self)
+        uic.loadUi(os.path.join(__dir__, 'ui', 'winding_layout.ui'), self)
         self.setWindowTitle('Edit winding layout')
         
         self.Button_EditMachineData.clicked.connect(self.dialog_machinedata)
@@ -249,7 +249,7 @@ class machinedata(QDialog):
     def __init__(self, data):
         self.data = data
         super().__init__()
-        uic.loadUi(os.path.join(__dir__, 'ui/MachineData.ui'), self)
+        uic.loadUi(os.path.join(__dir__, 'ui', 'MachineData.ui'), self)
         self.setWindowTitle('Change machine data')
         self.data = data
         self.spinBox_Q.setValue(self.data.machinedata['Q'])

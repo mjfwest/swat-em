@@ -20,7 +20,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 class NewWinding(QDialog):
     def __init__(self):
         super().__init__()
-        uic.loadUi(os.path.join(__dir__, 'ui/choose_generator.ui'), self)
+        uic.loadUi(os.path.join(__dir__, 'ui', 'choose_generator.ui'), self)
         self.generator = None
 
         self.Button_EditWindingLayout.clicked.connect(lambda: self.ret(generator = 0))
@@ -48,7 +48,7 @@ class GenWinding2(QDialog):
         super().__init__()
        
         # Set up the user interface from Designer.
-        uic.loadUi(os.path.join(__dir__, 'ui/GenWinding2.ui'), self)
+        uic.loadUi(os.path.join(__dir__, 'ui', 'GenWinding2.ui'), self)
         self.setWindowTitle('Generate winding')
 
         self.radioButton_slayer.toggled.connect(self.change_layers) # disable lineEdit for single phase windings
@@ -148,7 +148,7 @@ class GenWindingCombinations(QDialog):
     def __init__(self):
         super().__init__()
        
-        uic.loadUi(os.path.join(__dir__, 'ui/GenCombinations.ui'), self)
+        uic.loadUi(os.path.join(__dir__, 'ui', 'GenCombinations.ui'), self)
         self.setWindowTitle('Generate windings per table')
        
         self.colorlabel1.setStyleSheet("background-color:#ADD8E6;");

@@ -20,7 +20,7 @@ class Factors(QDialog):
         super().__init__()
        
         # Set up the user interface from Designer.
-        uic.loadUi(os.path.join(__dir__, 'ui/Factors.ui'), self)
+        uic.loadUi(os.path.join(__dir__, 'ui', 'Factors.ui'), self)
         self.setWindowTitle('Additional factors')
         
         self.groupBox_1.toggled.connect(self.update)

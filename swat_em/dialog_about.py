@@ -8,7 +8,7 @@ class about(QDialog):
     def __init__(self):
         super().__init__()
         # Set up the user interface from Designer.
-        uic.loadUi(os.path.join(__dir__, 'ui/About.ui'), self)
+        uic.loadUi(os.path.join(__dir__, 'ui', 'About.ui'), self)
         self.Button_close.clicked.connect(self.close)
         
         txt = self.textBrowser.toHtml()   

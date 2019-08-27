@@ -15,7 +15,7 @@ class Settings(QDialog):
         #  self.resetted = False # flag is set, if user reset the config
        
         # Set up the user interface from Designer.
-        uic.loadUi(os.path.join(__dir__, 'ui/Settings.ui'), self)
+        uic.loadUi(os.path.join(__dir__, 'ui', 'Settings.ui'), self)
         self.setWindowTitle('Settings')
         
         #  self.Button_CANCEL.clicked.connect(self.reject)

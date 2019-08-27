@@ -14,7 +14,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 # Create a splash screen while loading the librarys because this
 # takes some time
 app = QApplication([])  # temp. app needed for splash
-splash_pix = QPixmap(os.path.join(__dir__, 'ui/bitmaps/splash.png'))
+splash_pix = QPixmap(os.path.join(__dir__, 'ui', 'bitmaps', 'splash.png'))
 splash = QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
 splash.show()
 
@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
         self.project = datamodel.project()
 
         # Set up the user interface from Designer.
-        uic.loadUi(os.path.join(__dir__, 'ui/MainWindow.ui'), self)
+        uic.loadUi(os.path.join(__dir__, 'ui', 'MainWindow.ui'), self)
         self.setWindowTitle('SWAT-EM')
 
         self.DIALOG_GenWinding = dialog_genwdg.GenWinding2()
@@ -86,12 +86,12 @@ class MainWindow(QMainWindow):
         self.project_listWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
         self.actionClone = QAction("clone", self.project_listWidget, 
-                   icon=QIcon(os.path.join(__dir__,'ui/icons/clone.png')))
+                   icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'clone.png')))
         self.project_listWidget.addAction(self.actionClone)
         self.actionClone.triggered.connect(self.projectlist_clone)
         
         self.actionDelete = QAction("delete", self.project_listWidget, 
-                   icon=QIcon(os.path.join(__dir__,'ui/icons/delete.png')))        
+                   icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'delete.png')))        
         self.project_listWidget.addAction(self.actionDelete)
         self.actionDelete.triggered.connect(self.projectlist_delete)
 
