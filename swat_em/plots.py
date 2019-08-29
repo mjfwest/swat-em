@@ -436,7 +436,7 @@ class mmk:
         plt.grid(True)
         ax2.set_axisbelow(True)
         plt.ylabel('Current in slot in A')
-        plt.xlabel('circumferential Stator in deg')
+        plt.xlabel('circumferential stator slots')
         plt.bar(range(len(theta)), theta, 0.5)  
         plt.xlim(min(phi), max(phi))
         
