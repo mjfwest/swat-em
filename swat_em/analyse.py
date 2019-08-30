@@ -378,4 +378,25 @@ def DFT(vect):
     return yy  
 
 
-
+def get_float(txt):
+    """
+    returns the floating point number from string
+    
+    Parameters
+    ----------
+    txt  : string
+           string of the number
+             
+    Returns
+    -------
+    return : float or None-type
+             number from txt
+             None if conversion is not possible
+    """
+    try:
+        return float(txt)
+    except:
+        return None
+    
+    
+    

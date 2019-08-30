@@ -30,6 +30,7 @@ from swat_em.config import config, save_config
 from swat_em import datamodel
 from swat_em import wdggenerator
 from swat_em import plots
+from swat_em.analyse import get_float
 
 MSG_TIME = 3000   # time in which the message is displayed in the statusbar
 
@@ -230,7 +231,9 @@ class MainWindow(QMainWindow):
 
     def update_MMK_phase_slider(self):
         '''lineedit for MMK phase changed'''
-        self.MMK_phase_slider.setValue(float(self.MMK_phase_edit.text()))
+        f = get_float(self.MMK_phase_edit.text())
+        if f is not None:
+            self.MMK_phase_slider.setValue(f)
 
 
     def dialog_GenWinding(self):
@@ -382,8 +385,10 @@ class MainWindow(QMainWindow):
                 self.fig3.plot_windingfactor(self.data, mechanical=False)
             elif self.radioButton_mechanical.isChecked():
                 self.fig3.plot_windingfactor(self.data, mechanical=True)
-        if idx == 3:  
-            self.fig4.plot_mmk(self.data, float(self.MMK_phase_edit.text()), small_update = small_update)
+        if idx == 3:
+            f = get_float(self.MMK_phase_edit.text())
+            f = 0.0 if f is None else f
+            self.fig4.plot_mmk(self.data, f, small_update = small_update)
         #  print('duration for plot:', time.time()-t1)
 
         
