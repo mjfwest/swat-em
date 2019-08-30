@@ -379,6 +379,8 @@ class mmk:
                 self.widget, coordinates=True)
         self.toolbar1.setFixedHeight(25)
         self.layout.addWidget(self.toolbar1)
+        self.ax1 = plt.subplot(211)
+        self.ax2 = plt.subplot(212)
         
     
     def plot_mmk(self, data, phase = 0, small_update = False):
@@ -409,39 +411,37 @@ class mmk:
         A = np.abs(HA)
         phase = np.angle(HA)
 
-        plt.figure(4)
         if not small_update:
+            plt.figure(4)
             plt.clf()
-        plt.subplot(211)
-        ax1 = plt.gca()
-        ax1.lines = []           # remove all existing lines (faster than plt.clf())
-        ax1.set_prop_cycle(None) # reset color cycler
-        plt.plot( phi, MMK, linewidth = config['plt']['lw'], label = 'MMF')
-        plt.grid(True)
-        plt.ylabel('MMF in A')
-        #  plt.xlabel('circumferential Stator in deg')
+            self.ax1 = plt.subplot(211)
+            self.ax2 = plt.subplot(212)
+        self.ax1.lines = []           # remove all existing lines (faster than plt.clf())
+        self.ax1.set_prop_cycle(None) # reset color cycler
+        self.ax1.plot( phi, MMK, linewidth = config['plt']['lw'], label = 'MMF')
+        self.ax1.grid(True)
+        self.ax1.set_ylabel('MMF in A')
         
         
         # Plotte Oberschwingungen
         for n, a, p in zip(nu, A, phase):
             if 1/max(A)*a > plot_MMK_greater_than:
-                plt.plot( phi, a*np.cos(n*phi/phi[-1]*2*np.pi + p), '--', label='$\\nu={}$'.format(n), linewidth=config['plt']['lw_thin'])
-        leg = plt.legend(loc='upper right',labelspacing=0)
-        plt.xlim(min(phi), max(phi))
+                self.ax1.plot( phi, a*np.cos(n*phi/phi[-1]*2*np.pi + p), '--', label='$\\nu={}$'.format(n), linewidth=config['plt']['lw_thin'])
+        leg = self.ax1.legend(loc='upper right',labelspacing=0)
+        self.ax1.set_xlim(min(phi), max(phi))
         
-        plt.subplot(212)
-        ax2 = plt.gca()
-        ax2.patches = []         # remove all existing bars
-        ax2.set_prop_cycle(None) # reset color cycler
-        plt.grid(True)
-        ax2.set_axisbelow(True)
-        plt.ylabel('Current in slot in A')
-        plt.xlabel('circumferential stator slots')
-        plt.bar(range(len(theta)), theta, 0.5)  
-        plt.xlim(min(phi), max(phi))
+        #  plt.subplot(212)
+        self.ax2.patches = []         # remove all existing bars
+        self.ax2.set_prop_cycle(None) # reset color cycler
+        self.ax2.grid(True)
+        self.ax2.set_axisbelow(True)
+        self.ax2.set_ylabel('Current in slot in A')
+        self.ax2.set_xlabel('circumferential stator slots')
+        self.ax2.bar(range(len(theta)), theta, 0.5)  
+        self.ax2.set_xlim(min(phi), max(phi))
         
         if not small_update:
-            plt.tight_layout()
+            self.fig.tight_layout()
         self.canvas1.draw()
 
         
