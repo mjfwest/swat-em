@@ -14,9 +14,9 @@
    viewBox="0 0 48 48"
    width="48"
    id="svg625"
-   sodipodi:docname="new.svg"
+   sodipodi:docname="help.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   inkscape:export-filename="/home/martin/Arbeitsdaten/Skripte/Python-Skripte/04_Programme_mit_GUI/SWAT-EM/swat_em/ui/icons/new.png"
+   inkscape:export-filename="/home/martin/Arbeitsdaten/Skripte/Python-Skripte/04_Programme_mit_GUI/SWAT-EM/swat_em/ui/icons/info.png"
    inkscape:export-xdpi="128"
    inkscape:export-ydpi="128">
   <metadata
@@ -40,17 +40,17 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1319"
-     inkscape:window-height="978"
+     inkscape:window-width="1920"
+     inkscape:window-height="1029"
      id="namedview627"
      showgrid="true"
      units="px"
-     inkscape:zoom="15.999999"
-     inkscape:cx="18.841703"
-     inkscape:cy="19.240818"
-     inkscape:window-x="507"
-     inkscape:window-y="71"
-     inkscape:window-maximized="0"
+     inkscape:zoom="3.9999998"
+     inkscape:cx="-7.2364548"
+     inkscape:cy="16.004837"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
      inkscape:current-layer="svg625">
     <inkscape:grid
        type="xygrid"
@@ -92,29 +92,24 @@
   </defs>
   <g
      id="g834" />
-  <path
-     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#5fa4d2;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 30,28 V 43 H 7 V 16 h 14"
-     id="rect841"
-     inkscape:connector-curvature="0"
-     sodipodi:nodetypes="ccccc" />
-  <path
-     style="fill:none;fill-rule:evenodd;stroke:#36688a;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 25,14 H 45"
-     id="path832"
-     inkscape:connector-curvature="0"
-     sodipodi:nodetypes="cc" />
-  <path
-     sodipodi:nodetypes="cc"
-     inkscape:connector-curvature="0"
-     id="path834"
-     d="M 35,4 V 24"
-     style="fill:none;fill-rule:evenodd;stroke:#36688a;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   <rect
-     y="58"
-     x="-13"
-     height="20"
-     width="23"
-     id="rect840"
-     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+     ry="10.783379"
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#5fa4d2;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect860-3"
+     width="42.320621"
+     height="42.474873"
+     x="2.6793785"
+     y="2.6187186" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:168.79580688px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#36688a;fill-opacity:1;stroke:none;stroke-width:4.21989536px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="16.797304"
+     y="35.832745"
+     id="text834"
+     transform="scale(0.91586271,1.0918667)"><tspan
+       sodipodi:role="line"
+       id="tspan832"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:36.13570404px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#36688a;fill-opacity:1;stroke:none;stroke-width:4.21989536px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+       x="16.797304"
+       y="35.832745">?</tspan></text>
 </svg>

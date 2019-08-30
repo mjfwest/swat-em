@@ -34,7 +34,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="iconSize">
        <size>
@@ -495,7 +495,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QPushButton" name="projectlist_Button_new">
+           <widget class="QToolButton" name="projectlist_Button_new">
             <property name="minimumSize">
              <size>
               <width>24</width>
@@ -521,13 +521,13 @@
               <height>24</height>
              </size>
             </property>
-            <property name="flat">
+            <property name="autoRaise">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="projectlist_Button_manual">
+           <widget class="QToolButton" name="projectlist_Button_manual">
             <property name="minimumSize">
              <size>
               <width>24</width>
@@ -539,6 +539,9 @@
               <width>24</width>
               <height>24</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Manual winding layout</string>
             </property>
             <property name="text">
              <string/>
@@ -547,13 +550,19 @@
              <iconset>
               <normaloff>icons/edit_manually.png</normaloff>icons/edit_manually.png</iconset>
             </property>
-            <property name="flat">
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="autoRaise">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="projectlist_Button_auto">
+           <widget class="QToolButton" name="projectlist_Button_auto">
             <property name="minimumSize">
              <size>
               <width>24</width>
@@ -565,6 +574,9 @@
               <width>24</width>
               <height>24</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Auto winding layout</string>
             </property>
             <property name="text">
              <string/>
@@ -573,13 +585,19 @@
              <iconset>
               <normaloff>icons/generator.png</normaloff>icons/generator.png</iconset>
             </property>
-            <property name="flat">
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="autoRaise">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="projectlist_Button_table">
+           <widget class="QToolButton" name="projectlist_Button_table">
             <property name="minimumSize">
              <size>
               <width>24</width>
@@ -591,6 +609,9 @@
               <width>24</width>
               <height>24</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Winding layout by table</string>
             </property>
             <property name="text">
              <string/>
@@ -605,13 +626,13 @@
               <height>24</height>
              </size>
             </property>
-            <property name="flat">
+            <property name="autoRaise">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="projectlist_Button_notes">
+           <widget class="QToolButton" name="projectlist_Button_notes">
             <property name="minimumSize">
              <size>
               <width>24</width>
@@ -643,13 +664,7 @@
             <property name="checkable">
              <bool>false</bool>
             </property>
-            <property name="autoDefault">
-             <bool>false</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="flat">
+            <property name="autoRaise">
              <bool>true</bool>
             </property>
            </widget>
@@ -671,7 +686,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="projectlist_Button_clone">
+           <widget class="QToolButton" name="projectlist_Button_clone">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
@@ -709,13 +724,13 @@
               <height>24</height>
              </size>
             </property>
-            <property name="flat">
+            <property name="autoRaise">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="projectlist_Button_delete">
+           <widget class="QToolButton" name="projectlist_Button_delete">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
@@ -750,7 +765,7 @@
               <height>24</height>
              </size>
             </property>
-            <property name="flat">
+            <property name="autoRaise">
              <bool>true</bool>
             </property>
            </widget>
@@ -863,9 +878,6 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionGenerate_winding"/>
-    <addaction name="actionGenerate_winding_combinations"/>
-    <addaction name="actionShow_winding_layout"/>
     <addaction name="separator"/>
     <addaction name="actionExport_report"/>
     <addaction name="actionAdditional_factors"/>
@@ -886,8 +898,18 @@
     <addaction name="actionundo"/>
     <addaction name="actionredo"/>
    </widget>
+   <widget class="QMenu" name="menuwinding">
+    <property name="title">
+     <string>Winding</string>
+    </property>
+    <addaction name="actionNew_winding"/>
+    <addaction name="actionShow_winding_layout"/>
+    <addaction name="actionGenerate_winding"/>
+    <addaction name="actionGenerate_winding_combinations"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuedit"/>
+   <addaction name="menuwinding"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -948,7 +970,7 @@
      <normaloff>icons/generator.png</normaloff>icons/generator.png</iconset>
    </property>
    <property name="text">
-    <string>Generate winding</string>
+    <string>Auto Layout</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
@@ -997,7 +1019,7 @@
   <action name="actionHelp">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/help-contents.png</normaloff>icons/Qt/help-contents.png</iconset>
+     <normaloff>icons/help.png</normaloff>icons/help.png</iconset>
    </property>
    <property name="text">
     <string>Help</string>
@@ -1018,7 +1040,7 @@
      <normaloff>icons/edit_manually.png</normaloff>icons/edit_manually.png</iconset>
    </property>
    <property name="text">
-    <string>Edit winding layout</string>
+    <string>Manual layout</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
@@ -1030,7 +1052,7 @@
      <normaloff>icons/table.png</normaloff>icons/table.png</iconset>
    </property>
    <property name="text">
-    <string>Find winding</string>
+    <string>Layout by table</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
@@ -1072,6 +1094,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="actionNew_winding">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/new.png</normaloff>icons/new.png</iconset>
+   </property>
+   <property name="text">
+    <string>New winding</string>
    </property>
   </action>
  </widget>

@@ -64,6 +64,7 @@ class MainWindow(QMainWindow):
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
+        self.actionNew_winding.triggered.connect(self.dialog_new_winding)
         self.actionGenerate_winding.triggered.connect(self.dialog_GenWinding)
         self.actionGenerate_winding_combinations.triggered.connect(self.dialog_GenWindingCombinations)
         
