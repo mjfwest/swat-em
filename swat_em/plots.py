@@ -418,7 +418,7 @@ class mmk:
             self.ax2 = plt.subplot(212)
         self.ax1.lines = []           # remove all existing lines (faster than plt.clf())
         self.ax1.set_prop_cycle(None) # reset color cycler
-        self.ax1.plot( phi, MMK, linewidth = config['plt']['lw'], label = 'MMF')
+        self.ax1.plot( phi, MMK, linewidth = config['plt']['lw']) #, label = 'MMF'
         self.ax1.grid(True)
         self.ax1.set_ylabel('MMF in A')
         
