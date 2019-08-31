@@ -1,7 +1,9 @@
 from PyQt5 import uic
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QMessageBox
+from PyQt5.QtGui import QDoubleValidator
 from swat_em.config import get_phase_color, config
+from swat_em.analyse import get_float
 import os
 import sys
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -37,13 +39,20 @@ class layout(QDialog):
         self.setWindowTitle('Edit winding layout')
         
         self.Button_EditMachineData.clicked.connect(self.dialog_machinedata)
+        #  self.buttonBox.accepted.connect(self.accept)
+       
+        self.lineEditFixTurns.setValidator(QDoubleValidator())
         
-        #  self.Button_CANCEL.clicked.connect(self.reject)
-        #  self.Button_OK.clicked.connect(self.accept)
-        
-        
+        self.radioTurnsFix.toggled.connect(self.update_radio_turns)
         self.tableWindingLayout.cellChanged.connect(self.update_colors)
+        self.tableWindingTurns.cellChanged.connect(self.update_colors)
         self.update_table(self.data.machinedata['phases'])
+        self.update_table_turns(self.data.machinedata['phases'], self.data.machinedata['turns'])
+        if type(self.data.machinedata['turns']) == type([]):
+            self.radioTurnsIndividual.setChecked(True)
+        else:
+            self.radioTurnsFix.setChecked(True)
+            self.lineEditFixTurns.setText(str(self.data.machinedata['turns']))
 
         self.update_lineEdits(self.data.machinedata['Q'],
                               self.data.machinedata['m'],
@@ -77,7 +86,14 @@ class layout(QDialog):
                 self.update_table(self.data.machinedata['phases'], layers=ret['layers'])
             
                 
-    
+    def update_radio_turns(self):
+        if self.radioTurnsFix.isChecked():
+            self.tableWindingTurns.setEnabled(False)
+            self.lineEditFixTurns.setEnabled(True)
+        else:
+            self.tableWindingTurns.setEnabled(True)
+            self.lineEditFixTurns.setEnabled(False)
+        
         
     def update_lineEdits(self, Q, m, P, layers):
         self.lineEdit_Q.setText(str(Q))
@@ -89,9 +105,9 @@ class layout(QDialog):
             self.radioButton_dlayer.setChecked(True)
 
 
-
     def update_table(self, phases, layers = None):
-        self.table = self.tableWindingLayout        
+        self.table = self.tableWindingLayout      
+        self.table.blockSignals(True)
         self.table.setColumnCount(self.data.machinedata['Q'])        
         
         head = ['Layer 1', 'Layer 2']
@@ -116,17 +132,38 @@ class layout(QDialog):
 
         for k1 in range(self.data.machinedata['Q']):
             self.table.resizeColumnToContents(k1)
+        self.table.blockSignals(False)
 
 
-        #  self.table.setHorizontalHeaderLabels(['nu'] + self.data.machinedata['phasenames'])
-        #  self.table.setVerticalHeaderLabels(['']*np.shape(kw)[0])
-        #  afont = QFont()
-        #  afont.setBold(True)
+    def update_table_turns(self, phases, turns):
+        table = self.tableWindingTurns
+        Nx = self.tableWindingLayout.columnCount()
+        Ny = self.tableWindingLayout.rowCount()
+        table.setRowCount(Ny)
+        table.setColumnCount(Nx)
+                
+        head = ['Layer 1', 'Layer 2']
+        layers = self.data.get_num_layers()
+        table.setRowCount(layers)
+        table.setVerticalHeaderLabels(head[:layers])
         
-        #  for k in range(self.data.machinedata['m'] + 1):
-            #  self.table.horizontalHeaderItem(k).setFont(afont)
-    
-    
+        for km, ph in enumerate(phases):
+            col = get_phase_color(km)
+            for kl in range(len(ph)):
+                layer = ph[kl]
+                for i,cs in enumerate(layer):
+                    if type(turns) == type([]):
+                        item = QTableWidgetItem(str(turns[km][kl][i]))
+                    else:
+                        item = QTableWidgetItem(str(turns))
+                    item.setBackground(QtGui.QColor(col))
+                    if cs > 0:
+                        table.setItem(kl, cs-1, item)
+                    else:
+                        table.setItem(kl, abs(cs)-1, item)
+        for k1 in range(self.data.machinedata['Q']):
+            table.resizeColumnToContents(k1)
+
     
     def read_layout(self):
         '''
@@ -147,6 +184,32 @@ class layout(QDialog):
                         S[abs(phase)-1][layer].append( (k+1)*sign )
         return S
         
+        
+    def read_turns(self):
+        '''
+        Read layout from table
+        '''
+        table = self.tableWindingTurns
+        if self.radioTurnsFix.isChecked():
+            return None
+        else:
+            S = []
+            for layer in range(table.rowCount()):
+                for k in range(self.data.machinedata['Q']):
+                    item = self.tableWindingLayout.item(layer, k) # phase
+                    item2 = table.item(layer, k) # turns
+                    if item:
+                        txt = str(item.text())
+                        num = get_int_from_str(txt)
+                        if num:
+                            phase = num
+                            sign = 1 if phase > 0 else -1
+                            while len(S) < abs(phase):
+                                S.append([[],[]])
+                            S[abs(phase)-1][layer].append( float(item2.text()) )
+        return S
+        
+
 
     def update_colors(self):
         '''
@@ -159,6 +222,7 @@ class layout(QDialog):
         for layer in [0, 1]:
             for k in range(self.data.machinedata['Q']):
                 item = self.table.item(layer, k)
+                item2 = self.tableWindingTurns.item(layer, k)
                 if item:
                     txt = str(item.text())
                     num = get_int_from_str(txt)
@@ -166,13 +230,20 @@ class layout(QDialog):
                         phase = abs(num)
                         col = get_phase_color(phase-1)
                         item.setBackground(QtGui.QColor(col))
+                        if not self.radioTurnsFix.isChecked:
+                            item2.setBackground(QtGui.QColor(col))
                     else:
                         item.setBackground(QtGui.QColor('white'))
+                        if not self.radioTurnsFix.isChecked:
+                            item2.setBackground(QtGui.QColor('white'))
         
         # Test for errors
-        S = self.read_layout()        
+        S = self.read_layout()     
+        T = self.read_turns()   
         for k in range(len(S)):
             S[k] = [item for sublist in S[k] for item in sublist]  # flatten layers
+            if T is not None:
+                T[k] = [item for sublist in T[k] for item in sublist]  # flatten layers
         
         # test if the number of positve and negative coil sides are equal
         for k in range(len(S)):
@@ -186,6 +257,19 @@ class layout(QDialog):
             if pos != neg:
                 error.append('Phase {} has {} postive and {} negative coil sides'.format(k+1, pos, neg))
 
+        # Test if theta is 0 for all phases 
+        if T is not None:
+            theta = []
+            for km in range(len(S)):
+                theta.append(0.0)
+                for kp in range(len(S[km])):
+                    sign = 1 if S[k][kp] > 0 else -1
+                    theta[km] += sign*T[km][kp]
+            for i,k in enumerate(theta):
+                if abs(k) > 1e-3:
+                     txt = 'Theta (SUM(Turns*SignOfCoilSides)) of Phase {} is not zero. Check number of turns if there is no error listed regarding the coil sides:<br>'.format(i+1)
+                     error.append(txt)
+        
         # test if all phases have the same number of coil sides
         l = [len(s) for s in S]
         if len(set(l)) != 1:
@@ -206,7 +290,28 @@ class layout(QDialog):
         self.textBrowser_output.setHtml(txt_error)
 
 
+    def accept(self):
+        '''overwrite the dialog signal for exiting the exec_ command;
+        only exit when all user inputs are correct and validated'''
+        error = None
+        if self.radioTurnsFix.isChecked():
+            txt = self.lineEditFixTurns.text()
+            turns = get_float(txt)
+            if turns == None:
+                QMessageBox.critical(self, 'Error', '"{}" is not a valid number of turns'.format(txt))
+                error = True
+            if type(self.data.machinedata['turns']) == type([]):
+                ret = QMessageBox.question(self, 'Overwrite number of turns', 
+                'In the previous winding there are individual number of turns. Is it ok to loose them?', 
+                QMessageBox.Yes | QMessageBox.Cancel)
+                if ret != QMessageBox.Yes:
+                    error = False
         
+        if error is None:
+            super().accept()  # call accept Dialog from Qdialog (end of exec_)
+    
+
+    
     def run(self):
         ok = self.exec_()
         if ok:
@@ -215,6 +320,14 @@ class layout(QDialog):
             else:
                 overwrite = False
             phases = self.read_layout()
+            
+            if self.radioTurnsFix.isChecked():
+                txt = self.lineEditFixTurns.text()
+                turns = get_float(txt)
+            else:
+                turns = self.read_turns()
+            
+            
             layer1 = False; layer2 = False  # test if single or double layer winding
             for s in phases:
                 if len(s[0]) > 0:
@@ -231,7 +344,7 @@ class layout(QDialog):
             m = self.data.machinedata['m']
             w = self.data.machinedata['wstep']       
             ret = {'phases': phases, 'Q': Q, 'P': 2*p, 'm': m, 'w': w, 
-            'layers': layers, 'overwrite': overwrite}
+            'layers': layers, 'overwrite': overwrite, 'turns': turns}
             return ret
         else:
             return None

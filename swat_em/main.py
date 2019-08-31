@@ -295,7 +295,7 @@ class MainWindow(QMainWindow):
             
             data = datamodel.datamodel()
             data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
-            data.set_phases(ret['phases'], wstep = ret['w'])            
+            data.set_phases(ret['phases'], wstep = ret['w'], turns = ret['turns'])
             data.analyse_wdg()
             #  data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
             if ret['overwrite']:

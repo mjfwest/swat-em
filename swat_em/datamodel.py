@@ -595,7 +595,8 @@ class project:
             self.models = []
             data = datamodel()
             data.machinedata = M['machinedata']
-            data.machinedata['turns'] = 1
+            if 'turns' not in data.machinedata.keys():
+                data.machinedata['turns'] = 1
             data.analyse_wdg()
             self.add_model(data)
             self.set_actual_state_saved()
