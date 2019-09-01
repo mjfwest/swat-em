@@ -394,7 +394,7 @@ def get_float(txt):
              None if conversion is not possible
     """
     try:
-        return float(txt)
+        return float(txt.replace(',', '.'))
     except:
         return None
     

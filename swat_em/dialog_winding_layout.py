@@ -93,6 +93,7 @@ class layout(QDialog):
         else:
             self.tableWindingTurns.setEnabled(True)
             self.lineEditFixTurns.setEnabled(False)
+            self.update_colors()
         
         
     def update_lineEdits(self, Q, m, P, layers):
@@ -206,7 +207,11 @@ class layout(QDialog):
                             sign = 1 if phase > 0 else -1
                             while len(S) < abs(phase):
                                 S.append([[],[]])
-                            S[abs(phase)-1][layer].append( float(item2.text()) )
+                            fl = get_float(item2.text())
+                            if fl is not None:
+                                S[abs(phase)-1][layer].append(fl)
+                            else:
+                                S[abs(phase)-1][layer].append(0.0)
         return S
         
 
@@ -230,12 +235,19 @@ class layout(QDialog):
                         phase = abs(num)
                         col = get_phase_color(phase-1)
                         item.setBackground(QtGui.QColor(col))
-                        if not self.radioTurnsFix.isChecked:
+                        if not self.radioTurnsFix.isChecked():
                             item2.setBackground(QtGui.QColor(col))
+                            fl = get_float(item2.text())
+                            if fl is None:
+                                item2.setText('0')
                     else:
                         item.setBackground(QtGui.QColor('white'))
-                        if not self.radioTurnsFix.isChecked:
+                        if not self.radioTurnsFix.isChecked():
                             item2.setBackground(QtGui.QColor('white'))
+                            fl = get_float(item2.text())
+                            if fl is None:
+                                item2.setText('0')
+
         
         # Test for errors
         S = self.read_layout()     
@@ -263,7 +275,7 @@ class layout(QDialog):
             for km in range(len(S)):
                 theta.append(0.0)
                 for kp in range(len(S[km])):
-                    sign = 1 if S[k][kp] > 0 else -1
+                    sign = 1 if S[km][kp] > 0 else -1
                     theta[km] += sign*T[km][kp]
             for i,k in enumerate(theta):
                 if abs(k) > 1e-3:
