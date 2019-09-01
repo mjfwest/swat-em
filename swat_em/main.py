@@ -69,6 +69,7 @@ class MainWindow(QMainWindow):
         self.actionGenerate_winding.triggered.connect(self.dialog_GenWinding)
         self.actionGenerate_winding_combinations.triggered.connect(self.dialog_GenWindingCombinations)
         self.actionImport_from_file.triggered.connect(self.dialog_ImportWinding)
+        self.actionAdd_Notes.triggered.connect(self.dialog_get_notes)
         
         self.actionsave.triggered.connect(self.save_to_file)
         self.actionsave_as.triggered.connect(self.save_as_to_file)
@@ -93,6 +94,11 @@ class MainWindow(QMainWindow):
                    icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'clone.png')))
         self.project_listWidget.addAction(self.actionClone)
         self.actionClone.triggered.connect(self.projectlist_clone)
+        
+        self.actionNotes = QAction("add notes", self.project_listWidget, 
+                   icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'notes.png')))
+        self.project_listWidget.addAction(self.actionAdd_Notes)
+        self.actionNotes.triggered.connect(self.projectlist_clone)
         
         self.actionDelete = QAction("delete", self.project_listWidget, 
                    icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'delete.png')))        

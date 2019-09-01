@@ -903,6 +903,7 @@
      <string>Winding</string>
     </property>
     <addaction name="actionNew_winding"/>
+    <addaction name="actionAdd_Notes"/>
     <addaction name="actionShow_winding_layout"/>
     <addaction name="actionGenerate_winding"/>
     <addaction name="actionGenerate_winding_combinations"/>
@@ -1117,6 +1118,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionAdd_Notes">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/notes.png</normaloff>icons/notes.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Notes</string>
    </property>
   </action>
  </widget>
