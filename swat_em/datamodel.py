@@ -506,7 +506,11 @@ class project:
     def get_titles(self):
         '''returns the title of all models'''
         return [data.title for data in self.models]
-
+    
+    def get_num_models(self):
+        '''returns the number of models in this project'''
+        return len(self.models)
+    
     def get_model_by_index(self, idx):
         '''returns the model with the index 'idx' '''
         return self.models[idx]

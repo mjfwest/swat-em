@@ -24,6 +24,7 @@ from swat_em import dialog_genwdg
 from swat_em import dialog_about
 from swat_em import dialog_notes
 from swat_em import dialog_winding_layout
+from swat_em import dialog_import_winding
 from swat_em import dialog_factors
 from swat_em import dialog_settings
 from swat_em.config import config, save_config
@@ -67,6 +68,7 @@ class MainWindow(QMainWindow):
         self.actionNew_winding.triggered.connect(self.dialog_new_winding)
         self.actionGenerate_winding.triggered.connect(self.dialog_GenWinding)
         self.actionGenerate_winding_combinations.triggered.connect(self.dialog_GenWindingCombinations)
+        self.actionImport_from_file.triggered.connect(self.dialog_ImportWinding)
         
         self.actionsave.triggered.connect(self.save_to_file)
         self.actionsave_as.triggered.connect(self.save_as_to_file)
@@ -112,8 +114,7 @@ class MainWindow(QMainWindow):
         #  initial windings  -----------------------------------
         self.data = datamodel.datamodel()
         self.data.genwdg(Q = 12, P = 2, m = 3, w = -1, layers = 1)
-        self.data.set_notes('Winding example for a overlapping single layer winding \
-        for a 12 slots, 10 poles machine')
+        self.data.set_notes('Winding example for a overlapping single layer winding for a 12 slots, 10 poles machine')
         self.data.set_title('12-2 overlapping winding')
         self.project.add_model(self.data)
 
@@ -282,7 +283,18 @@ class MainWindow(QMainWindow):
                 self.update_project_list(switch_to_new = True)
             self.update_data_in_GUI()
 
+    def dialog_ImportWinding(self):
 
+        DIALOG_ImportWinding = dialog_import_winding.import_winding()
+        ret = DIALOG_ImportWinding.run()
+        if ret is not None:
+            self.save_undo_state()  # for undo
+            for data in ret:
+                self.project.add_model(data)
+            self.update_project_list(switch_to_new = True)
+            self.statusbar.showMessage('{} winding(s) imported'.format(len(ret)), MSG_TIME)
+        
+        
     def dialog_EditWindingLayout(self):
         '''
         calls the dialog to generate a winding based on a big table of available windings

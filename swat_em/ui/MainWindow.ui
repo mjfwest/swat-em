@@ -906,6 +906,7 @@
     <addaction name="actionShow_winding_layout"/>
     <addaction name="actionGenerate_winding"/>
     <addaction name="actionGenerate_winding_combinations"/>
+    <addaction name="actionImport_from_file"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuedit"/>
@@ -935,6 +936,7 @@
    <addaction name="actionShow_winding_layout"/>
    <addaction name="actionGenerate_winding"/>
    <addaction name="actionGenerate_winding_combinations"/>
+   <addaction name="actionImport_from_file"/>
    <addaction name="separator"/>
    <addaction name="actionSettings"/>
    <addaction name="actionProgram_Info"/>
@@ -1103,6 +1105,18 @@
    </property>
    <property name="text">
     <string>New winding</string>
+   </property>
+  </action>
+  <action name="actionImport_from_file">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/import.png</normaloff>icons/import.png</iconset>
+   </property>
+   <property name="text">
+    <string>Import from file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
    </property>
   </action>
  </widget>
