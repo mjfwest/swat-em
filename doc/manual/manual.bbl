@@ -1,3 +1,13 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{mueller1996berechnung}
+G.~M{\"u}ller and K.~Vogt.
+\newblock {\em Berechnung elektrischer Maschinen}.
+\newblock VCH, 1996.
+
+\bibitem{hendershot2010design}
+J.R. Hendershot and T.J.E. Miller.
+\newblock {\em Design of Brushless Permanent-magnet Machines}.
+\newblock Motor Design Books, 2010.
 
 \end{thebibliography}

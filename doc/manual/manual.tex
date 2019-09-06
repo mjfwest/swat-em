@@ -107,13 +107,13 @@ headsep=10mm, footskip=12mm}
 
 % \include{Einleitung}
 
-% \cite{Bianchi_star_slot_2006}
+
 
 
 
 
 \chapter{Overview}
-SWAT-EM is a software for designing and analysing of windings systems for electrical machines. Currently supported are rotating field windings (permanent-magnet motors, induction motors, synchronout reluctance motors) with any number of phases. This can be distributed full pitch winding, distributed fractional slot winding or tooth-coil winding. The design can be done by 
+SWAT-EM is a software for designing and analyzing of windings systems for electrical machines. Currently supported are rotating field windings (permanent-magnet motors, induction motors, synchronout reluctance motors) with any number of phases. This can be distributed full pitch winding, distributed fractional slot winding or tooth-coil winding. The design can be done by 
 \begin{itemize}
  \item Generating with manual allocation of the coil sides to stator slots
  \item Defining individual number of turns for each coil
@@ -127,7 +127,7 @@ Analyzing features
 \begin{itemize}
 \item Calculation of the winding factor based on the voltage star of slots
 \item Plot of the winding layout
-\item Plot of statorampere-conductor distribution and the magnetic motoric force (MMF)
+\item Plot of stator ampere-conductor distribution and the magnetomotive force (MMF)
 \item Plot of the slot voltage phasors
 \item Plot of the winding factor
 \item Max. possible number of parallel circuit connection of coils
@@ -140,13 +140,11 @@ Analyzing features
 \chapter{Installation}
 
 \chapter{Usage}
-
-\section{Main window}
 %
 SWAT-EM comes with an QT based graphical user interface (GUI). The layout of the main window consists of the
 \begin{enumerate}
  \item Workspace
- \item Winding Informations
+ \item Winding information's
  \item Graphical analysis of the winding
 \end{enumerate}
 
@@ -159,7 +157,7 @@ SWAT-EM comes with an QT based graphical user interface (GUI). The layout of the
     \label{fig:mainwindow}
 \end{figure}
 %
-\subsection{Workspace}
+\section{Workspace}
 A SWAT-EM project, that can be saved as *.wdg file can contain several different windings system.
 So, one can define and compare these windings in the same window. The workspace shows all
 the windings of the project. By clicking of the name all outputs (text and plots) gets updated.
@@ -183,7 +181,7 @@ While saving the project to file (File $\rightarrow$ save) all windings of the w
 \textbf{Note:} Renaming of windings is possible by double-click or by pressing F2 on keyboard.
 %
 %
-\subsection{Winding information}
+\section{Winding information}
 The text field (2) in figure \ref{fig:mainwindow} shows a summary of actual winding. 
 %
 \begin{center}
@@ -194,13 +192,13 @@ $2p$ & Number of pole pairs  \\
 $m$ & Number of phases \\
 $q$ & Number of slots per pole per phase $q=\frac{Q}{2pm}$ \\
 $kw1$ & Fundamental winding factor (for separate for each phase) \\
-$lcm(Q,P)$ & Least common multiplyer of number of slots an pole pairs. For permanent-magnet machines this is the first harmonic  number of the cogging torque \\
+$lcm(Q,P)$ & Least common multiplier of number of slots an pole pairs. For permanent-magnet machines this is the first harmonic  number of the cogging torque \\
 $t$ & Periodicity of the base winding. $t = gcd(Q, p)$ \\
 $a$ & Number of possible parallel winding circuit. (In most cases a is equal to t) \\
 $symmetric$ & True, if all phases are identically and shifted by a constant angle \\
 $Notes$ & User defined description \\
 \end{tabularx}
-\end{table}[
+\end{table}
 \end{center}
 
 
@@ -208,37 +206,228 @@ $Notes$ & User defined description \\
 %
 %
 %
-\subsection{Winding layout plot}
+\section{Winding layout plot}
 Many analyzing function results in plots which are shown on(3) in figure \ref{fig:mainwindow}.
 Every plot has a toolbar on the bottom for zooming, panning and saving the figure to file.
 %
 %
-\subsubsection{Winding layout}
+\subsection{Winding layout}
 The winding layout plot shows sketched slots and coil sides. The number and color defines the number
 of phase the coil side belongs to. The sign (+ or -) defines the winding direction (+ means that the
 wire goes into the plain and - out of the plain)
 %
 %
-\subsubsection{Slot voltage phasors}
-TODO: Add Theory
+\subsection{Slot voltage phasors}
+The impact of the coils can be represented by the star of slot. The theory behind this is
+described in \cite{mueller1996berechnung} for example. Every coil side $S_i$ gets a phasor assigned with 
+the angle 
+\begin{align}
+\alpha_i = \dfrac{2p \pi S_i}{Q}  \label{eqn:phasors_angle}
+\end{align} 
+%
+The angle of the phasors can also be determined for the harmonics by adding the electrical ordinal
+number $\nu_{el}$
+\begin{align}
+\alpha_{i,\nu} = \dfrac{2\nu p \pi S_i}{Q}  \label{eqn:phasors_angle2}
+\end{align} 
+%
+% 
+with $p$ pole pairs and the number of stator slots $Q$. If the coil side has a negative winding direction
+$\pi$ is added to $alpha_i$ (turning down the phasor). With this the phasers $E_i$ can be generated
+in the complex plain
+%
+\begin{align}
+E_i = e^{j\alpha_i}
+\end{align} 
+%
+All phasors of a phase are getting grouped a vectorial summed up which is shown as (1) in figure 
+\ref{fig:phasors}. The dotted line represents the vectorial sum. The amplitude and the phase of
+this is shown in (2).
+%
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.99\textwidth,angle=0]{fig/mainwindow_phasors}
+    \caption{Phasors plot}
+    \label{fig:phasors}
+\end{figure}
+%
+Options:
+\begin{description}
+ \item[harmonic] The star of slots can be drawn for any harmonic number by using \eqref{eqn:phasors_angle2}.
+ \item[force phase 1 on x-axis] The angle of the sum of phasors depends on the location of the coil sides
+                                in the slots. If the whole winding is shifted by some slots the winding is
+                                still the same winding. However the phasors are getting a phase shift. To
+                                compare different windings and for having an unified diagram one can set
+                                this checkbox.
+\end{description}
 %
 %
-\subsubsection{Winding factor phasors}
-TODO: Add Theory
+\FloatBarrier
+\subsection{Winding factor}
+The winding factor $k_w$ describes the coupling of the winding with the existing field in the stator. It depends
+on the ordinal number $\nu$ (electrical or mechanical ordinal number possible). There are many methods for 
+calculating the winding factor, for example from the MMF \ref{sec:MMF}. Unfortunately there are limitations
+of this method because for three-phase windings the factor $k_{w3}$ can't be determined. Further calculation
+methods derives specific equations based on the winding zones. However theses equation are not universal, so
+there are many equations for different winding systems. To be general SWAT-EM uses the phasors of the
+star of slots. The absolute value of the winding factor is defined by
+%
+\begin{align}
+|k_{w}| = \frac{|\sum{E_i}|}{ \sum{| E_{i} |} }
+\end{align} 
+%
+and for all harmonics with
+%
+\begin{align}
+|k_{w,\nu}| = \frac{|\sum{E_{i,\nu}}|}{ \sum{| E_{i,\nu} |} }
+\end{align} 
+%
+It can be seen in figure \ref{fig:phasors} that the winding factor gets the maximum value of 1 if all
+phasors of a phase have the same phase angle. Typically the winding factor is specified with a sign. This
+indicates the direction of the magnetic field wave, that is generated by the winding in the airgap. 
+SWAT-EM determines the sign by generating the phasors plot for every harmonic number and detecting the
+sequence of the phases. Figure \ref{fig:mainwindow_windingfactor} shows the values in (1) as a table
+and the absolute values as a bar plot in (2).
+%
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.99\textwidth,angle=0]{fig/mainwindow_windingfactor}
+    \caption{Winding factor plot}
+    \label{fig:mainwindow_windingfactor}
+\end{figure}
+%
+Both can be displayed with respect to the mechanical $\nu$ or the electrical $\nu_{el}$ ordinal number by
+the radio buttons on the top of the table.
+\begin{description}
+ \item[Mechanical harmonics] This representation is useful to detect all possible rotor pole numbers, which 
+                             can be combined with the winding. Especially tooth-coil windings have many 
+                             harmonics and so there are many pole-pairs per winding layout is possible. 
+ \item[Electrical harmonics] If one have chosen a winding and a number of pole-pairs of the rotor it's
+                             a good idea to switch to the electrical ordinal numbers. Here the numbers describes
+                             influence of the winding of the waveform of the back-emf for permanent-magnet
+                             machines for example. If the winding factor for the harmonics is low, the 
+                             waveform is more sinusoidal.
+\end{description}
 %
 %
-\subsubsection{Magnetic motoric force (MMF)}
-TODO: Add Theory
-
-
-
-
-
-
+\subsection{Magnetomotive force (MMF)} \label{sec:MMF}
+For evaluation of the winding the so called "`Magnetomotive force"' or short MMF is a useful tool. It is
+based on the the ampere-conductor distribution. This is shown for time $t=t_1$ with respect to the 
+AC current system of $m$ phases.
+%
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.99\textwidth,angle=0]{fig/mainwindow_MMF}
+    \caption{Plot of the ampere-conductor distribution and the Magnetomotive force (MMF) }
+    \label{fig:mainwindow_MMF}
+\end{figure}
+%
+For every slot the winding direction ($d=\pm1$), number of turns $N_c$ the current $i$ gets summed up 
+\begin{align}
+\Theta_{slot} = \sum{d \cdot i N_c}.
+\end{align} 
+%
+Therefor the distribution of ampere-turns is coupled with number of slots. (1) in Figure \ref{fig:mainwindow_MMF}
+shows this for a winding example with $Q = 12$ slots, so there are 12 bars. In reality the distribution has
+a width per bar which corresponds to the slot opening. However in theory (in this program) the distribution
+can be interpreted as infinitely thin peaks. The integral of this leads to the MMF
+\begin{align}
+MMF(\alpha) = \int_0^{2\pi}{ \Theta d\alpha},
+\end{align} 
+%
+which is shown in (2) in figure \ref{fig:mainwindow_MMF}.
+The waveform of the MMF corresponds to the magnetic field, that is generated in the airgap by the winding.
+For further information consider the literature (eg \cite{hendershot2010design}).
+The plot also shows the fundamental and some of the harmonics. The number of harmonics which are plotted
+can be defined relative to the fundamental. Please consider the "`Tools"' $\rightarrow$ "`Settings"' dialog.
+The table (3) in the window displays the harmonic analyses of the MMF. With the slider (4) one can define
+the phase angle of the AC current system for the MMF plot. Note that the phase angle has no effect on
+the harmonic content of the MMF, so the harmonic analyses is independent from it.
+%
+%
+%
 \section{Winding Generators}\label{sec:winding_generators}
-\subsection{Manual layout}
+SWAT-EM comes with many different winding generators. Each of them have different features.
+%
+%
+\subsection{Manual layout}\label{sec:manual_generator}
+%
+The manual layout generator (figure \ref{fig:manual_layout_dialog} ) is the most basic generator in SWAT-EM. 
+One can define the position and the number of turns for each coil side by hand. With this every winding layout 
+can be sketched and analyzed. The price of this is the comparatively large manual effort.
+%
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.99\textwidth,angle=0]{fig/manual_layout}
+    \caption{Manual winding generator }
+    \label{fig:manual_layout_dialog}
+\end{figure}
+%
+\begin{description}
+ \item[Button "`edit machine data"'] Use this dialog if you want to change the number of slots $Q$,
+          of phases $m$, of poles $2p$ or layers.
+ \item[definition of the coil sides] Use the table to define the phase for the layers in each slot.
+          The number describes the phase number. The color is added automatically for overview. The 
+          sign defines the winding direction (+ into the plane, - out of the plane)
+ \item[number of turns] If radio button is set to "`fix number of turns for all coil sides"' one can
+          type the number of turns in the edit field apart from that. While choosing "`individual
+          number of turns"' one can define this for each coil side. Use the table below 
+ \item[info] On the upper right there is an info field. While the user defines the winding there is
+          a live-analysis. If there is an unsymmetrical winding or if the sum of all winding turns is not 
+          zero for example, the user get an info.
+ \item[overwrite winding] There are two different possible action while exiting an generator dialog with
+          the ok button. If the radio button "`add new winding"' is selected, the winding in the generator
+          winding is added to the workspace in the main window. If "`overwrite"' is selected, than the 
+          actual selected winding of the workspace getting overwritten. Be relaxed, if you have overwritten
+          your winding accidentally, there is an undo function in the main window.
+\end{description}
+%
+%
+\FloatBarrier
 \subsection{Automatic layout}
+With the automatic winding generator it is possible to generate almost every symmetric winding system.
+This includes
+\begin{itemize}
+ \item overlapping full pitch winding
+ \item overlapping fractional slot winding
+ \item tooth coil winding
+ \item all above as single-layer or double-layer
+\end{itemize}
+%
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.99\textwidth,angle=0]{fig/auto_winding}
+    \caption{Automatic winding generator }
+    \label{fig:auto_winding}
+\end{figure}
+%
+%
+\begin{description}
+ \item[Machine data] Number of slots $Q$, phases $m$ and poles $2p$ 
+ \item[layer] Double layer winding means, that in every slot there are two coil sides (from the same
+      or from different phases)
+ \item[winding step] Every coil has an "`in"' and an "`out"' conductor, which are connected via 
+       the winding overhang. The winding step defines the distance between "`in"' and "`out"' in slots.
+       If winding-step is 1 a tooth-coil winding will be created. Note: For single layer windings 
+       there are some restriction to accommodate all coil sides, so in this case the winding step
+       can't be influenced.       
+ \item[overwrite winding] There are two different possible action while exiting an generator dialog with
+          the ok button. If the radio button "`add new winding"' is selected, the winding in the generator
+          winding is added to the workspace in the main window. If "`overwrite"' is selected, than the 
+          actual selected winding of the workspace getting overwritten. Be relaxed, if you have overwritten
+          your winding accidentally, there is an undo function in the main window.
+ \item[layout table] The lower table shows the actual defined winding. Note, that layout can't changed here
+          by hand. If you want to change, than accept the winding with ok to the workspace in the main window
+          and use the manual generator (section \ref{sec:manual_generator}). The winding will be transmitted.
+\end{description}
+%
+%
+\FloatBarrier
 \subsection{Winding table}
+
+
+
+
 
 
 
