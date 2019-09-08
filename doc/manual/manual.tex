@@ -385,7 +385,8 @@ can be sketched and analyzed. The price of this is the comparatively large manua
 %
 \FloatBarrier
 \subsection{Automatic layout}
-With the automatic winding generator it is possible to generate almost every symmetric winding system.
+With the automatic winding generator it is possible to generate almost every symmetric winding system, 
+except "`dead coil windings"' (where some slots are empty). 
 This includes
 \begin{itemize}
  \item overlapping full pitch winding
@@ -393,6 +394,9 @@ This includes
  \item tooth coil winding
  \item all above as single-layer or double-layer
 \end{itemize}
+%
+This generator uses the star of slots to for defining
+the coil sides in the slots, based on the theory of \cite{1629527}.
 %
 \begin{figure}[htpb]
     \centering
