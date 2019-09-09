@@ -20,6 +20,8 @@ splash.show()
 
 import time
 import argparse
+import subprocess
+import platform
 from swat_em import dialog_genwdg
 from swat_em import dialog_about
 from swat_em import dialog_notes
@@ -109,7 +111,7 @@ class MainWindow(QMainWindow):
 
         # TODO
         self.actionprint_report.triggered.connect(lambda: QMessageBox.information(self, 'Information', 'Not implemented yet'))
-        self.actionHelp.triggered.connect(lambda: QMessageBox.information(self, 'Information', 'Not implemented yet'))
+        self.actionHelp.triggered.connect(self.open_manual)
         
         self.plot_tabs.currentChanged.connect(lambda: self.update_plot_in_GUI(small_update = False))
         self.radioButton_electrical.toggled.connect(self.update_plot_in_GUI)
@@ -484,7 +486,15 @@ class MainWindow(QMainWindow):
             else:
                 event.ignore() # let the window open
                 
-
+    def open_manual(self):
+        doc = os.path.join(__dir__, 'doc', 'manual', 'manual.pdf')
+        #  subprocess.Popen(['open', doc], shell=True)
+        if platform.system() == 'Darwin':       # macOS
+            subprocess.call(('open', doc))
+        elif platform.system() == 'Windows':    # Windows
+            os.startfile(doc)
+        else:                                   # linux variants
+            subprocess.call(('xdg-open', doc))
 
 def main():
     # command line options
