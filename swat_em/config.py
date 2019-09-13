@@ -40,13 +40,22 @@ def get_init_config():
                      'lw_thin': 1.0,
                      'DPI': 90,
                      'phase_colors': ['#1b9e77','#d95f02','#7570b3',
-                     '#e7298a','#66a61e','#e6ab02','#a6761d'] # http://colorbrewer2.org/#type=qualitative&scheme=Dark2&n=7
+                     '#e7298a','#66a61e','#e6ab02','#a6761d'], # http://colorbrewer2.org/#type=qualitative&scheme=Dark2&n=7
+                     'line_colors': ['#377eb8','#e41a1c','#4daf4a',
+                     '#984ea3','#ff7f00','#a65628','#f781bf'] # http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
                      }                     
     return copy.deepcopy(config)
 
 
 def get_phase_color(num):
     cols = config['plt']['phase_colors']
+    while num > len(cols):
+        num -= len(cols)    # periodic colors
+    return cols[num]
+
+
+def get_line_color(num):
+    cols = config['plt']['line_colors']
     while num > len(cols):
         num -= len(cols)    # periodic colors
     return cols[num]
