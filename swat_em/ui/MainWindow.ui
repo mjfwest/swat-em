@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>973</width>
-    <height>773</height>
+    <height>749</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -940,6 +940,7 @@
    <addaction name="actionImport_from_file"/>
    <addaction name="separator"/>
    <addaction name="actionSettings"/>
+   <addaction name="actionHelp"/>
    <addaction name="actionProgram_Info"/>
   </widget>
   <action name="actionNeu">
