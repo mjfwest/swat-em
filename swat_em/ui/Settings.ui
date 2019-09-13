@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>330</width>
-    <height>358</height>
+    <height>396</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,6 +24,39 @@
       <string>Plotting</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Thickness of thin lines</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_lw_thin">
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="minimum">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
@@ -87,17 +120,26 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item row="3" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
-         <widget class="QLabel" name="label_7">
+         <widget class="QLabel" name="label_8">
+          <property name="toolTip">
+           <string/>
+          </property>
           <property name="text">
-           <string>Thickness of thin lines</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Threshold for plotting MMF harmonics &lt;br/&gt;relative to fundamental (0-1)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_lw_thin">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_threshold_mmf">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="maximumSize">
            <size>
             <width>50</width>
@@ -105,16 +147,19 @@
            </size>
           </property>
           <property name="decimals">
-           <number>1</number>
+           <number>2</number>
           </property>
           <property name="minimum">
-           <double>0.100000000000000</double>
+           <double>0.010000000000000</double>
           </property>
           <property name="maximum">
-           <double>10.000000000000000</double>
+           <double>1.000000000000000</double>
           </property>
           <property name="singleStep">
-           <double>0.100000000000000</double>
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.150000000000000</double>
           </property>
          </widget>
         </item>
@@ -206,7 +251,7 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Max. Number of MMK harmonics</string>
+           <string>Max. Number of MMF harmonics</string>
           </property>
          </widget>
         </item>
@@ -268,6 +313,9 @@
           </property>
           <property name="maximum">
            <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
           </property>
          </widget>
         </item>

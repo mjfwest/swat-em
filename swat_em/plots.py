@@ -510,7 +510,7 @@ class mmk:
                                 Plotte alle Oberschwingungen mit der Amplitude größer als
         '''
         self.data = data
-        plot_MMK_greater_than = 0.15
+        plot_MMK_greater_than = config['plot_MMF_harmonics']
 
         #  MMK =  self.data.results['MMK']['MMK']
         #  phi = np.array(self.data.results['MMK']['phi'])
@@ -539,6 +539,8 @@ class mmk:
             self.ax1.set_ylabel('MMF in A')
         elif plotter == 'pyqtgraph':
             self.fig1.clear()
+            self.fig1.disableAutoRange()# disable because of porformance 
+                                        # (a lot of elements are plottet)
             try:
                 self.leg1.scene().removeItem(self.leg1)
             except Exception as e:
@@ -564,7 +566,8 @@ class mmk:
                     curve = pg.PlotCurveItem(phi, a*np.cos(n*phi/phi[-1]*2*np.pi + p), name='<div>&nu;={}</div>'.format(n), pen=pen)
                     self.fig1.addItem(curve)
                     i += 1
-            self.fig1.setXRange(min(phi), max(phi))
+            self.fig1.autoRange()
+            self.fig1.setLimits(xMin = min(phi), xMax = max(phi))
         
         
         if plotter == 'mpl':

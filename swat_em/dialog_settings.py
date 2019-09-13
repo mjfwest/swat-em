@@ -54,6 +54,7 @@ class Settings(QDialog):
         self.spinBox_nu_mech.setValue(self.config['N_nu_mech'])
         self.spinBox_nu_MMK.setValue(self.config['max_nu_MMK'])
         self.doubleSpinBox_threshold_wf.setValue(self.config['kw_min'])
+        self.doubleSpinBox_threshold_mmf.setValue(self.config['plot_MMF_harmonics'])
         
         self.spinBox_DPI.setValue(self.config['plt']['DPI'])
         self.doubleSpinBox_lw.setValue(self.config['plt']['lw'])
@@ -67,6 +68,7 @@ class Settings(QDialog):
         self.config['N_nu_mech'] = self.spinBox_nu_mech.value()
         self.config['max_nu_MMK'] = self.spinBox_nu_MMK.value()
         self.config['kw_min'] = self.doubleSpinBox_threshold_wf.value() 
+        self.config['plot_MMF_harmonics'] = self.doubleSpinBox_threshold_mmf.value() 
         
         self.config['plt']['DPI'] = self.spinBox_DPI.value()
         self.config['plt']['lw'] = self.doubleSpinBox_lw.value()

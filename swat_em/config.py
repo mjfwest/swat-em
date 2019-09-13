@@ -34,7 +34,7 @@ def get_init_config():
     config['N_nu_mech'] = 19
     config['max_nu_MMK'] = 19
     config['kw_min'] = 0.01
-
+    config['plot_MMF_harmonics'] = 0.15
     config['plt'] = {
                      'lw': 2.0,
                      'lw_thin': 1.0,
@@ -56,7 +56,7 @@ def get_phase_color(num):
 
 def get_line_color(num):
     cols = config['plt']['line_colors']
-    while num > len(cols):
+    while num >= len(cols):
         num -= len(cols)    # periodic colors
     return cols[num]
 
