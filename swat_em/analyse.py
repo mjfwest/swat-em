@@ -399,4 +399,16 @@ def get_float(txt):
         return None
     
     
-    
+def Divisors(n):
+    '''
+    returns a list of all divisors of the integer n
+    '''
+    divisors = []
+    i = 1
+    while i <= n : 
+        if (n % i==0) : 
+            divisors.append(i)
+        i = i + 1
+    return divisors
+
+

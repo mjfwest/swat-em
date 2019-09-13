@@ -185,7 +185,9 @@ class datamodel:
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
         dat.append(['lcm(Q, P) ', '', str(bc['lcmQP'])])
         dat.append(['periodic base winding ', rep.italic('t: '), str(bc['t'])])
-        dat.append(['parallel connection ', rep.italic('a: '), str(bc['a'])])
+        
+        a_ = [str(i) for i in analyse.Divisors(bc['a'])]
+        dat.append(['parallel connection ', rep.italic('a: '), ','.join(a_)])
         if bc['sym'] and bc['a']:
             dat.append(['symmetric ', '', str(bc['sym'])])
         else:
