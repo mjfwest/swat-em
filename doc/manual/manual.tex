@@ -22,7 +22,8 @@
 % \usepackage{longtable}   % Mehrseitige Tabellen (Symbole)
 \usepackage{booktabs}    % horizontale Linien in Tabellen
 \usepackage{wrapfig}
-% \usepackage{listings}    % Für Quellcode einbinden
+\usepackage{scrhack}     % prevent warning for the following 'listings'
+\usepackage{listings}    % Für Quellcode einbinden
 \usepackage[onehalfspacing]{setspace}   % Einfacher Zeilenabstand für Tabellen
 \usepackage{tabularx}
 
@@ -131,14 +132,33 @@ Analyzing features
 \item Plot of the slot voltage phasors
 \item Plot of the winding factor
 \item Max. possible number of parallel circuit connection of coils
-
 \end{itemize}
 
 
 
 
 \chapter{Installation}
-
+There are two recommended ways to install SWAT-EM. 
+%
+\section{Installer on Windows}
+SWAT-EM is based on python3 interpreter and some additional libraries. If you haven't this on your computer the easiest way is to download the SWAT-EM installer from:
+\url{https://sourceforge.net/projects/swat-em/}
+%
+Start the installer and follow the instruction. No further work is necessary. After installation
+the program can be startet by double-clicking the Desktop-Icon or with the entry in the start menu.
+%
+\section{PIP}
+%
+Use this install method if you are on LINUX or macOS or if you still have an python3 environment with
+\href{https://pypi.org/project/pip/}{pip} on your computer. SWAT-EM is hosted on the 
+\href{https://pypi.org/}{Python Package Index (pip)}. To install open a terminal on your computer
+and type 
+\begin{lstlisting}
+pip install swat-em
+\end{lstlisting}
+pip will install all necessary dependencies. 
+%
+%
 \chapter{Usage}
 %
 SWAT-EM comes with an QT based graphical user interface (GUI). The layout of the main window consists of the
@@ -157,7 +177,7 @@ SWAT-EM comes with an QT based graphical user interface (GUI). The layout of the
     \label{fig:mainwindow}
 \end{figure}
 %
-\section{Workspace}
+\section{Workspace}\label{sec:workspace}
 A SWAT-EM project, that can be saved as *.wdg file can contain several different windings system.
 So, one can define and compare these windings in the same window. The workspace shows all
 the windings of the project. By clicking of the name all outputs (text and plots) gets updated.
@@ -384,7 +404,7 @@ can be sketched and analyzed. The price of this is the comparatively large manua
 %
 %
 \FloatBarrier
-\subsection{Automatic layout}
+\subsection{Automatic layout}\label{sec:automatic_generator}
 With the automatic winding generator it is possible to generate almost every symmetric winding system, 
 except "`dead coil windings"' (where some slots are empty). 
 This includes
@@ -400,7 +420,7 @@ the coil sides in the slots, based on the theory of \cite{1629527}.
 %
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.99\textwidth,angle=0]{fig/auto_winding}
+    \includegraphics[width=0.80\textwidth,angle=0]{fig/auto_winding}
     \caption{Automatic winding generator }
     \label{fig:auto_winding}
 \end{figure}
@@ -421,16 +441,93 @@ the coil sides in the slots, based on the theory of \cite{1629527}.
           actual selected winding of the workspace getting overwritten. Be relaxed, if you have overwritten
           your winding accidentally, there is an undo function in the main window.
  \item[layout table] The lower table shows the actual defined winding. Note, that layout can't changed here
-          by hand. If you want to change, than accept the winding with ok to the workspace in the main window
+          by hand. If you want to change, than accept the winding with OK to the workspace in the main window
           and use the manual generator (section \ref{sec:manual_generator}). The winding will be transmitted.
 \end{description}
 %
 %
 \FloatBarrier
 \subsection{Winding table}
+%
+This generator gives an overview about possible slot/poles combinations. So it's generator
+with a broad but not very deep view on windings. It can be useful
+in the early state of designing electrical machine, for example to define the appropriate
+number of slots and poles.
 
+While clicking on a item in the upper
+table, the winding characteristics shown on the left side and the winding layout is
+shown on the bottom table. As with the other generators the selected winding can be transferred to the workspace in the main window.
 
-
+For some slot/pole combinations there
+are many winding system possible where this generator shows the winding with the highest
+fundamental winding factor $k_{w,1}$. At this time there is no way to modify the windings
+(changing winding steps for example). For more control you have to use other generators like
+\ref{sec:manual_generator} or \ref{sec:automatic_generator}.
+%
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.99\textwidth,angle=0]{fig/winding_table}
+    \caption{Table of possible windings for diffrent slot/pole combinations }
+    \label{fig:winding_table}
+\end{figure}
+%
+%
+\begin{description}
+ \item[Number of slots] Defines the range of number the number of slots $Q$ for them
+        table. For symmetric windings the number of slots must be a integer multiple 
+        of the number of phases $m$.
+        \begin{align}
+        Q = k \cdot m, \text{ with }k = 1, 2, 3...
+        \end{align} 
+        For single layer windings (without dead coil windings) the number of slots must be doubled
+        \begin{align}
+        Q = 2 \cdot k \cdot m, \text{ with }k = 1, 2, 3...
+        \end{align} 
+ \item[Number of poles] The number of poles $2p$. Only even integer values $\geq2$ are valid.
+ \item[Number of phases] The number of phases $m$ in the machine. Every integer value $>1$ is valid.
+ \item[layers] Defines the number of layers for the table. At this time only single layer and
+        double layer windings are possible.
+ \item[Force tooth coil winding] In some cases you may want to realize tooth coil windings, 
+        even when the winding factor isn't very high. In this case  the winding step is set to $w=1$. 
+ \item[plot value] Defines the number which is shown in the upper table.
+    \begin{description}
+    \item[kw1] The fundamental winding factor. A big number (near to ``1'') means a high-torque.
+    \item[q] The number of slots $Q$ per pole $2p$ per phase $m$. It characterized the winding system.
+            \begin{align}
+            p = \frac{Q}{2p\cdot m}
+            \end{align} 
+    
+    \item[t] The number of the periodic sequence of identical ``base-'' windings. 
+    \item[a] The number of possible parallel circuits of coil groups in the winding. In most 
+            cases it`s the same as $t$. But for some windings it`s possible to connect
+            coil groups in parallel while changing the start and end of the coils.
+    \item[lcm(Q,2p)] Means the least common multiple of the number of slots $Q$ and number
+            of poles $2p$. For permanent-magnet machines this is the first ordinal
+            number of the cogging torque. Tends to be true: The higher the ordinal number the lower the amplitude of the cogging torque.
+    \end{description}
+  \item[overwrite winding] There are two different possible action while exiting an generator dialog with
+          the OK button. If the radio button "`add new winding"' is selected, the winding in the generator
+          winding is added to the workspace in the main window. If "`overwrite"' is selected, than the 
+          actual selected winding of the workspace getting overwritten. Be relaxed, if you have overwritten
+          your winding accidentally, there is an undo function in the main window.
+\end{description}
+%
+%
+%
+\section{Import winding}
+As in \ref{sec:workspace} described you can have many winding system in the workspace.
+In some cases you may want to have a winding in your workspace which is saved as a
+*.wdg file on the hard disk. This can be done by the import function.
+%
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\textwidth,angle=0]{fig/import}
+    \caption{Import winding from file }
+    \label{fig:import}
+\end{figure}
+%
+For import a window opens with the file dialog. Navigate to an existing *.wdg file. After that you get a list of all windings systems of the file (figure \ref{fig:import}). Choose
+all windings you want to import into the workspace.
 
 
 

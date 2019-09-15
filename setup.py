@@ -15,9 +15,10 @@ setuptools.setup(
     url="https://gitlab.com/martinbaun/swat-em",
     packages=setuptools.find_packages(),
     #  packages=['swat_em'],
-    package_data={'swat_em': ['themes/*', 'ui/*', 'ui/icons/*', 'ui/icons/Qt/*', 'ui/bitmaps/*']},
+    package_data={'swat_em': ['themes/*', 'ui/*', 'ui/icons/*', 'ui/icons/Qt/*', 
+                              'ui/bitmaps/*', 'doc/manual', 'doc/manual/*']},
     platforms="any",
-    install_requires=['numpy', 'PyQt5', 'matplotlib'],
+    install_requires=['numpy', 'PyQt5', 'matplotlib', 'pyqtgraph'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
