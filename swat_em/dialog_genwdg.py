@@ -174,7 +174,7 @@ class GenWindingCombinations(QDialog):
                                         'q (slots per pole per phase)',
                                         't (symmetry)',
                                         'a (parallel circuit)',
-                                        'lcm(Q,P) (least common multiple)'])
+                                        'lcm(Q,2p) (least common multiple)'])
         self.comboBox_plotval.currentIndexChanged.connect(self.update_table)
         #  self.generate()
 
