@@ -148,10 +148,10 @@ class MainWindow(QMainWindow):
         self.MMK_phase_edit.textEdited.connect(self.update_MMK_phase_slider)
         self.MMK_phase_edit.textChanged.connect(lambda: self.update_plot_in_GUI(small_update = True))
         
-        self.fig1 = plots.slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
-        self.fig2 = plots.slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
-        self.fig3 = plots.windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
-        self.fig4 = plots.mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
+        self.fig1 = plots._slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
+        self.fig2 = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
+        self.fig3 = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
+        self.fig4 = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
         
         self.update_project_list()
         #  self.update_data_in_GUI()     # not neccessary because of 'update_project_list()

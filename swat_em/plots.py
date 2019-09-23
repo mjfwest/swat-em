@@ -3,7 +3,7 @@
 Provides functions for plotting
 ''' 
 
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem, QApplication
 from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
 from swat_em.config import get_phase_color, get_line_color, config
@@ -24,12 +24,13 @@ if plotter == 'mpl':
         NavigationToolbar2QT as NavigationToolbar)
 elif plotter == 'pyqtgraph':
     import pyqtgraph as pg
+    import pyqtgraph.exporters
     pg.setConfigOption('background', 'w')
     pg.setConfigOption('foreground', 'k')
     pg.setConfigOptions(antialias=True)
 
 
-class slot_plot:
+class _slot_plot:
     sh = 0.8  # slot height
     sw = 0.75  # slot width
     so = 0.2  # slot opening
@@ -52,11 +53,16 @@ class slot_plot:
             self.toolbar1.setFixedHeight(25)
             self.layout.addWidget(self.toolbar1)
         elif plotter == 'pyqtgraph':
-            self.fig = pg.PlotWidget()
+            if self.layout is None:
+                self.app = pg.mkQApp()
+                self.fig = pg.PlotWidget() #title='xyz'
+            else:
+                self.fig = pg.PlotWidget()
+                self.layout.addWidget(self.fig)
             self.fig.setAspectLocked(lock=True, ratio=1)
-            self.layout.addWidget(self.fig)
             self.fig.getAxis('bottom').hide()
             self.fig.getAxis('left').hide()
+
        
     
     def plot_slots(self, Q):
@@ -79,8 +85,7 @@ class slot_plot:
             self.fig.clear()
             self.fig.disableAutoRange()# disable because of porformance 
                                        # (a lot of elements are plottet)
-
-    
+        
         x = [0]*10
         y = [0]*10
         x[0], y[0] = 0.0, 1.0
@@ -143,9 +148,9 @@ class slot_plot:
             #  self.fig.autoRange()
             self.fig.setXRange(0, 12)
             self.fig.autoRange()
-
+        
                         
-    def plot_coilsides(self, data):
+    def plot_coilsides(self, data, fname = None, res = None):
         self.data = data
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
@@ -204,12 +209,17 @@ class slot_plot:
             self.canvas1.draw()
         elif plotter == 'pyqtgraph':
             self.fig.autoRange()
-            
+            if fname is not None:
+                self.app.processEvents()
+                exporter = pg.exporters.ImageExporter(self.fig.plotItem)#plotItem
+                exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+                exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+                exporter.export(fname)
 
 
 
 
-class slot_star:
+class _slot_star:
 
     def __init__(self, layout, widget, data, table):
         self.layout = layout
@@ -229,8 +239,12 @@ class slot_star:
             self.toolbar1.setFixedHeight(25)
             self.layout.addWidget(self.toolbar1)
         elif plotter == 'pyqtgraph':
-            self.fig = pg.PlotWidget()
-            self.layout.addWidget(self.fig)
+            if self.layout is None:
+                self.app = pg.mkQApp()
+                self.fig = pg.PlotWidget() #title='xyz'
+            else:
+                self.fig = pg.PlotWidget()
+                self.layout.addWidget(self.fig)
             self.fig.getAxis('bottom').hide()
             self.fig.getAxis('left').hide()
             self.fig.setAspectLocked(lock=True, ratio=1)
@@ -238,7 +252,7 @@ class slot_star:
 
         
     
-    def plot_star(self, data, harmonic_idx = 0, ForceX = None):
+    def plot_star(self, data, harmonic_idx = 0, ForceX = None, fname = None, res = None):
         self.data = data
         if harmonic_idx < 0:
             harmonic_idx = 0
@@ -325,38 +339,45 @@ class slot_star:
             self.canvas1.draw()
         elif plotter == 'pyqtgraph':
             self.fig.autoRange()
+            if fname is not None:
+                self.app.processEvents()
+                exporter = pg.exporters.ImageExporter(self.fig.plotItem)#plotItem
+                exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+                exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+                exporter.export(fname)
         
         
         # update table:        
         ei = self.data.results['Ei_el'][harmonic_idx]        
         
-        self.table.setRowCount(len(ei))
-        self.table.setColumnCount(3)
-        
-        for km in range(len(ei)):
-            A = np.abs( np.sum(ei[km]) )
-            ph = np.angle( np.sum(ei[km]) )/np.pi*180
-            self.table.setItem(km, 0, QTableWidgetItem(str(km+1)))
-            self.table.setItem(km, 1, QTableWidgetItem(str(round(A,1))))
-            self.table.setItem(km, 2, QTableWidgetItem(str(round(ph,1))))
+        if self.table is not None:
+            self.table.setRowCount(len(ei))
+            self.table.setColumnCount(3)
             
-            for i in range(3): # set all cells as not editable
-                self.table.item(km, i).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            for km in range(len(ei)):
+                A = np.abs( np.sum(ei[km]) )
+                ph = np.angle( np.sum(ei[km]) )/np.pi*180
+                self.table.setItem(km, 0, QTableWidgetItem(str(km+1)))
+                self.table.setItem(km, 1, QTableWidgetItem(str(round(A,1))))
+                self.table.setItem(km, 2, QTableWidgetItem(str(round(ph,1))))
+                
+                for i in range(3): # set all cells as not editable
+                    self.table.item(km, i).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
 
-        for k1 in range(len(ei)):
-            self.table.resizeColumnToContents(k1)
-
-
-        self.table.setHorizontalHeaderLabels(['m', 'A', 'phase'])
-        #  self.table.setVerticalHeaderLabels(['']*np.shape(kw)[0])
-        afont = QFont()
-        afont.setBold(True)
-        
-        for k in range(3):
-            self.table.horizontalHeaderItem(k).setFont(afont)
+            for k1 in range(len(ei)):
+                self.table.resizeColumnToContents(k1)
 
 
-class windingfactor:
+            self.table.setHorizontalHeaderLabels(['m', 'A', 'phase'])
+            #  self.table.setVerticalHeaderLabels(['']*np.shape(kw)[0])
+            afont = QFont()
+            afont.setBold(True)
+            
+            for k in range(3):
+                self.table.horizontalHeaderItem(k).setFont(afont)
+
+
+class _windingfactor:
     def __init__(self, layout, widget, data, table):
         self.layout = layout
         self.widget = widget
@@ -375,8 +396,12 @@ class windingfactor:
             self.layout.addWidget(self.toolbar1)
             
         elif plotter == 'pyqtgraph':
-            self.fig = pg.PlotWidget()
-            self.layout.addWidget(self.fig)
+            if self.layout is None:
+                self.app = pg.mkQApp()
+                self.fig = pg.PlotWidget() #title='xyz'
+            else:
+                self.fig = pg.PlotWidget()
+                self.layout.addWidget(self.fig)
             self.fig.setLabel('bottom', '<div>ordinal number &nu;</div>')
             self.fig.setLabel('left', '<div>Windingfactor kw</div>') #<div>Windingfactor &xi;</div>
             self.fig.showGrid(x=True, y=True)
@@ -385,7 +410,7 @@ class windingfactor:
         
         
     
-    def plot_windingfactor(self, data, mechanical = False):
+    def plot_windingfactor(self, data, mechanical = False, fname = None, res = None):
         self.data = data
         if plotter == 'mpl':
             plt.figure(3)
@@ -434,33 +459,40 @@ class windingfactor:
             ax.set_axisbelow(True)  # grid in background        
             leg = plt.legend(loc='upper right',labelspacing=0)    # labelspacing: Zeilenabstand
             self.canvas1.draw()
+        else:
+            if fname is not None:
+                self.app.processEvents()
+                exporter = pg.exporters.ImageExporter(self.fig.plotItem)#plotItem
+                exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+                exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+                exporter.export(fname)
         
         
-        # update table:
-        self.table.setRowCount(np.shape(kw)[0])
-        self.table.setColumnCount(N+1)
-        
-        for k1 in range(np.shape(kw)[0]):
-            self.table.setItem(k1, 0, QTableWidgetItem(str(nu[k1])))
-            for k2 in range(np.shape(kw)[1]):
-                self.table.setItem(k1, k2+1, QTableWidgetItem(str(round(kw[k1,k2],3))))
-                # set all cells as not editable
-                self.table.item(k1, k2+1).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-        for k1 in range(np.shape(kw)[0]):
-            self.table.resizeColumnToContents(k1)
+        if self.table is not None:
+            # update table:
+            self.table.setRowCount(np.shape(kw)[0])
+            self.table.setColumnCount(N+1)
+            
+            for k1 in range(np.shape(kw)[0]):
+                self.table.setItem(k1, 0, QTableWidgetItem(str(nu[k1])))
+                for k2 in range(np.shape(kw)[1]):
+                    self.table.setItem(k1, k2+1, QTableWidgetItem(str(round(kw[k1,k2],3))))
+                    # set all cells as not editable
+                    self.table.item(k1, k2+1).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            for k1 in range(np.shape(kw)[0]):
+                self.table.resizeColumnToContents(k1)
 
 
-        self.table.setHorizontalHeaderLabels(['nu'] + self.data.get_phasenames())
-        self.table.setVerticalHeaderLabels(['']*np.shape(kw)[0])
-        afont = QFont()
-        afont.setBold(True)
-        
-        for k in range(self.data.get_num_phases() + 1):
-            self.table.horizontalHeaderItem(k).setFont(afont)
+            self.table.setHorizontalHeaderLabels(['nu'] + self.data.get_phasenames())
+            self.table.setVerticalHeaderLabels(['']*np.shape(kw)[0])
+            afont = QFont()
+            afont.setBold(True)
+            
+            for k in range(self.data.get_num_phases() + 1):
+                self.table.horizontalHeaderItem(k).setFont(afont)
 
 
-class mmk:
-
+class _mmk:
     def __init__(self, layout, widget, data, table):
         self.layout = layout
         self.widget = widget
@@ -483,10 +515,14 @@ class mmk:
         
        
         elif plotter == 'pyqtgraph':
-            l = pg.GraphicsLayoutWidget()
-            self.fig1 = l.addPlot(row=1, col=1, rowspan=1)
-            self.fig2 = l.addPlot(row=2, col=1, rowspan=1)
-            self.layout.addWidget(l)
+            if self.layout is None:
+                self.app = pg.mkQApp()
+                
+            self.l = pg.GraphicsLayoutWidget()
+            self.fig1 = self.l.addPlot(row=1, col=1, rowspan=1)
+            self.fig2 = self.l.addPlot(row=2, col=1, rowspan=1)
+            if self.layout is not None:
+                self.layout.addWidget(self.l)
             
             self.fig1.setLabel('bottom', 'circumferential stator slots')
             self.fig1.setLabel('left', 'MMF in A')
@@ -498,7 +534,7 @@ class mmk:
             self.fig2.showGrid(x=True, y=True)
         
         
-    def plot_mmk(self, data, phase = 0, small_update = False):
+    def plot_mmk(self, data, phase = 0, small_update = False, fname = None, res = None):
         '''
         Plottet MMF-Kurve
 
@@ -591,22 +627,32 @@ class mmk:
                     brush=get_line_color(0), pen=pen) # , name='Phase '+str(k+1)
             self.fig2.addItem(bar)
             self.fig2.setXRange(min(phi), max(phi))
+            if fname is not None:
+                #  import pdb
+                #  pdb.set_trace()
+                #  exporter = pg.exporters.ImageExporter(self.l.scene())#plotItem
+                self.app.processEvents()
+                exporter = pg.exporters.ImageExporter(self.l.ci)#plotItem
+                exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+                exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+                exporter.export(fname)
 
 
-        # update table:
-        self.table.setRowCount(len(A)-1)
-        self.table.setColumnCount(3)
-        self.table.setHorizontalHeaderLabels(['nu', 'Amp', '[%]'])
-        
-        for k1 in range(1, len(A)):
-            self.table.setItem(k1-1, 0, QTableWidgetItem(str(nu[k1])))
-            a = A[k1]
-            a_rel = 100.0/max(A)*a
-            self.table.setItem(k1-1, 1, QTableWidgetItem(str(round(a, 3))))
-            self.table.setItem(k1-1, 2, QTableWidgetItem(str(round(a_rel, 1))))
-            for i in range(3): # set all cells as not editable
-                self.table.item(k1-1, i).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-        for k1 in range(3):
-            self.table.resizeColumnToContents(k1)
+        if self.table is not None:
+            # update table:
+            self.table.setRowCount(len(A)-1)
+            self.table.setColumnCount(3)
+            self.table.setHorizontalHeaderLabels(['nu', 'Amp', '[%]'])
+            
+            for k1 in range(1, len(A)):
+                self.table.setItem(k1-1, 0, QTableWidgetItem(str(nu[k1])))
+                a = A[k1]
+                a_rel = 100.0/max(A)*a
+                self.table.setItem(k1-1, 1, QTableWidgetItem(str(round(a, 3))))
+                self.table.setItem(k1-1, 2, QTableWidgetItem(str(round(a_rel, 1))))
+                for i in range(3): # set all cells as not editable
+                    self.table.item(k1-1, i).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            for k1 in range(3):
+                self.table.resizeColumnToContents(k1)
 
 

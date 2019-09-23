@@ -14,6 +14,7 @@ from swat_em import analyse
 from swat_em import report as rep
 from swat_em import wdggenerator
 from swat_em.config import config
+from swat_em import plots
 
 
 
@@ -318,6 +319,28 @@ class datamodel:
         
         bc, bc_txt = self.get_basic_characteristics()
         self.results['basic_char'] = bc
+
+
+    def plot_layout(self, filename, res = [800, 600]):
+        plt = plots._slot_plot(None, None, self)
+        plt.plot_slots(self.get_num_slots())
+        plt.plot_coilsides(self, fname = filename, res = res)
+        
+        
+    def plot_star(self, filename, res = [800, 600], ForceX = True):
+        plt = plots._slot_star(None, None, self, None)
+        plt.plot_star(self, harmonic_idx = 0, ForceX = ForceX, fname = filename, res = res)
+
+
+    def plot_windingfactor(self, filename, res = [800, 600], mechanical = True):
+        plt = plots._windingfactor(None, None, self, None)
+        plt.plot_windingfactor(self, mechanical = False, fname = filename, res = res)
+
+
+    def plot_MMK(self, filename, res = [800, 600], phase = 0):
+        plt = plots._mmk(None, None, self, None)
+        plt.plot_mmk(self, phase = phase, fname = filename, res = res)
+
 
         
 
