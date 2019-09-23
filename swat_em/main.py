@@ -37,7 +37,7 @@ from swat_em.config import config, save_config
 from swat_em import datamodel
 from swat_em import wdggenerator
 from swat_em import plots
-from swat_em.analyse import get_float
+from swat_em.analyse import _get_float
 
 MSG_TIME = 3000   # time in which the message is displayed in the statusbar
 
@@ -400,7 +400,7 @@ class MainWindow(QMainWindow):
         #  t1 = time.time()
         # update only the current tab
         if idx == 0:
-            self.fig1.plot_slots(self.data.machinedata['Q'])
+            self.fig1.plot_slots(self.data.get_num_slots())
             self.fig1.plot_coilsides(self.data)
         if idx == 1: 
             self.fig2.plot_star(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
@@ -411,7 +411,7 @@ class MainWindow(QMainWindow):
             elif self.radioButton_mechanical.isChecked():
                 self.fig3.plot_windingfactor(self.data, mechanical=True)
         if idx == 3:
-            f = get_float(self.MMK_phase_edit.text())
+            f = _get_float(self.MMK_phase_edit.text())
             f = 0.0 if f is None else f
             self.fig4.plot_mmk(self.data, f, small_update = small_update)
         #  print('duration for plot:', time.time()-t1)

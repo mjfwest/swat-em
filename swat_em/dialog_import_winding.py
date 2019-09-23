@@ -44,8 +44,8 @@ class import_winding(QDialog):
             font.setItalic(True)  
             
             child = QTreeWidgetItem(['Q: {}, 2p: {}, m: {}'.format(
-                                     data.machinedata['Q'], 2*data.machinedata['p'], 
-                                     data.machinedata['m']) ])
+                                     data.get_num_slots(), 2*data.get_num_polepairs(), 
+                                     data.get_num_phases) ])
             child.setFont(0, font)
             self.items[-1].addChild(child)
             

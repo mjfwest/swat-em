@@ -112,9 +112,9 @@ class GenWinding2(QDialog):
         self.table.clear()
         if bc['sym']:            
             self.table.setRowCount(self.layers)
-            self.table.setColumnCount(self.data.machinedata['Q'])
+            self.table.setColumnCount(self.data.get_num_slots())
             
-            for km, ph in enumerate(self.data.machinedata['phases']):
+            for km, ph in enumerate(self.data.get_phases()):
                 col = get_phase_color(km)
                 for kl in range(len(ph)):
                     layer = ph[kl]
@@ -126,7 +126,7 @@ class GenWinding2(QDialog):
                         self.table.item(kl, abs(cs)-1).setBackground(QtGui.QColor(col))
                         #  self.table.item(kl, abs(cs)-1).setFlags(Qt.ItemIsEditable)
                         self.table.item(kl, abs(cs)-1).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-            for k1 in range(self.data.machinedata['Q']):
+            for k1 in range(self.data.get_num_slots()):
                 #  self.table.resizeColumnToContents(k1)
                 self.table.setColumnWidth(k1, 25)
 
@@ -264,7 +264,7 @@ class GenWindingCombinations(QDialog):
                         self.table.setItem(iQ, iP, QTableWidgetItem(txt))
                         q = bc['q']
 
-                        if self.data[iQ][iP].machinedata['wstep'] == 1: 
+                        if self.data[iQ][iP].get_windingstep() == 1: 
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#ADD8E6'))
                         elif q.denominator == 1:
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#E6C3AD'))
@@ -298,8 +298,8 @@ class GenWindingCombinations(QDialog):
             self.table = self.tableWindingLayout
             self.table.clear()
             self.table.setRowCount(self.layers)
-            self.table.setColumnCount(d.machinedata['Q'])            
-            for km, ph in enumerate(d.machinedata['phases']):
+            self.table.setColumnCount(d.get_num_slots())            
+            for km, ph in enumerate(d.get_phases()):
                 col = get_phase_color(km)
                 for kl in range(len(ph)):
                     layer = ph[kl]
@@ -308,11 +308,11 @@ class GenWindingCombinations(QDialog):
                             self.table.setItem(kl, cs-1, QTableWidgetItem('+' + str(km+1)))
                         else:
                             self.table.setItem(kl, abs(cs)-1, QTableWidgetItem('-' + str(km+1)))
-                        if abs(cs) <= d.machinedata['Q']: # for non-valid windings there could be a slot-number that is bigger than the number of slots
+                        if abs(cs) <= d.get_num_slots(): # for non-valid windings there could be a slot-number that is bigger than the number of slots
                             self.table.item(kl, abs(cs)-1).setBackground(QtGui.QColor(col))
                         self.table.item(kl, abs(cs)-1).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled) # note editable
                         
-            for k1 in range(d.machinedata['Q']):
+            for k1 in range(d.get_num_slots()):
                 self.table.resizeColumnToContents(k1)
             return row, column        
         else:
@@ -330,10 +330,10 @@ class GenWindingCombinations(QDialog):
             row, column = self.combination_selected()
             if row is not None:
                 ret = {}
-                ret['Q'] = self.data[row][column].machinedata['Q']
-                ret['P'] = 2*self.data[row][column].machinedata['p']
-                ret['m'] = self.data[row][column].machinedata['m']
-                ret['w'] = self.data[row][column].machinedata['wstep']
+                ret['Q'] = self.data[row][column].get_num_slots()
+                ret['P'] = 2*self.data[row][column].get_num_polepairs()
+                ret['m'] = self.data[row][column].get_num_phases()
+                ret['w'] = self.data[row][column].get_windingstep()
                 ret['layers'] = self.layers
                 ret['overwrite'] = overwrite
                 return ret

@@ -378,7 +378,7 @@ def DFT(vect):
     return yy  
 
 
-def get_float(txt):
+def _get_float(txt):
     """
     returns the floating point number from string
     

@@ -147,9 +147,9 @@ class slot_plot:
                         
     def plot_coilsides(self, data):
         self.data = data
-        S = self.data.machinedata['phases']
-        Q = self.data.machinedata['Q']
-        self.devide = 'v' if self.data.machinedata['wstep'] == 1 else 'h'
+        S = self.data.get_phases()
+        Q = self.data.get_num_slots()
+        self.devide = 'v' if self.data.get_windingstep() == 1 else 'h'
 
         def add_text(slot, phase, pos, wdir):
             dx = slot
@@ -319,7 +319,7 @@ class slot_star:
             ax.set_adjustable("box")   # necessary for xlim/ylim with axis('equal')
             
               
-            l = ['Phase '+str(k+1) for k in range(self.data.machinedata['m'])]
+            l = ['Phase '+str(k+1) for k in range(self.data.get_num_phases())]
             leg = plt.legend(l,loc='upper right',labelspacing=0)    # labelspacing: Zeilenabstand
             leg.draw_frame(0)    # Rahmen nicht zeichnen
             self.canvas1.draw()
@@ -450,12 +450,12 @@ class windingfactor:
             self.table.resizeColumnToContents(k1)
 
 
-        self.table.setHorizontalHeaderLabels(['nu'] + self.data.machinedata['phasenames'])
+        self.table.setHorizontalHeaderLabels(['nu'] + self.data.get_phasenames())
         self.table.setVerticalHeaderLabels(['']*np.shape(kw)[0])
         afont = QFont()
         afont.setBold(True)
         
-        for k in range(self.data.machinedata['m'] + 1):
+        for k in range(self.data.get_num_phases() + 1):
             self.table.horizontalHeaderItem(k).setFont(afont)
 
 
@@ -515,10 +515,10 @@ class mmk:
         #  MMK =  self.data.results['MMK']['MMK']
         #  phi = np.array(self.data.results['MMK']['phi'])
         #  theta = self.data.results['MMK']['theta'] 
-        phi, MMK, theta = analyse.calc_MMK(self.data.machinedata['Q'],
-                                   self.data.machinedata['m'],
-                                   self.data.machinedata['phases'],
-                                   self.data.machinedata['turns'],
+        phi, MMK, theta = analyse.calc_MMK(self.data.get_num_slots(),
+                                   self.data.get_num_phases(),
+                                   self.data.get_phases(),
+                                   self.data.get_turns(),
                                    angle = phase)          
         phi = np.array(phi)
         nu = np.array(self.data.results['MMK']['nu'])

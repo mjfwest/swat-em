@@ -3,7 +3,6 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QMessageBox
 from PyQt5.QtGui import QDoubleValidator
 from swat_em.config import get_phase_color, config
-from swat_em.analyse import get_float
 import os
 import sys
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -46,17 +45,17 @@ class layout(QDialog):
         self.radioTurnsFix.toggled.connect(self.update_radio_turns)
         self.tableWindingLayout.cellChanged.connect(self.update_colors)
         self.tableWindingTurns.cellChanged.connect(self.update_colors)
-        self.update_table(self.data.machinedata['phases'])
-        self.update_table_turns(self.data.machinedata['phases'], self.data.machinedata['turns'])
-        if type(self.data.machinedata['turns']) == type([]):
+        self.update_table(self.data.get_phases())
+        self.update_table_turns(self.data.get_phases(), self.data.get_turns())
+        if type(self.data.get_turns()) == type([]):
             self.radioTurnsIndividual.setChecked(True)
         else:
             self.radioTurnsFix.setChecked(True)
-            self.lineEditFixTurns.setText(str(self.data.machinedata['turns']))
+            self.lineEditFixTurns.setText(str(self.data.get_turns()))
 
-        self.update_lineEdits(self.data.machinedata['Q'],
-                              self.data.machinedata['m'],
-                              2*self.data.machinedata['p'],
+        self.update_lineEdits(self.data.get_num_slots(),
+                              self.data.get_num_phases(),
+                              2*self.data.get_num_polepairs(),
                               self.data.get_num_layers()
                               )
         
@@ -69,21 +68,21 @@ class layout(QDialog):
         ret = dialog.run()   
         make_update = False
         if ret:
-            if ret['Q'] != self.data.machinedata['Q']:
+            if ret['Q'] != self.data.get_num_slots():
                 make_update = True
             if ret['layers'] != self.data.get_num_layers():
                 make_update = True
-                for km in range(len(self.data.machinedata['phases'])):
-                    for ks in range(1, len(self.data.machinedata['phases'][km])):
-                        self.data.machinedata['phases'][km][ks] = []
+                for km in range(len(self.data.get_phases())):
+                    for ks in range(1, len(self.data.get_phases()[km])):
+                        self.data.get_phases()[km][ks] = []
             self.data.set_machinedata(Q = ret['Q'], m = ret['m'], p = ret['P']/2)
-            self.update_lineEdits(self.data.machinedata['Q'],
-                              self.data.machinedata['m'],
-                              2*self.data.machinedata['p'],
+            self.update_lineEdits(self.data.get_num_slots(),
+                              self.data.get_num_phases(),
+                              2*self.data.get_num_polepairs(),
                               ret['layers']
                               )
             if make_update:
-                self.update_table(self.data.machinedata['phases'], layers=ret['layers'])
+                self.update_table(self.data.get_phases(), layers=ret['layers'])
             
                 
     def update_radio_turns(self):
@@ -109,7 +108,7 @@ class layout(QDialog):
     def update_table(self, phases, layers = None):
         self.table = self.tableWindingLayout      
         self.table.blockSignals(True)
-        self.table.setColumnCount(self.data.machinedata['Q'])        
+        self.table.setColumnCount(self.data.get_num_slots())        
         
         head = ['Layer 1', 'Layer 2']
         if not layers:
@@ -131,7 +130,7 @@ class layout(QDialog):
                     if item:
                         item.setBackground(QtGui.QColor(col))
 
-        for k1 in range(self.data.machinedata['Q']):
+        for k1 in range(self.data.get_num_slots()):
             self.table.resizeColumnToContents(k1)
         self.table.blockSignals(False)
 
@@ -162,7 +161,7 @@ class layout(QDialog):
                         table.setItem(kl, cs-1, item)
                     else:
                         table.setItem(kl, abs(cs)-1, item)
-        for k1 in range(self.data.machinedata['Q']):
+        for k1 in range(self.data.get_num_slots()):
             table.resizeColumnToContents(k1)
 
     
@@ -172,7 +171,7 @@ class layout(QDialog):
         '''
         S = []
         for layer in [0, 1]:
-            for k in range(self.data.machinedata['Q']):
+            for k in range(self.data.get_num_slots()):
                 item = self.table.item(layer, k)
                 if item:
                     txt = str(item.text())
@@ -196,7 +195,7 @@ class layout(QDialog):
         else:
             S = []
             for layer in range(table.rowCount()):
-                for k in range(self.data.machinedata['Q']):
+                for k in range(self.data.get_num_slots()):
                     item = self.tableWindingLayout.item(layer, k) # phase
                     item2 = table.item(layer, k) # turns
                     if item:
@@ -225,7 +224,7 @@ class layout(QDialog):
         warning = []
         
         for layer in [0, 1]:
-            for k in range(self.data.machinedata['Q']):
+            for k in range(self.data.get_num_slots()):
                 item = self.table.item(layer, k)
                 item2 = self.tableWindingTurns.item(layer, k)
                 if item:
@@ -290,9 +289,9 @@ class layout(QDialog):
                 txt += 'Phase {} hat {} coilsides<br>'.format(k+1, l[k])
             error.append(txt)
 
-        if len(S) > self.data.machinedata['m']:
+        if len(S) > self.data.get_num_phases():
             error.append('There are {} phases but in main window only m = {} is set'.format(
-                len(S), self.data.machinedata['m']))
+                len(S), self.data.get_num_phases()))
 
         # print errors
         txt_error = '<span style=\" color:#ff0000;\" >'
@@ -312,7 +311,7 @@ class layout(QDialog):
             if turns == None:
                 QMessageBox.critical(self, 'Error', '"{}" is not a valid number of turns'.format(txt))
                 error = True
-            if type(self.data.machinedata['turns']) == type([]):
+            if type(self.data.get_turns()) == type([]):
                 ret = QMessageBox.question(self, 'Overwrite number of turns', 
                 'In the previous winding there are individual number of turns. Is it ok to loose them?', 
                 QMessageBox.Yes | QMessageBox.Cancel)
@@ -351,10 +350,10 @@ class layout(QDialog):
             else:
                 layers = 1
             
-            Q = self.data.machinedata['Q']
-            p = self.data.machinedata['p']
-            m = self.data.machinedata['m']
-            w = self.data.machinedata['wstep']       
+            Q = self.data.get_num_slots()
+            p = self.data.get_num_polepairs()
+            m = self.data.get_num_phases()
+            w = self.data.get_windingstep()      
             ret = {'phases': phases, 'Q': Q, 'P': 2*p, 'm': m, 'w': w, 
             'layers': layers, 'overwrite': overwrite, 'turns': turns}
             return ret
@@ -381,9 +380,9 @@ class machinedata(QDialog):
         uic.loadUi(os.path.join(__dir__, 'ui', 'MachineData.ui'), self)
         self.setWindowTitle('Change machine data')
         self.data = data
-        self.spinBox_Q.setValue(self.data.machinedata['Q'])
-        self.spinBox_m.setValue(self.data.machinedata['m'])
-        self.spinBox_P.setValue(2*self.data.machinedata['p'])
+        self.spinBox_Q.setValue(self.data.get_num_slots())
+        self.spinBox_m.setValue(self.data.get_num_phases())
+        self.spinBox_P.setValue(2*self.data.get_num_polepairs())
         if self.data.get_num_layers() == 1:
             self.radioButton_slayer.setChecked(True)
         else:
@@ -400,7 +399,7 @@ class machinedata(QDialog):
             Q = self.spinBox_Q.value()
             P = self.spinBox_P.value()
             m = self.spinBox_m.value()
-            if Q < self.data.machinedata['Q']:
+            if Q < self.data.get_num_slots():
                 buttonReply = QMessageBox.question(self, 'Warning',
                  '''The defined number of slots is lower than the number of slots in the actual winding. \
 Is it ok to loose some these informations of the actual winding layout?''', 

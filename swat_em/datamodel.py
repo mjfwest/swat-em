@@ -47,7 +47,7 @@ class datamodel:
         self.machinedata = {}
         for key in self.machinedata_keys:
             self.machinedata[key] = None
-        self.machinedata['turns'] = 1
+        self.set_turns(1)
         self.actual_state_saved = False
     
     def reset_results(self):
@@ -68,8 +68,6 @@ class datamodel:
     def set_notes(self, notes):
         self.notes = notes
     
-    #  def set_config(self, config):
-        #  self.config = config
     
     def set_machinedata(self, Q = None, p = None, m = None):
         '''
@@ -85,11 +83,11 @@ class datamodel:
                  number of phases
         '''
         if Q:
-            self.machinedata['Q'] = int(Q)
+            self.set_num_slots(int(Q))
         if p:
-            self.machinedata['p'] = int(p)
+            self.set_num_polepairs(int(p))
         if m:
-            self.machinedata['m'] = int(m)
+            self.set_num_phases(int(m))
         self.actual_state_saved = False
         
         
@@ -107,12 +105,12 @@ class datamodel:
         wstep : winding step (slots as unit)
         ''' 
         self.machinedata['phases'] = S
-        self.machinedata['turns'] = turns
+        self.set_turns(turns)
         self.actual_state_saved = False
         self.set_machinedata(m = len(S))
         self.machinedata['phasenames'] = [string.ascii_uppercase[k] for k in range(len(S))]
         if wstep:
-            self.machinedata['wstep'] = int(wstep)
+            self.set_windingstep(int(wstep))
         
 
     def set_valid(self, valid, error):
@@ -155,7 +153,7 @@ class datamodel:
         Returns the number of layers of the actual winding layout
         '''
         l = 1
-        for p in self.machinedata['phases']:
+        for p in self.get_phases():
             if len(p[1]) > 1:
                 l = 2
         return l
@@ -168,18 +166,18 @@ class datamodel:
         '''
         if not 'basic_char' in self.results.keys():
             bc = analyse.get_basic_characteristics(
-                self.machinedata['Q'],
-                2*self.machinedata['p'],
-                self.machinedata['m'],
-                self.machinedata['phases'],
-                self.machinedata['turns'])
+                self.get_num_slots(),
+                2*self.get_num_polepairs(),
+                self.get_num_phases(),
+                self.get_phases(),
+                self.get_turns())
             self.results['basic_char'] = bc
         else:
             bc = self.results['basic_char']
 
-        dat = [['Number of slots ',    rep.italic('Q: '),  str(self.machinedata['Q'])],
-               ['Number of poles ',    rep.italic('2p: '), str(2*self.machinedata['p'])],
-               ['Number of phases ',   rep.italic('m: '),  str(self.machinedata['m'])],
+        dat = [['Number of slots ',    rep.italic('Q: '),  str(self.get_num_slots())],
+               ['Number of poles ',    rep.italic('2p: '), str(2*self.get_num_polepairs())],
+               ['Number of phases ',   rep.italic('m: '),  str(self.get_num_phases)],
                ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])]]
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
@@ -205,10 +203,52 @@ class datamodel:
         return bc, txt
         
     def calc_q(self):
-        self.results['q'] = analyse.calc_q(self.machinedata['Q'], 
-                                self.machinedata['p'],
-                                self.machinedata['m'])
-        
+        self.results['q'] = analyse.calc_q(self.get_num_slots(), 
+                                self.get_num_polepairs(),
+                                self.get_num_phases())
+    
+    def get_num_slots(self):
+        return self.machinedata['Q']
+    
+    def set_num_slots(self, Q):
+        self.machinedata['Q'] = Q
+    
+    def get_num_polepairs(self):
+        return self.machinedata['p']
+    
+    def set_num_polepairs(self, p):
+        self.machinedata['p'] = p
+    
+    def get_num_phases(self):
+        return self.machinedata['m']
+    
+    def set_num_phases(self, m):
+        self.machinedata['m'] = m
+    
+    def get_windingstep(self):
+        return self.machinedata['wstep']
+    
+    def set_windingstep(self, wstep):
+        self.machinedata['wstep'] = wstep
+    
+    def get_phases(self):
+        return self.machinedata['phases']
+    
+    def get_phasenames(self):
+        return self.machinedata['phasenames']
+    
+    def get_turns(self):
+        return self.machinedata['turns']
+    
+    def set_turns(self, turns):
+        self.machinedata['turns'] = turns
+    
+    def get_q(self):
+        if 'q' in self.results.keys():
+            return self.results['q']
+    
+    def set_q(self, q):
+        self.results['q'] = q
         
     def analyse_wdg(self):
         '''
@@ -217,9 +257,9 @@ class datamodel:
         self.reset_results()
         
         # number of slots per pole and phase
-        self.q = fractions.Fraction(self.machinedata['Q'] / (
-            self.machinedata['m']*2*self.machinedata['p'])).limit_denominator(100)
-        self.results['q'] = self.q
+        self.q = fractions.Fraction(self.get_num_slots() / (
+            self.get_num_phases()*2*self.get_num_polepairs())).limit_denominator(100)
+        self.set_q(self.q)
         self.n = self.q.denominator
         self.z = self.q.numerator
         
@@ -263,10 +303,10 @@ class datamodel:
         self.actual_state_saved = False
         
         # MMK
-        phi, MMK, theta = analyse.calc_MMK(self.machinedata['Q'],
-                                           self.machinedata['m'],
-                                           self.machinedata['phases'],
-                                           self.machinedata['turns'])
+        phi, MMK, theta = analyse.calc_MMK(self.get_num_slots(),
+                                           self.get_num_phases(),
+                                           self.get_phases(),
+                                           self.get_turns())
         nu = list(range(config['max_nu_MMK']+1))
         HA = analyse.DFT(MMK[:-1])[:config['max_nu_MMK']+1]
         self.results['MMK'] = {}
