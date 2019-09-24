@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 #  from swat.wdggenerator import genwdg, overlapping_fractional_slot_slayer, overlapping_fractional_slot_dlayer
 from swat_em.wdggenerator import genwdg
 from swat_em.datamodel import datamodel
-import swat_em.analyse
+#  import swat_em.analyse
 import numpy as np
 import pdb
 
