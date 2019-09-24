@@ -10,6 +10,7 @@ import copy
 import string
 import gzip
 import gc
+import numpy as np
 from swat_em import analyse
 from swat_em import report as rep
 from swat_em import wdggenerator
@@ -33,11 +34,8 @@ class datamodel:
     def __init__(self):
         self.reset_data()
         self.reset_results()
-        #  self.filename = None
         self.actual_state_saved = False
         
-    #  def set_filename(self, filename):
-        #  self.filename = filename
     
     def reset_data(self):
         '''
@@ -94,16 +92,17 @@ class datamodel:
         
     def set_phases(self, S, turns = 1, wstep = None):
         '''
-        setting the winding layout 
-
+        setting the winding layout
+        
         Parameters
         ----------
         S : list of lists
             winding layout for every phase, for example:
             S = [[1,-2], [3,-4], [5,-6]]. This means there are 3 phases
-            with phase 1 in in slot 1 and in slot 2 with negativ winding
-            direction.
-        wstep : winding step (slots as unit)
+            with phase 1 in in slot 1 and in slot 2 with negativ winding direction. 
+        wstep : integer
+                winding step (slots as unit)
+        
         ''' 
         self.machinedata['phases'] = S
         self.set_turns(turns)
@@ -137,7 +136,6 @@ class datamodel:
                  number of coil sides per slot    
         turns  : integer
                  number of turns per coil
-
         '''
         
         self.set_machinedata(Q, int(P/2), m)
@@ -234,6 +232,25 @@ class datamodel:
     
     def get_phases(self):
         return self.machinedata['phases']
+        
+    def get_layers(self):
+        N = self.get_num_layers()
+        Q = self.get_num_slots()
+        layers = np.zeros([N, Q], dtype=int)
+        layers_s = np.array(layers, dtype=str)
+        m = self.get_num_phases()
+        for kl in range(N):
+            for km in range(m):
+                for kcs in range(len(self.machinedata['phases'][km][kl])):
+                    slot = self.machinedata['phases'][km][kl][kcs]
+                    if slot > 0:
+                        layers[kl,abs(slot)-1] = (km+1)                    
+                        layers_s[kl,abs(slot)-1] = '+'+str(km+1)
+                    elif slot < 0:
+                        layers[kl,abs(slot)-1] = -(km+1)                    
+                        layers_s[kl,abs(slot)-1] = '-'+str(km+1)
+        return layers, layers_s
+        
     
     def get_phasenames(self):
         return self.machinedata['phasenames']

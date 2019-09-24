@@ -99,9 +99,9 @@ def wdg_is_symmetric(Ei, m):
     if len(Ei[0]) == 0:
         return None
     ei = Ei[0] # only for fundamental
-    angles = [np.angle(np.sum(k))/np.pi*180 for k in ei]
+    angles = [np.angle(sum(k))/np.pi*180 for k in ei]
     angles = [np.round(k, 4) for k in angles]
-    length = [np.abs(np.sum(k)) for k in ei]
+    length = [np.abs(sum(k)) for k in ei]
     #  print('angles1', angles)
     if m % 2 == 0: # shift all phasors to >180 for even number of phases
         angles = np.array(angles)
@@ -252,17 +252,14 @@ def calc_star(Q, S, turns, p, nu):
                winding factor (absolute value) for every phase
                kw[phase]
     '''
-    S2 = []
-    turns2 = []
+    S2 = _flatten(S)
+    if hasattr(turns, '__iter__'):
+        turns2 = _flatten(turns)
     for k in range(len(S)):
-        S2.append( [item for sublist in S[k] for item in sublist] )  # flatten layers
-        #  S2[k] = sorted(S2[k], key=abs)  # sort to abs values (slots in sequence -1,2,2,-3,...
         idx = np.argsort(np.abs(S2[k]))
         S2[k] = np.array(S2[k])[idx]
         if hasattr(turns, '__iter__'):
-            turns2.append( [item for sublist in turns[k] for item in sublist] )  # flatten
             turns2[k] =  np.array(turns2[k])[idx]
-
     Ei = []
     kw = []
     for i, s in enumerate(S2):
@@ -273,17 +270,18 @@ def calc_star(Q, S, turns, p, nu):
         
         alpha = 2.*nu*p*np.pi/(Q) * np.abs(s)
         
-        for k in range(len(s)):
-            if s[k] < 0:
-                alpha[k] += np.pi           # negative Zeiger umklappen
+        #  for k in range(len(s)):
+            #  if s[k] < 0:
+                #  alpha[k] += np.pi           # negative Zeiger umklappen
+        alpha[s<0] += np.pi
         
-        a = ( turn*np.exp(1j*alpha) )            # Spannungsvektoren berechnen
-        if np.sum(a) != 0.0:
-            b = np.abs(np.sum(a)) / np.sum(np.abs(a))
+        a = turn*np.exp(1j*alpha)           # Spannungsvektoren berechnen
+        if sum(a) != 0.0:
+            b = abs(sum(a)) / sum(np.abs(a))
         else:
-            b = np.array(0.0)
+            b = 0.0
         Ei.append( a.tolist() )
-        kw.append( b.tolist() )
+        kw.append( b )
     return Ei, kw
 
 
@@ -315,17 +313,16 @@ def calc_MMK(Q, m, S, turns = 1, N = 3601, angle = 0):
     return theta: list
                   effective current for each slot
     '''
-    S2 = []
-    turns2 = []
+    S2 = _flatten(S)
+    if hasattr(turns, '__iter__'):
+        turns2 = _flatten(turns)
     for k in range(len(S)):
-        S2.append( [item for sublist in S[k] for item in sublist] )  # flatten layers
-        #  S2[k] = sorted(S2[k], key=abs)  # sort to abs values (slots in sequence -1,2,2,-3,...
         idx = np.argsort(np.abs(S2[k]))
         S2[k] = np.array(S2[k])[idx]
         if hasattr(turns, '__iter__'):
-            turns2.append( [item for sublist in turns[k] for item in sublist] )  # flatten
             turns2[k] =  np.array(turns2[k])[idx]
-        
+    
+
     # step function
     def h(x):
         return np.where(x<0., 0., 1.)
@@ -398,6 +395,13 @@ def _get_float(txt):
     except:
         return None
     
+
+def _flatten(l):
+    l2 = []
+    for kl in l:
+        l2.append( [item for sublist in kl for item in sublist] )
+    return l2
+        
     
 def Divisors(n):
     '''
