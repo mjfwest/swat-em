@@ -301,10 +301,6 @@ p, li { white-space: pre-wrap; }
           <property name="text">
            <string>edit machine data</string>
           </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>icons/Qt/draw-freehand.png</normaloff>icons/Qt/draw-freehand.png</iconset>
-          </property>
          </widget>
         </item>
        </layout>
@@ -453,8 +449,8 @@ p, li { white-space: pre-wrap; }
   </connection>
  </connections>
  <buttongroups>
+  <buttongroup name="buttonGroup_3"/>
   <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
-  <buttongroup name="buttonGroup_3"/>
  </buttongroups>
 </ui>
