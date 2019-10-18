@@ -384,8 +384,10 @@ def calc_radial_force_modes(MMK, m, num_modes = 4):
     
     # include the modes evoked by the multiply of the phase-number
     # (this is the case if the winding is not star connected)
-    for k in range(num_modes):
+    for k in range(len(modes)):
         modes.append(int(m*modes[0]))
+        if k >= num_modes:
+            break
     modes = list(set(modes))  # remove duplicates
     modes.sort()
     modes = modes[:num_modes]
