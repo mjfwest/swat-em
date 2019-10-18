@@ -210,7 +210,7 @@ class datamodel:
                 self.get_num_phases(),
                 self.get_phases(),
                 self.get_turns())
-            bc['r'] = self.get_radial_force_modes(num_modes = 3)
+            bc['r'] = self.get_radial_force_modes(num_modes = config['radial_force']['num_modes'])
             self.results['basic_char'] = bc
         else:
             bc = self.results['basic_char']
@@ -950,6 +950,11 @@ class project:
             if not data.actual_state_saved:
                 return False
         return True
+
+    def analyse_all_models(self):
+        '''analyse/recalculate all existing models'''
+        for m in self.models:
+            m.analyse_wdg()
 
 
     def save_to_file(self, fname):

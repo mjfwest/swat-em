@@ -55,8 +55,12 @@ class Settings(QDialog):
         self.spinBox_nu_MMK.setValue(self.config['max_nu_MMK'])
         self.doubleSpinBox_threshold_wf.setValue(self.config['kw_min'])
         self.doubleSpinBox_threshold_mmf.setValue(self.config['plot_MMF_harmonics'])
+        self.spinBox_num_modes_radial_force.setValue(self.config['radial_force']['num_modes'])
         
-        self.spinBox_DPI.setValue(self.config['plt']['DPI'])
+        #  self.spinBox_DPI.setValue(self.config['plt']['DPI'])
+        self.spinBox_resx.setValue(self.config['plt']['res'][0])
+        self.spinBox_resy.setValue(self.config['plt']['res'][1])
+        
         self.doubleSpinBox_lw.setValue(self.config['plt']['lw'])
         self.doubleSpinBox_lw_thin.setValue(self.config['plt']['lw_thin'])
 
@@ -69,8 +73,12 @@ class Settings(QDialog):
         self.config['max_nu_MMK'] = self.spinBox_nu_MMK.value()
         self.config['kw_min'] = self.doubleSpinBox_threshold_wf.value() 
         self.config['plot_MMF_harmonics'] = self.doubleSpinBox_threshold_mmf.value() 
+        self.config['radial_force']['num_modes'] = self.spinBox_num_modes_radial_force.value() 
         
-        self.config['plt']['DPI'] = self.spinBox_DPI.value()
+        #  self.config['plt']['DPI'] = self.spinBox_DPI.value()
+        self.config['plt']['res'][0] = self.spinBox_resx.value()
+        self.config['plt']['res'][1] = self.spinBox_resy.value()
+        
         self.config['plt']['lw'] = self.doubleSpinBox_lw.value()
         self.config['plt']['lw_thin'] = self.doubleSpinBox_lw_thin.value()
         

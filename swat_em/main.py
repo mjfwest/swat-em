@@ -370,7 +370,8 @@ class MainWindow(QMainWindow):
         if ret:
             config = ret
             save_config(config)
-            self.data.analyse_wdg()   # recalc the winding model
+            #  self.data.analyse_wdg()        # recalc the winding model
+            self.project.analyse_all_models() # recalc all models
             self.update_data_in_GUI()
 
 
