@@ -150,7 +150,7 @@ class _slot_plot:
             self.fig.autoRange()
         
                         
-    def plot_coilsides(self, data, fname = None, res = None):
+    def plot_coilsides(self, data, fname = None, res = None, show = False):
         self.data = data
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
@@ -209,6 +209,9 @@ class _slot_plot:
             self.canvas1.draw()
         elif plotter == 'pyqtgraph':
             self.fig.autoRange()
+            if show:
+                self.fig.show()
+                self.app.exec_()
             if fname is not None:
                 self.app.processEvents()
                 exporter = pg.exporters.ImageExporter(self.fig.plotItem)#plotItem
@@ -252,7 +255,7 @@ class _slot_star:
 
         
     
-    def plot_star(self, data, harmonic_idx = 0, ForceX = None, fname = None, res = None):
+    def plot_star(self, data, harmonic_idx = 0, ForceX = None, fname = None, res = None, show = False):
         self.data = data
         if harmonic_idx < 0:
             harmonic_idx = 0
@@ -339,6 +342,9 @@ class _slot_star:
             self.canvas1.draw()
         elif plotter == 'pyqtgraph':
             self.fig.autoRange()
+            if show:
+                self.fig.show()
+                self.app.exec_()
             if fname is not None:
                 self.app.processEvents()
                 exporter = pg.exporters.ImageExporter(self.fig.plotItem)#plotItem
@@ -410,7 +416,7 @@ class _windingfactor:
         
         
     
-    def plot_windingfactor(self, data, mechanical = False, fname = None, res = None):
+    def plot_windingfactor(self, data, mechanical = False, fname = None, res = None, show = False):
         self.data = data
         if plotter == 'mpl':
             plt.figure(3)
@@ -459,7 +465,10 @@ class _windingfactor:
             ax.set_axisbelow(True)  # grid in background        
             leg = plt.legend(loc='upper right',labelspacing=0)    # labelspacing: Zeilenabstand
             self.canvas1.draw()
-        else:
+        elif plotter == 'pyqtgraph':
+            if show:
+                self.fig.show()
+                self.app.exec_()
             if fname is not None:
                 self.app.processEvents()
                 exporter = pg.exporters.ImageExporter(self.fig.plotItem)#plotItem
@@ -534,7 +543,7 @@ class _mmk:
             self.fig2.showGrid(x=True, y=True)
         
         
-    def plot_mmk(self, data, phase = 0, small_update = False, fname = None, res = None):
+    def plot_mmk(self, data, phase = 0, small_update = False, fname = None, res = None, show = False):
         '''
         Plottet MMF-Kurve
 
@@ -627,6 +636,9 @@ class _mmk:
                     brush=get_line_color(0), pen=pen) # , name='Phase '+str(k+1)
             self.fig2.addItem(bar)
             self.fig2.setXRange(min(phi), max(phi))
+            if show:
+                self.l.show()
+                self.app.exec_()
             if fname is not None:
                 #  import pdb
                 #  pdb.set_trace()
