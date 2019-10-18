@@ -174,7 +174,8 @@ class GenWindingCombinations(QDialog):
                                         'q (slots per pole per phase)',
                                         't (symmetry)',
                                         'a (parallel circuit)',
-                                        'lcm(Q,2p) (least common multiple)'])
+                                        'lcm(Q,2p) (least common multiple)',
+                                        'r1 (first mode of radial force)'])
         self.comboBox_plotval.currentIndexChanged.connect(self.update_table)
         #  self.generate()
 
@@ -260,6 +261,8 @@ class GenWindingCombinations(QDialog):
                             txt = str(bc['a'])
                         elif idx == 4:
                             txt = str(bc['lcmQP'])
+                        elif idx == 5:
+                            txt = str(bc['r'][0])
 
                         self.table.setItem(iQ, iP, QTableWidgetItem(txt))
                         q = bc['q']
