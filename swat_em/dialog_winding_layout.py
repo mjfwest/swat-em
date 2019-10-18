@@ -3,6 +3,7 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QMessageBox
 from PyQt5.QtGui import QDoubleValidator
 from swat_em.config import get_phase_color, config
+from swat_em.analyse import _get_float
 import os
 import sys
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -206,7 +207,7 @@ class layout(QDialog):
                             sign = 1 if phase > 0 else -1
                             while len(S) < abs(phase):
                                 S.append([[],[]])
-                            fl = get_float(item2.text())
+                            fl = _get_float(item2.text())
                             if fl is not None:
                                 S[abs(phase)-1][layer].append(fl)
                             else:
@@ -236,14 +237,14 @@ class layout(QDialog):
                         item.setBackground(QtGui.QColor(col))
                         if not self.radioTurnsFix.isChecked():
                             item2.setBackground(QtGui.QColor(col))
-                            fl = get_float(item2.text())
+                            fl = _get_float(item2.text())
                             if fl is None:
                                 item2.setText('0')
                     else:
                         item.setBackground(QtGui.QColor('white'))
                         if not self.radioTurnsFix.isChecked():
                             item2.setBackground(QtGui.QColor('white'))
-                            fl = get_float(item2.text())
+                            fl = _get_float(item2.text())
                             if fl is None:
                                 item2.setText('0')
 
@@ -307,7 +308,7 @@ class layout(QDialog):
         error = None
         if self.radioTurnsFix.isChecked():
             txt = self.lineEditFixTurns.text()
-            turns = get_float(txt)
+            turns = _get_float(txt)
             if turns == None:
                 QMessageBox.critical(self, 'Error', '"{}" is not a valid number of turns'.format(txt))
                 error = True
@@ -334,7 +335,7 @@ class layout(QDialog):
             
             if self.radioTurnsFix.isChecked():
                 txt = self.lineEditFixTurns.text()
-                turns = get_float(txt)
+                turns = _get_float(txt)
             else:
                 turns = self.read_turns()
             
