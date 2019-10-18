@@ -49,22 +49,62 @@ class datamodel:
         self.set_turns(1)
         self.actual_state_saved = False
     
+    
     def reset_results(self):
+        '''
+        Remove all existing results
+        '''
         self.results = {}
         for key in self.results_keys:
             self.results[key] = None
         self.actual_state_saved = False
     
+    
     def set_title(self, title):
+        '''
+        Set the title of the winding 
+
+        Parameters
+        ----------
+        return title :  string
+                        title
+        '''
         self.title = title
     
+    
     def get_title(self):
+        '''
+        Get the title of the winding 
+
+        Returns
+        ----------
+        return title :  string
+                        title
+        '''
         return self.title
     
+    
     def get_notes(self):
+        '''
+        Get notes for the winding 
+
+        Returns
+        ----------
+        return notes :  string
+                        Some notes
+        '''
         return self.notes
         
+        
     def set_notes(self, notes):
+        '''
+        Set additional notes for the winding 
+
+        Parameters
+        ----------
+        notes :  string
+                 Some notes
+        '''
         self.notes = notes
     
     
@@ -161,7 +201,7 @@ class datamodel:
     def get_basic_characteristics(self):
         '''
         Returns the basic charactericits of the winding as 
-        dictionary and a string
+        dictionary and a html string
         '''
         if not 'basic_char' in self.results.keys():
             bc = analyse.get_basic_characteristics(
@@ -170,13 +210,14 @@ class datamodel:
                 self.get_num_phases(),
                 self.get_phases(),
                 self.get_turns())
+            bc['r'] = self.get_radial_force_modes(num_modes = 3)
             self.results['basic_char'] = bc
         else:
             bc = self.results['basic_char']
 
         dat = [['Number of slots ',    rep.italic('Q: '),  str(self.get_num_slots())],
                ['Number of poles ',    rep.italic('2p: '), str(2*self.get_num_polepairs())],
-               ['Number of phases ',   rep.italic('m: '),  str(self.get_num_phases)],
+               ['Number of phases ',   rep.italic('m: '),  str(self.get_num_phases())],
                ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])]]
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
@@ -185,6 +226,8 @@ class datamodel:
         
         a_ = [str(i) for i in analyse.Divisors(bc['a'])]
         dat.append(['parallel connection ', rep.italic('a: '), ','.join(a_)])
+        r_ = [str(i) for i in bc['r']]
+        dat.append(['radial force modes ', rep.italic('r: '), ','.join(r_)+',..'])
         if bc['sym'] and bc['a']:
             dat.append(['symmetric ', '', str(bc['sym'])])
         else:
@@ -200,40 +243,171 @@ class datamodel:
         
         txt = ''.join(txt)
         return bc, txt
-        
-    def calc_q(self):
-        self.results['q'] = analyse.calc_q(self.get_num_slots(), 
-                                self.get_num_polepairs(),
-                                self.get_num_phases())
+    
+    
+    def get_radial_force_modes(self, num_modes = None):
+        '''
+        Returns the radial force modes caused by the winding.
+        The results includes also the modes with a multiple of the 
+        phase-number (which aren't there if the machine is star-connected). 
+
+        Parameters
+        ----------
+        num_modes : integer
+                    Max. number of modes
+
+        Returns
+        -------
+        return MMK: list
+                    radial force modes
+        '''
+        if num_modes == None:
+            num_modes = config['radial_force']['num_modes']
+        if 'MMK' not in self.results.keys():
+            self._calc_MMK()
+        return analyse.calc_radial_force_modes(self.results['MMK']['MMK'], 
+                                               self.get_num_phases(),
+                                               num_modes = num_modes)
+    
+    
+    #  def calc_q(self):
+        #  self.results['q'] = analyse.calc_q(self.get_num_slots(), 
+                                #  self.get_num_polepairs(),
+                                #  self.get_num_phases())
     
     def get_num_slots(self):
+        '''
+        Returns the number of slots Q
+
+        Returns
+        -------
+        return Q: integer
+                  number of slots
+        '''
         return self.machinedata['Q']
     
+    
     def set_num_slots(self, Q):
+        '''
+        Sets the number of slots Q 
+
+        Parameters
+        ----------
+        Q : integer
+            number of slots
+        '''
         self.machinedata['Q'] = Q
     
+    
     def get_num_polepairs(self):
+        '''
+        Returns the number of pole-pairs p
+
+        Returns
+        -------
+        return p: integer
+                  number of pole-pairs
+        '''
         return self.machinedata['p']
     
+    
     def set_num_polepairs(self, p):
+        '''
+        Sets the number of pole pairs p 
+
+        Parameters
+        ----------
+        p : integer
+            number of pole pairs
+        '''
         self.machinedata['p'] = p
     
+    
     def get_num_phases(self):
+        '''
+        Returns the number of phases m 
+
+        Returns
+        -------
+        return m: integer
+                  number of phases
+        '''
         return self.machinedata['m']
     
+    
     def set_num_phases(self, m):
+        '''
+        Sets the number of phases m 
+
+        Parameters
+        ----------
+        m : integer
+            number of phases
+        '''
         self.machinedata['m'] = m
     
+    
     def get_windingstep(self):
+        '''
+        Returns the winding step 
+
+        Returns
+        -------
+        return w: integer
+                  winding step
+        '''
         return self.machinedata['wstep']
     
-    def set_windingstep(self, wstep):
-        self.machinedata['wstep'] = wstep
+    
+    def set_windingstep(self, w):
+        '''
+        Sets the winding step w
+
+        Parameters
+        ----------
+        w : integer
+            winding step
+        '''
+        self.machinedata['wstep'] = w
+    
     
     def get_phases(self):
+        '''
+        Returns the definition of the winding layout. For every phase
+        there is a sublist which contains the slot number which are 
+        allocated to the phase.
+        phases
+
+        phases[0] contains the slot numbers for the first phase
+        phases[1] contains the slot numbers for the second phase
+        phases[m-1] contains the slot numbers for the last phase
+
+        Returns
+        -------
+        return phases: list of lists
+                       winding layout
+        '''
         return self.machinedata['phases']
         
+        
     def get_layers(self):
+        '''
+        Returns the definition of the winding layout alternative to the
+        'get_phases' function. For every layer (with the length of the
+        number of slots) there is a sublist which contains the phase-number.
+        
+        layers[0][0] contains the phase number for first layer and first slot
+        layers[0][1] contains the phase number for first layer and second slot
+        layers[0][Q-1] contains the phase number for first layer and last slot
+        layers[1][0] contains the phase number for second layer and first slot
+
+        Returns
+        -------
+        return layers:  list of lists
+                        winding layout
+        return slayers: list of lists
+                        same as 'layers' but as string
+        '''
         N = self.get_num_layers()
         Q = self.get_num_slots()
         layers = np.zeros([N, Q], dtype=int)
@@ -253,20 +427,80 @@ class datamodel:
         
     
     def get_phasenames(self):
+        '''
+        Returns the names of the phases as a series of characters
+        'A', 'B', 'C', ... with length of the number of phases
+        
+        Returns
+        -------
+        return phasenames: list
+                           names of the phases
+
+        Examples
+        -------
+        # if there are m = 3 phases:
+        >>> data.get_phasenames()
+            ['A', 'B', 'C']
+        '''
         return self.machinedata['phasenames']
     
+    
     def get_turns(self):
+        '''
+        Returns the number of turns. If all coil sides has the same
+        number of turns, the return value is a scalar. If every coil
+        side has an individual number of turns, the return value
+        consists of lists with the same shape as the winding layout
+        (phases)
+        
+        Returns
+        -------
+        return turns: integer, float or list of lists
+                      number of turns 
+        '''
         return self.machinedata['turns']
     
+    
     def set_turns(self, turns):
+        '''
+        Sets the number of turns. If all coil sides has the same
+        number of turns, the parameter should be an scalar. If every coil
+        side has an individual number of turns, the parameter value
+        have to consist of lists with the same shape as the winding layout
+        (phases)
+        
+        Parameters
+        -------
+        turns: integer, float or list of lists
+               number of turns 
+        '''
         self.machinedata['turns'] = turns
     
+    
     def get_q(self):
+        '''
+        Returns the number of slots per pole per phase.
+
+        Returns
+        -------
+        return layers:  Fraction
+                        number of slots per pole per phase
+        '''
         if 'q' in self.results.keys():
             return self.results['q']
     
-    def set_q(self, q):
+    
+    def _set_q(self, q):
+        '''
+        Sets the number of slots per pole per phase q 
+
+        Parameters
+        ----------
+        q : integer
+            number of slots per pole per phase
+        '''
         self.results['q'] = q
+        
         
     def analyse_wdg(self):
         '''
@@ -277,7 +511,7 @@ class datamodel:
         # number of slots per pole and phase
         self.q = fractions.Fraction(self.get_num_slots() / (
             self.get_num_phases()*2*self.get_num_polepairs())).limit_denominator(100)
-        self.set_q(self.q)
+        self._set_q(self.q)
         self.n = self.q.denominator
         self.z = self.q.numerator
         
@@ -321,10 +555,17 @@ class datamodel:
         self.actual_state_saved = False
         
         # MMK
+        self._calc_MMK()
+        
+        bc, bc_txt = self.get_basic_characteristics()
+        self.results['basic_char'] = bc
+
+
+    def _calc_MMK(self):
         phi, MMK, theta = analyse.calc_MMK(self.get_num_slots(),
-                                           self.get_num_phases(),
-                                           self.get_phases(),
-                                           self.get_turns())
+                                   self.get_num_phases(),
+                                   self.get_phases(),
+                                   self.get_turns())
         nu = list(range(config['max_nu_MMK']+1))
         HA = analyse.DFT(MMK[:-1])[:config['max_nu_MMK']+1]
         self.results['MMK'] = {}
@@ -333,30 +574,111 @@ class datamodel:
         self.results['MMK']['theta'] = theta
         self.results['MMK']['nu'] = nu
         self.results['MMK']['HA'] = HA.tolist()
+
+
+    def plot_layout(self, filename, res = None, show = False):
+        '''
+        Generates a figure of the winding layout
         
-        bc, bc_txt = self.get_basic_characteristics()
-        self.results['basic_char'] = bc
-
-
-    def plot_layout(self, filename, res = [800, 600]):
+        Parameters
+        -------
+        filename: string
+                  file-name with extension to save the figure
+        res: list 
+             Resolution for the figure in pixes for x and y direction
+             example: res = [800, 600]
+        show: Bool
+              If true the window pops up for interactive usage
+        '''
+        if res == None:
+            res = config['plt']['res']
         plt = plots._slot_plot(None, None, self)
         plt.plot_slots(self.get_num_slots())
-        plt.plot_coilsides(self, fname = filename, res = res)
+        plt.plot_coilsides(self, fname = filename, res = res, show = show)
         
         
-    def plot_star(self, filename, res = [800, 600], ForceX = True):
+    def plot_star(self, filename, 
+                        res = None, 
+                        ForceX = True, 
+                        show = False):
+        '''
+        Generates a figure of the star voltage phasors
+        
+        Parameters
+        -------
+        filename: string
+                  file-name with extension to save the figure
+        res: list 
+             Resolution for the figure in pixes for x and y direction
+             example: res = [800, 600]
+        ForceX: Bool
+                If true the voltage phasors are rotated in such way, that
+                the resulting phasor of the first phase matches the 
+                x-axis
+        show: Bool
+              If true the window pops up for interactive usage
+        '''
+        if res == None:
+            res = config['plt']['res']
         plt = plots._slot_star(None, None, self, None)
-        plt.plot_star(self, harmonic_idx = 0, ForceX = ForceX, fname = filename, res = res)
+        plt.plot_star(self, harmonic_idx = 0, 
+                            ForceX = ForceX, 
+                            fname = filename, 
+                            res = res, 
+                            show = show)
 
 
-    def plot_windingfactor(self, filename, res = [800, 600], mechanical = True):
+    def plot_windingfactor(self, filename, res = None, mechanical = True, show = False):
+        '''
+        Generates a figure of the winding layout
+        
+        Parameters
+        -------
+        filename: string
+                  file-name with extension to save the figure
+        m: list 
+             Resolution for the figure in pixes for x and y direction
+             example: res = [800, 600]
+        mechanical: Bool
+                    If true the winding factor is plotted with respect to the
+                    mechanical ordinal numbers. If false the electrical 
+                    ordinal numbers are used
+        show: Bool
+              If true the window pops up for interactive usage
+        '''
+        if res == None:
+            res = config['plt']['res']
         plt = plots._windingfactor(None, None, self, None)
-        plt.plot_windingfactor(self, mechanical = False, fname = filename, res = res)
+        plt.plot_windingfactor(self, mechanical = False, 
+                                     fname = filename, 
+                                     res = res, 
+                                     show = show)
 
 
-    def plot_MMK(self, filename, res = [800, 600], phase = 0):
+    def plot_MMK(self, filename, res = None, phase = 0, show = False):
+        '''
+        Generates a figure of the winding layout
+        
+        Parameters
+        -------
+        filename: string
+                  file-name with extension to save the figure
+        res: list 
+             Resolution for the figure in pixes for x and y direction
+             example: res = [800, 600]
+        phase: float
+               phase angle for the current system in electical degree
+               in the range 0..360°
+        show: Bool
+              If true the window pops up for interactive usage
+        '''
+        if res == None:
+            res = config['plt']['res']
         plt = plots._mmk(None, None, self, None)
-        plt.plot_mmk(self, phase = phase, fname = filename, res = res)
+        plt.plot_mmk(self, phase = phase, 
+                           fname = filename, 
+                           res = res, 
+                           show = show)
 
 
         

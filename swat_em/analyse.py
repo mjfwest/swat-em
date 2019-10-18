@@ -353,6 +353,45 @@ def calc_MMK(Q, m, S, turns = 1, N = 3601, angle = 0):
     return phi.tolist(), MMK.tolist(), theta.tolist()
 
 
+def calc_radial_force_modes(MMK, m, num_modes = 4):
+    '''
+    Calculates the radial force modes based on the 
+    magneto-motoric force (MMK). The results includes also the modes
+    with a multiple of the phase-number (which aren't there if the
+    machine is star-connected). 
+
+    Parameters
+    ----------
+    MMK :    array_like
+             waveform of the magneto-motoric foce
+    m :      integer
+             number of phases
+             
+    Returns
+    -------
+    return MMK:   list
+                  radial force modes
+    '''
+    HA = np.abs(DFT(np.array(MMK[:-1])**2))
+    
+    HA_max = np.max(HA)
+    modes = []
+    for k in range(1, len(HA)):
+        if HA[k] > 0.01*HA_max:
+            modes.append(k)
+        if len(modes) >= num_modes:
+            break
+    
+    # include the modes evoked by the multiply of the phase-number
+    # (this is the case if the winding is not star connected)
+    for k in range(num_modes):
+        modes.append(int(m*modes[0]))
+    modes = list(set(modes))  # remove duplicates
+    modes.sort()
+    modes = modes[:num_modes]
+    
+    return modes
+
 
 def DFT(vect):
     """
