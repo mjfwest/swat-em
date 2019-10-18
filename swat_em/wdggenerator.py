@@ -443,3 +443,121 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
             
     ret = {'phases': phases, 'wstep': w, 'valid': valid, 'error': error }
     return ret
+
+
+def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
+    #  Algorithm based on:
+    #  A General Mathematical Formulation for Winding
+    #  Layout Arrangement of Electrical Machines
+    #  Massimo Caruso, Antonino Oscar Di Tommaso, Fabrizio Marignetti
+    #  Rosario Miceli and Giuseppe Ricco Galluzzo
+    N = Q
+    p = P // 2
+    n_lay = layers
+    if layers == 2 and w == -1:
+        w = Q // P
+        if w <= 0:
+            w = 1
+
+    error = ''
+    info = ''
+    valid = True
+
+    
+    n_wc = n_lay*(N-n_es)/(2*m)
+    t = math.gcd(N, p)
+
+    # symmetric winding?
+    if m%2 == 0:
+        g = n_lay*N / (2*m*t)
+    else:
+        g = N / (2*m*t)
+    if int(g) != g:
+        valid = False
+        error += 'winding not symmetric'
+
+
+    # dead coil winding (empty slots)
+    n_es = int(N - 2*m*int(n_wc) / n_lay)
+    if n_es != 0:
+        info += 'attention: dead coil winding'
+
+    q = fractions.Fraction( (N-n_es) / (2*p*m) ).limit_denominator(1000)
+    a = int(q)
+    z = q.numerator - a
+
+
+
+    # create winding distribution table
+    n_c = int(N / m)
+    WDT = np.zeros(m*n_c, dtype=int)
+    i=1
+    while i <= N:
+        ind = np.mod(p*(i-1)+1, N)
+        if ind == 0:
+            ind = N
+        while WDT[ind-1] != 0:
+            ind = ind+1
+        WDT[ind-1] = i
+        i = i+1
+        ind = ind+1
+
+    WDT = WDT.reshape(m, n_c)
+
+
+    if m%2 == 0:
+        shift = int(m/2-1)
+    else:
+        shift = int( (m-1)/2 )
+
+    # for some bar windings
+    #  if fractions.Fraction(n_wc).limit_denominator(1000).denominator == 2:
+        #  shift = n_wc + 1 # this  
+        #  shift = n_wc - 1 # or this is possible
+
+    # non-ruduced and normal systems
+    if m%2 != 0:
+        print(WDT)
+        a = WDT[:,:int(n_c/2)]
+        b = WDT[:,int(n_c/2):] * (-1)
+        b = np.roll(b, -shift, axis=0)
+        WDT2 = np.append(a,b,axis=1)
+        print(WDT2)
+    else:
+        dx = int(n_c/2)
+        dy = int(m/2)
+        a = WDT[:dy,:dx]
+        b = WDT[:dy,dx:] * (-1)
+        c = WDT[dy:,:dx] * (-1)
+        d = WDT[dy:,dx:]
+        
+        left = np.append(a, b, axis=0)
+        right = np.append(c, d, axis=0)
+        WDT2 = np.append(left, right, axis=1)
+        
+    if n_es > 0:
+        WDT2 = WDT2[:,:-int(n_es/m)]
+
+    S = []
+    for k in range(np.shape(WDT2)[0]):
+        s = WDT2[k,:]
+        idx = np.argsort(np.abs(s))
+        s = s[idx]
+        S.append([s.tolist(),[]])
+
+    if n_lay == 2:
+        for k in range(len(S)):
+            for s in S[k][0]:
+                sign = 1 if s > 0 else -1
+                s = abs(s) + w
+                while s > N:
+                    s -= N
+                while s < 1:
+                    s += N
+                S[k][1].append(sign*(-1)*s)
+    
+    if n_lay == 1:
+        w = fractions.Fraction(N / (2*p))
+    
+    ret = {'phases': S, 'wstep': w, 'valid': valid, 'error': error, 'info': info }
+    return ret
