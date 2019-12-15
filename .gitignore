@@ -3,6 +3,14 @@
 tests/report.html
 *egg-info/
 
+*.log
+*.blg
+*.bbl
+*.backup
+*.aux
+*.out
+*.toc
+
 build/
 dist/
 TODO.txt
