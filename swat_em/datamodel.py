@@ -649,7 +649,7 @@ class datamodel:
         if res == None:
             res = config['plt']['res']
         plt = plots._windingfactor(None, None, self, None)
-        plt.plot_windingfactor(self, mechanical = False, 
+        plt.plot_windingfactor(self, mechanical = mechanical, 
                                      fname = filename, 
                                      res = res, 
                                      show = show)
