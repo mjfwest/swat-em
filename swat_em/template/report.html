@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  padding: 10px;
+  max-width:100%;
+<!--
+  width: 500px;
+-->
+  display: inline-block;
+}
+
+img {
+    display: inline-block;
+    max-width: 100%;
+    max-height: 100%;
+    width:600px;
+    height:auto;
+}
+
+.row {
+  width:1040px;
+  border:1px solid;
+  white-space:nowrap;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+</style>
+</head>
+<body>
+
+<!--
+<h2>{{ TITLE }}</h2>
+-->
+
+
+<!--
+<h3>Winding Layout</h3>
+ <img src="{{ plot_layout }}" alt="Winding layout"> 
+-->
+<!--
+ <img src="{{ plot_layout }}" alt="Winding layout" style="width:500px;height:600px;"> 
+-->
+
+
+
+<h3>Winding Layout for "{{ TITLE }}"</h3>
+<div class="row">
+  <div class="column">
+    {{ table_bc }}
+  </div>
+
+  <div class="column">
+ <img src="{{ plot_layout }}" alt="phasors" > 
+  </div>
+</div>
+
+
+
+
+
+<h3>Star of slots - voltage phasors</h3>
+<div class="row">
+  <div class="column">
+    {{ table_star }}
+  </div>
+
+  <div class="column">
+ <img src="{{ plot_star }}" alt="phasors"> 
+  </div>
+</div>
+
+
+<h3>Winding Factor - electrical ordinal numbers</h3>
+<div class="row">
+  <div class="column">
+    {{ table_wf_el }}
+  </div>
+
+  <div class="column">
+ <img src="{{ plot_wf_el }}" alt="phasors"> 
+  </div>
+</div>
+
+
+<h3>Winding Factor - mechanical ordinal numbers</h3>
+<div class="row">
+  <div class="column">
+    {{ table_wf_mech }}
+  </div>
+
+  <div class="column">
+ <img src="{{ plot_wf_mech }}" alt="phasors"> 
+  </div>
+</div>
+
+
+<h3>Magnetomotive force (MMF)</h3>
+<div class="row">
+  <div class="column">
+    {{ table_MMK }}
+  </div>
+
+  <div class="column">
+ <img src="{{ plot_MMK }}" alt="phasors"> 
+  </div>
+</div>
+
+
+
+
+
+
+
+</body>
+</html>
