@@ -60,11 +60,11 @@ def table(dat, header=[]):
     return txt
 
 
+
 class HtmlReport:
     def __init__(self, data):
         self.data = data
         self.template = os.path.abspath(os.path.join(os.path.dirname(__file__), 'template', 'report.html'))
-
 
     def create_figures(self, tmpdir):
         self.data.plot_layout(os.path.join(tmpdir,'plot_layout.png'), res = [800, 600])
@@ -79,7 +79,6 @@ class HtmlReport:
         filename = '/media/ramdisk/report.html'
         tmpdir = '/media/ramdisk'   # for testing
         
-        
         self.create_figures(tmpdir)
         
         # create table of star of slots
@@ -90,7 +89,6 @@ class HtmlReport:
             ph = np.angle( np.sum(ei[km]) )/np.pi*180
             d.append([str(km+1), str(round(A,1)), str(round(ph,1))])
         _table_star = '\n'.join(table(d, header = ['m', 'A', 'phase']))
-        
         
         # create table of winding factor
         # electrical
@@ -112,8 +110,6 @@ class HtmlReport:
         _table_wf_mech = '\n'.join(table(d, header = header))
         
         # create MMK
-        
-        
         d = []
         phi, MMK, theta = analyse.calc_MMK(self.data.get_num_slots(),
                            self.data.get_num_phases(),
@@ -131,8 +127,7 @@ class HtmlReport:
         _table_MMK = '\n'.join(table(d, header = header))
 
         
-        
-        
+        # Write to template
         with open(self.template) as f:
             tmpl = f.readlines()
         
@@ -161,8 +156,8 @@ class HtmlReport:
         with open(filename, 'w') as f:
             f.write('\n'.join(_report))
 
-        import webbrowser
-        webbrowser.open(filename)
+        #  import webbrowser
+        #  webbrowser.open(filename)
 
 
 
