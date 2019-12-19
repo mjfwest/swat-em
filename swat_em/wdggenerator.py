@@ -12,7 +12,7 @@ def is_even(val):
     '''
     Returns True if absolute value is even
     '''
-    return True if abs(val) % 2 is 0 else False
+    return True if abs(val) % 2 == 0 else False
 
 
 def genwdg(Q, P, m, w, layers):
@@ -212,7 +212,7 @@ def overlapping_fractional_slot_slayer(Q, P, m):
         cgroups_per_phase[1], cgroups_per_phase[2] = cgroups_per_phase[2], cgroups_per_phase[1]
     
     for i in range(m):
-        if i%2 is not 0:
+        if i%2 != 0:
             l = deque(cgroups_per_phase[i])
             l.rotate(1)
             cgroups_per_phase[i] = list(l)
@@ -355,18 +355,18 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
     # Test if there are enough slots for the winding
     if layers == 1:
         test1 = fractions.Fraction(Q / (2*m)).limit_denominator(100)
-        if test1.denominator is not 1:
+        if test1.denominator != 1:
             valid = False
             error += 'For single layer winding Q/(2*m) must be an integer\n'
     elif layers == 2:
         test1 = fractions.Fraction(Q / m).limit_denominator(100)
-        if test1.denominator is not 1:
+        if test1.denominator != 1:
             valid = False
             error += 'For double layer winding Q/m must be an integer'
         
 
     test2 = fractions.Fraction(Q / (m*t)).limit_denominator(100)
-    if test2.denominator is not 1:
+    if test2.denominator != 1:
         valid = False
         error += 'winding not feasible'
 
