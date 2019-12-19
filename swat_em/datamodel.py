@@ -254,7 +254,8 @@ class datamodel:
         Parameters
         ----------
         num_modes : integer
-                    Max. number of modes
+                    Max. number of modes. If not given the default value
+                    from the config file is used
 
         Returns
         -------
@@ -269,11 +270,6 @@ class datamodel:
                                                self.get_num_phases(),
                                                num_modes = num_modes)
     
-    
-    #  def calc_q(self):
-        #  self.results['q'] = analyse.calc_q(self.get_num_slots(), 
-                                #  self.get_num_polepairs(),
-                                #  self.get_num_phases())
     
     def get_num_slots(self):
         '''
@@ -681,8 +677,40 @@ class datamodel:
                            show = show)
 
 
-        
+    def save_to_file(self, fname):
+        '''
+        Saves the data to file. 
 
+        Parameters
+        ----------
+        fname :  string
+                 file name
+        ''' 
+        save_models_to_file(self, fname)
+
+
+    def load_from_file(self, fname, idx_in_file = 0):
+        '''
+        Load data from file. 
+
+        Parameters
+        ----------
+        fname :  string
+                 file name
+        ''' 
+        data = load_models_from_file(fname)
+        if idx_in_file > len(data):
+            raise Exception('defined index in greater than the available number of models in the *.wdg file')
+        else:
+            data = data[idx_in_file]
+            self.machinedata = data.machinedata
+            self.results = data.results
+
+
+
+
+
+"""
     def save_to_file(self, fname):
         '''
         Saves the data to file. 
@@ -829,7 +857,7 @@ class datamodel:
             
                 self.results = copy.deepcopy(M['results'])
             self.actual_state_saved = True
-
+"""
 
 
 class project:
@@ -842,14 +870,23 @@ class project:
         self.filename = None
         self.undo_state = []
         self.redo_state = []
+        self._is_saved = False
         
+    def get_save_state(self):
+        return self._is_saved
+    
+    def set_save_state(self, state):
+        self._is_saved = state
+    
+    
     def save_undo_state(self):
         '''saves the actual state of the models for undo function'''
-        self.undo_state.append(copy.deepcopy(self.models))
+        self.undo_state.append(copy.deepcopy([self.models, self._is_saved]))
+        self.set_save_state(False)
     
     def save_redo_state(self):
         '''saves the actual state of the models for redo function'''
-        self.redo_state.append(copy.deepcopy(self.models))
+        self.redo_state.append(copy.deepcopy([self.models, self._is_saved]))
     
     def reset_undo_state(self):
         '''delete all existings undo state saves - no undo possible any more'''
@@ -858,6 +895,13 @@ class project:
     def reset_redo_state(self):
         '''delete all existings redo state saves - no redo possible any more'''
         self.redo_state = []
+    
+    def reset_save_state(self):
+        '''set the save state to False for all redo and undo actions'''
+        for k in range(len(self.undo_state)):
+            self.undo_state[k][1] = False
+        for k in range(len(self.redo_state)):
+            self.redo_state[k][1] = False
     
     def get_num_undo_state(self):
         '''return the number of undo state saves = number of possible undo opserations'''
@@ -870,19 +914,24 @@ class project:
     def undo(self):
         '''restores the last state'''
         if self.get_num_undo_state() > 0:
-            self.models = self.undo_state.pop(-1)
+            self.models, self._is_saved = self.undo_state.pop(-1)
             gc.collect()  # force to free memory
     
     def redo(self):
         '''restores the last state'''
         if self.get_num_redo_state() > 0:
-            self.models = self.redo_state.pop(-1)
+            self.models, self._is_saved = self.redo_state.pop(-1)
             gc.collect()  # force to free memory
     
     def set_filename(self, filename):
         '''saves the filename if a the data is load from file or
         stored to a file'''
         self.filename = filename
+    
+    def get_filename(self):
+        '''returns the *.wdg filename if the project ist saved.
+        Otherwise None is returned'''
+        return self.filename
     
     def gen_model_name(self):
         '''
@@ -904,7 +953,7 @@ class project:
         if data.title == '':
             name = self.gen_model_name()
             data.set_title(name)
-            data.actual_state_saved = False
+            #  data.actual_state_saved = False
         self.models.append(data)
         
     def get_titles(self):
@@ -927,7 +976,7 @@ class project:
         '''duplicates the model with the index 'idx' '''
         data = copy.deepcopy(self.models[idx])
         data.set_title(data.get_title() + '_copy')
-        data.actual_state_saved = False
+        #  data.actual_state_saved = False
         self.add_model(data)
 
     def rename_by_index(self, idx, newname):
@@ -939,22 +988,12 @@ class project:
         '''replaces the model of index 'idx' with 'newmodel' '''
         self.models[idx] = newmodel
 
-    def set_actual_state_saved(self):
-        '''marks all models as saved'''
-        for data in self.models:
-            data.actual_state_saved = True
-
-    def get_actual_state_saved(self):
-        '''returns True if all data is saved'''
-        for data in self.models:
-            if not data.actual_state_saved:
-                return False
-        return True
 
     def analyse_all_models(self):
         '''analyse/recalculate all existing models'''
         for m in self.models:
             m.analyse_wdg()
+
 
 
     def save_to_file(self, fname):
@@ -963,24 +1002,13 @@ class project:
 
         Parameters
         ----------
+                 
         fname :  string
                  file name
         ''' 
-        M = {}
-        M['file_format'] = self.file_format
-        M['models'] = []
-        for data in self.models:
-            N = {}
-            N['machinedata'] = data.machinedata
-            N['title'] = data.title
-            N['notes'] = data.notes
-            M['models'].append(N)
-            
-        # save as ASCII file
-        with open(fname, 'w') as f:
-            json.dump(M, f, indent = 2)
-        self.actual_state_saved = True
-
+        save_models_to_file(self.models, fname, file_format = self.file_format)
+        self.reset_save_state()
+        self.set_save_state(True)
 
 
     def load_from_file(self, fname):
@@ -992,38 +1020,99 @@ class project:
         fname :  string
                  file name
         ''' 
-        try:
-            if os.path.isfile(fname):
-                with open(fname) as f:
-                    M = json.load(f)
-        except:
-            # file_format 1 is saved compressed
-            import gzip
-            with gzip.GzipFile(fname) as f:     # gzip
-                s = f.read()                    # bytes
-                s = s.decode('utf-8')           # string
-                M = json.loads(s)               # data  
-        
-        if M['file_format'] == 1:
+        models = load_models_from_file(fname)
+        if len(models) > 0:
             self.models = []
+            for m in models:
+                self.add_model(m)
+            self.set_filename(fname)
+            self.reset_undo_state()
+            self.reset_redo_state()
+            self.reset_save_state()
+            self.set_save_state(True)
+
+
+
+def save_models_to_file(models, fname, file_format = 2):
+    '''
+    Saves winding models to file. 
+    The data is stored as a json file.
+
+    Parameters
+    ----------
+    models:  datamodel object or list of datamodel objects
+             models to save
+             
+    fname :  string
+             file name
+    ''' 
+    if not hasattr(models, '__iter__'):
+        models = [models]
+    M = {}
+    M['file_format'] = file_format
+    M['models'] = []
+    for data in models:
+        N = {}
+        N['machinedata'] = data.machinedata
+        N['title'] = data.title
+        N['notes'] = data.notes
+        M['models'].append(N)
+        
+    # save as ASCII file
+    with open(fname, 'w') as f:
+        json.dump(M, f, indent = 2)
+
+
+def load_models_from_file(fname):
+    '''
+    Load winding models from file. 
+
+    Parameters
+    ----------
+    fname :  string
+             file name
+    ''' 
+    try:
+        if os.path.isfile(fname):
+            with open(fname) as f:
+                M = json.load(f)
+    except:
+        # file_format 1 is saved compressed
+        import gzip
+        with gzip.GzipFile(fname) as f:     # gzip
+            s = f.read()                    # bytes
+            s = s.decode('utf-8')           # string
+            M = json.loads(s)               # data  
+    
+    if M['file_format'] == 1:
+        models = []
+        data.machinedata = M['machinedata']
+        if 'turns' not in data.machinedata.keys():
+            data.machinedata['turns'] = 1
+        data.analyse_wdg()
+        models = [data]
+    
+    elif M['file_format'] == 2:
+        models = []
+        for m in M['models']:
             data = datamodel()
-            data.machinedata = M['machinedata']
-            if 'turns' not in data.machinedata.keys():
-                data.machinedata['turns'] = 1
+            data.machinedata = m['machinedata']
+            data.set_title(m['title'])
+            data.set_notes(m['notes'])
             data.analyse_wdg()
-            self.add_model(data)
-            self.set_actual_state_saved()
-        
-        elif M['file_format'] == 2:
-            self.models = []
-            for m in M['models']:
-                data = datamodel()
-                data.machinedata = m['machinedata']
-                data.set_title(m['title'])
-                data.set_notes(m['notes'])
-                data.analyse_wdg()
-                self.add_model(data)
-            self.set_actual_state_saved()
-        self.set_filename(fname)
+            models.append(data)
+    
+    return models
+
+
+
+
+
+
+
+
+
+
+
 
 

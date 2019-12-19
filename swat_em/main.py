@@ -37,6 +37,7 @@ from swat_em.config import config, save_config
 from swat_em import datamodel
 from swat_em import wdggenerator
 from swat_em import plots
+from swat_em import report
 from swat_em.analyse import _get_float
 
 MSG_TIME = 3000   # time in which the message is displayed in the statusbar
@@ -66,8 +67,8 @@ class MainWindow(QMainWindow):
         self.projectlist_Button_clone.clicked.connect(self.projectlist_clone)
         self.projectlist_Button_notes.clicked.connect(self.dialog_get_notes)
         self.projectlist_Button_manual.clicked.connect(self.dialog_EditWindingLayout)
-        self.projectlist_Button_auto.clicked.connect(self.dialog_GenWinding)
-        self.projectlist_Button_table.clicked.connect(self.dialog_GenWindingCombinations)
+        #  self.projectlist_Button_auto.clicked.connect(self.dialog_GenWinding)
+        #  self.projectlist_Button_table.clicked.connect(self.dialog_GenWindingCombinations)
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
@@ -114,7 +115,7 @@ class MainWindow(QMainWindow):
 
 
         # TODO
-        self.actionprint_report.triggered.connect(lambda: QMessageBox.information(self, 'Information', 'Not implemented yet'))
+        self.actionprint_report.triggered.connect(self.create_report)
         self.actionHelp.triggered.connect(self.open_manual)
         
         self.plot_tabs.currentChanged.connect(lambda: self.update_plot_in_GUI(small_update = False))
@@ -136,8 +137,8 @@ class MainWindow(QMainWindow):
         self.data.set_title('9-8 tooth-coil winding')
         self.project.add_model(self.data)
         
-        self.project.set_actual_state_saved()  # only for the initial winding
-        
+        self.project.set_save_state(True)  # only for the initial winding
+        self.check_is_saved()
         
         # Plots
         self.MMK_phase_edit.setValidator(QDoubleValidator(0, 360, 1))
@@ -161,12 +162,32 @@ class MainWindow(QMainWindow):
         self.show()
     
     
+    def check_is_saved(self):
+        '''
+        checks if the project ist saved for
+        - setting the title of the main window with the filename
+        - mark the file-name in the window title with a * if it is not saved
+        - disable redu/undo buttons if there are no available states
+        '''
+        if self.project.get_num_undo_state() < 1:
+            self.actionundo.setDisabled(True) # no more states to restore
+        if self.project.get_num_redo_state() < 1:
+            self.actionredo.setDisabled(True) # no more states to restore
+        
+        fname = self.project.get_filename()
+        if fname:
+            if not self.project.get_save_state():
+                fname = '*' + fname
+            self.setWindowTitle(fname + ' - SWAT-EM')
+        
+    
     def save_undo_state(self):
         '''save the actual state of the project models for undo operation'''
         self.project.save_undo_state()
         self.actionundo.setDisabled(False)
         self.project.reset_redo_state() # redo states aren't valid any more
         self.actionredo.setDisabled(True)
+        self.check_is_saved()
         
     
     def undo(self):
@@ -176,8 +197,7 @@ class MainWindow(QMainWindow):
         self.project.undo()
         self.update_project_list()
         #  self.update_project()
-        if self.project.get_num_undo_state() < 1:
-            self.actionundo.setDisabled(True) # no more states to restore
+        self.check_is_saved()
         
     def redo(self):
         self.project.save_undo_state()
@@ -185,8 +205,7 @@ class MainWindow(QMainWindow):
         self.project.redo()
         self.update_project_list()
         #  self.update_project()
-        if self.project.get_num_redo_state() < 1:
-            self.actionredo.setDisabled(True) # no more states to restore
+        self.check_is_saved()
     
     
     def update_project_list(self, switch_to_new = False):
@@ -428,6 +447,7 @@ class MainWindow(QMainWindow):
         else:
             self.project.save_to_file(self.project.filename)
             self.statusbar.showMessage('Project saved as ' + self.project.filename, MSG_TIME)
+            self.check_is_saved()
             return True
 
 
@@ -444,13 +464,14 @@ class MainWindow(QMainWindow):
             self.project.set_filename(filename) 
             self.project.save_to_file(self.project.filename)
             self.statusbar.showMessage('Project saved as ' + self.project.filename, MSG_TIME)
+            self.check_is_saved()
             return True
         else:
             return False
 
 
     def load_from_file(self):
-        if not self.project.get_actual_state_saved():
+        if not self.project.get_save_state():
             ok = QMessageBox.question(self, 'Exit program', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
             if ok == QMessageBox.Yes:
                 ret = self.save_to_file()
@@ -469,13 +490,14 @@ class MainWindow(QMainWindow):
             self.project.set_filename(filename)
             self.update_project_list()
             self.update_data_in_GUI()
+        self.check_is_saved()
         
     
     def closeEvent(self, event):
         # Exit programm
         
         # Ask for saving
-        if self.project.get_actual_state_saved():
+        if self.project.get_save_state():
             event.accept() # let the window close
         else:
             #  print('ask for saving')
@@ -500,6 +522,12 @@ class MainWindow(QMainWindow):
             os.startfile(doc)
         else:                                   # linux variants
             subprocess.call(('xdg-open', doc))
+
+    def create_report(self):
+        rep = report.HtmlReport(self.data)
+        rep.create()
+        rep.open_in_browser()
+
 
 def main():
     # command line options

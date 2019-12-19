@@ -562,76 +562,6 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="projectlist_Button_auto">
-            <property name="minimumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Auto winding layout</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>icons/generator.png</normaloff>icons/generator.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="projectlist_Button_table">
-            <property name="minimumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Winding layout by table</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>icons/table.png</normaloff>icons/table.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QToolButton" name="projectlist_Button_notes">
             <property name="minimumSize">
              <size>
@@ -929,11 +859,11 @@
    <addaction name="actionsave"/>
    <addaction name="actionsave_as"/>
    <addaction name="actionload"/>
+   <addaction name="actionprint_report"/>
    <addaction name="separator"/>
    <addaction name="actionundo"/>
    <addaction name="actionredo"/>
    <addaction name="separator"/>
-   <addaction name="actionprint_report"/>
    <addaction name="actionShow_winding_layout"/>
    <addaction name="actionGenerate_winding"/>
    <addaction name="actionGenerate_winding_combinations"/>
@@ -1032,10 +962,10 @@
   <action name="actionprint_report">
    <property name="icon">
     <iconset>
-     <normaloff>icons/Qt/document-print-preview.png</normaloff>icons/Qt/document-print-preview.png</iconset>
+     <normaloff>icons/print.png</normaloff>icons/print.png</iconset>
    </property>
    <property name="text">
-    <string>print report</string>
+    <string>create HTML report in webbrowser</string>
    </property>
   </action>
   <action name="actionShow_winding_layout">
