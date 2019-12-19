@@ -14,7 +14,7 @@ import numpy as np
 from swat_em import analyse
 from swat_em import report as rep
 from swat_em import wdggenerator
-from swat_em.config import config
+from swat_em.config import config, get_phase_color
 from swat_em import plots
 
 
@@ -269,7 +269,34 @@ class datamodel:
         return analyse.calc_radial_force_modes(self.results['MMK']['MMK'], 
                                                self.get_num_phases(),
                                                num_modes = num_modes)
-    
+
+
+    def get_num_basic_windings_t(self):
+        '''
+        Returns the number of basic windings 't' for the actual
+        winding layout
+
+        Returns
+        -------
+        return t: integer
+        '''
+        l, ls, lcol = self.get_layers()
+        layers, Q = l.shape
+
+        t = 1
+        i = 2
+        while i<=Q//2:
+            if Q % i == 0:
+                length = Q//i
+                is_t = True
+                for k in range(i-1):
+                    if not np.all( l[:,k*length:(k+1)*length] == l[:,(k+1)*length:(k+2)*length] ):
+                        is_t = False
+                if is_t:
+                    t = i
+            i += 1
+        return t
+
     
     def get_num_slots(self):
         '''
@@ -399,18 +426,23 @@ class datamodel:
 
         Returns
         -------
-        return layers:  list of lists
-                        winding layout
-        return slayers: list of lists
-                        same as 'layers' but as string
+        return layers:     numpy array 
+                           winding layout
+        return slayers:    numpy array 
+                           same as 'layers' but as string
+        return layers_col: numpy array 
+                           phase colors
         '''
         N = self.get_num_layers()
         Q = self.get_num_slots()
         layers = np.zeros([N, Q], dtype=int)
         layers_s = np.array(layers, dtype=str)
+        layers_col = np.array(layers, dtype=str)
+        layers_col[:] = '#FFFFFF'
         m = self.get_num_phases()
         for kl in range(N):
             for km in range(m):
+                col = get_phase_color(km)
                 for kcs in range(len(self.machinedata['phases'][km][kl])):
                     slot = self.machinedata['phases'][km][kl][kcs]
                     if slot > 0:
@@ -419,7 +451,8 @@ class datamodel:
                     elif slot < 0:
                         layers[kl,abs(slot)-1] = -(km+1)                    
                         layers_s[kl,abs(slot)-1] = '-'+str(km+1)
-        return layers, layers_s
+                    layers_col[kl, abs(slot)-1] = col
+        return layers, layers_s, layers_col
         
     
     def get_phasenames(self):
