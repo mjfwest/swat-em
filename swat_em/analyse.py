@@ -341,8 +341,8 @@ def calc_MMK(Q, m, S, turns = 1, N = 3601, angle = 0):
                 turn = turns2[k1][k2]
             else:
                 turn = turns
-            
             idx = np.abs(phase[k2])
+            idx = idx-Q if idx > Q else idx
             VZ = np.sign(phase[k2])
             theta[idx-1] += VZ*I[k1]*turn
     MMK = np.zeros(np.shape(phi))

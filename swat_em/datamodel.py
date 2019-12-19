@@ -271,9 +271,9 @@ class datamodel:
                                                num_modes = num_modes)
 
 
-    def get_num_basic_windings_t(self):
+    def calc_num_basic_windings_t(self):
         '''
-        Returns the number of basic windings 't' for the actual
+        Calculates and returns the number of basic windings 't' for the actual
         winding layout
 
         Returns
