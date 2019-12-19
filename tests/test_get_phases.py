@@ -16,9 +16,10 @@ def test_get_layers():
     #  bc, txt = data.get_basic_characteristics()
     #  print(bc)
 
-    l, ls = data.get_layers()
+    l, ls, lcol = data.get_layers()
     #  print(l)
     #  print(ls)
+    #  print(lcol)
     assert list(l[0,:]) == [1,2,-2,-3,3,1,-1,-2,2,3,-3,-1] # first layer
     assert list(l[1,:]) == [1,-1,-2,2,3,-3,-1,1,2,-2,-3,3] # second layer
 

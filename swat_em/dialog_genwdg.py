@@ -6,6 +6,7 @@ from PyQt5.QtGui import QIntValidator
 from PyQt5 import QtGui
 from PyQt5 import QtCore
 #  from PyQt5.QtCore import Qt
+import numpy as np
 import sys
 import os
 
@@ -114,18 +115,15 @@ class GenWinding2(QDialog):
             self.table.setRowCount(self.layers)
             self.table.setColumnCount(self.data.get_num_slots())
             
-            for km, ph in enumerate(self.data.get_phases()):
-                col = get_phase_color(km)
-                for kl in range(len(ph)):
-                    layer = ph[kl]
-                    for cs in layer:
-                        if cs > 0:
-                            self.table.setItem(kl, cs-1, QTableWidgetItem('+' + str(km+1)))
-                        else:
-                            self.table.setItem(kl, abs(cs)-1, QTableWidgetItem('-' + str(km+1)))
-                        self.table.item(kl, abs(cs)-1).setBackground(QtGui.QColor(col))
-                        #  self.table.item(kl, abs(cs)-1).setFlags(Qt.ItemIsEditable)
-                        self.table.item(kl, abs(cs)-1).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            l, ls, lcol = self.data.get_layers()
+            for k1 in range(np.shape(l)[0]):
+                for k2 in range(np.shape(l)[1]):
+                    self.table.setItem(k1, k2, QTableWidgetItem(ls[k1,k2]))
+                    item = self.table.item(k1,k2)
+                    if item:
+                        item.setBackground(QtGui.QColor(lcol[k1,k2]))
+                    self.table.item(k1,k2).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+
             for k1 in range(self.data.get_num_slots()):
                 #  self.table.resizeColumnToContents(k1)
                 self.table.setColumnWidth(k1, 25)
@@ -217,9 +215,6 @@ class GenWindingCombinations(QDialog):
                 d.set_valid(ret['valid'], ret['error'])
                 bc, bc_str = d.get_basic_characteristics()
                 self.data[iQ].append(d)
-        #  print(self.data)
-        #  import pdb
-        #  pdb.set_trace()
         self.update_table()
                 
         
@@ -301,20 +296,17 @@ class GenWindingCombinations(QDialog):
             self.table = self.tableWindingLayout
             self.table.clear()
             self.table.setRowCount(self.layers)
-            self.table.setColumnCount(d.get_num_slots())            
-            for km, ph in enumerate(d.get_phases()):
-                col = get_phase_color(km)
-                for kl in range(len(ph)):
-                    layer = ph[kl]
-                    for cs in layer:
-                        if cs > 0:
-                            self.table.setItem(kl, cs-1, QTableWidgetItem('+' + str(km+1)))
-                        else:
-                            self.table.setItem(kl, abs(cs)-1, QTableWidgetItem('-' + str(km+1)))
-                        if abs(cs) <= d.get_num_slots(): # for non-valid windings there could be a slot-number that is bigger than the number of slots
-                            self.table.item(kl, abs(cs)-1).setBackground(QtGui.QColor(col))
-                        self.table.item(kl, abs(cs)-1).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled) # note editable
-                        
+            self.table.setColumnCount(d.get_num_slots())
+            
+            l, ls, lcol = d.get_layers()
+            for k1 in range(np.shape(l)[0]):
+                for k2 in range(np.shape(l)[1]):
+                    self.table.setItem(k1, k2, QTableWidgetItem(ls[k1,k2]))
+                    item = self.table.item(k1,k2)
+                    if item:
+                        item.setBackground(QtGui.QColor(lcol[k1,k2]))
+                    self.table.item(k1,k2).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+
             for k1 in range(d.get_num_slots()):
                 self.table.resizeColumnToContents(k1)
             return row, column        

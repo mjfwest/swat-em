@@ -2,6 +2,7 @@ from PyQt5 import uic
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QMessageBox
 from PyQt5.QtGui import QDoubleValidator
+import numpy as np
 from swat_em.config import get_phase_color, config
 from swat_em.analyse import _get_float
 import os
@@ -46,8 +47,8 @@ class layout(QDialog):
         self.radioTurnsFix.toggled.connect(self.update_radio_turns)
         self.tableWindingLayout.cellChanged.connect(self.update_colors)
         self.tableWindingTurns.cellChanged.connect(self.update_colors)
-        self.update_table(self.data.get_phases())
-        self.update_table_turns(self.data.get_phases(), self.data.get_turns())
+        self.update_table()
+        self.update_table_turns()
         if type(self.data.get_turns()) == type([]):
             self.radioTurnsIndividual.setChecked(True)
         else:
@@ -83,7 +84,7 @@ class layout(QDialog):
                               ret['layers']
                               )
             if make_update:
-                self.update_table(self.data.get_phases(), layers=ret['layers'])
+                self.update_table(layers=ret['layers'])
             
                 
     def update_radio_turns(self):
@@ -106,7 +107,7 @@ class layout(QDialog):
             self.radioButton_dlayer.setChecked(True)
 
 
-    def update_table(self, phases, layers = None):
+    def update_table(self, layers = None):
         self.table = self.tableWindingLayout      
         self.table.blockSignals(True)
         self.table.setColumnCount(self.data.get_num_slots())        
@@ -117,26 +118,20 @@ class layout(QDialog):
         self.table.setRowCount(layers)
         self.table.setVerticalHeaderLabels(head[:layers])
 
-     
-        for km, ph in enumerate(phases):
-            col = get_phase_color(km)
-            for kl in range(len(ph)):
-                layer = ph[kl]
-                for cs in layer:
-                    if cs > 0:
-                        self.table.setItem(kl, cs-1, QTableWidgetItem('+' + str(km+1)))
-                    else:
-                        self.table.setItem(kl, abs(cs)-1, QTableWidgetItem('-' + str(km+1)))
-                    item = self.table.item(kl, abs(cs)-1)
-                    if item:
-                        item.setBackground(QtGui.QColor(col))
-
+        l, ls, lcol = self.data.get_layers()
+        for k1 in range(np.shape(l)[0]):
+            for k2 in range(np.shape(l)[1]):
+                self.table.setItem(k1, k2, QTableWidgetItem(ls[k1,k2]))
+                item = self.table.item(k1,k2)
+                if item:
+                    item.setBackground(QtGui.QColor(lcol[k1,k2]))
+                        
         for k1 in range(self.data.get_num_slots()):
             self.table.resizeColumnToContents(k1)
         self.table.blockSignals(False)
 
 
-    def update_table_turns(self, phases, turns):
+    def update_table_turns(self):
         table = self.tableWindingTurns
         Nx = self.tableWindingLayout.columnCount()
         Ny = self.tableWindingLayout.rowCount()
@@ -147,6 +142,9 @@ class layout(QDialog):
         layers = self.data.get_num_layers()
         table.setRowCount(layers)
         table.setVerticalHeaderLabels(head[:layers])
+        
+        phases = self.data.get_phases()
+        turns = self.data.get_turns()
         
         for km, ph in enumerate(phases):
             col = get_phase_color(km)
