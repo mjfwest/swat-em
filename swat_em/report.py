@@ -6,6 +6,7 @@ import os
 import tempfile
 import numpy as np
 from swat_em import analyse
+from swat_em.config import config
 
 def italic(txt):
     return '<i>' + txt + '</i>'
@@ -63,23 +64,50 @@ def table(dat, header=[]):
 
 class HtmlReport:
     def __init__(self, data):
+        """
+        Class for creating HTML reports of the winding
+
+        Parameters
+        ----------
+        data :   datamodel object
+                 winding model for creating the report
+        """  
         self.data = data
         self.template = os.path.abspath(os.path.join(os.path.dirname(__file__), 'template', 'report.html'))
 
-    def create_figures(self, tmpdir):
-        self.data.plot_layout(os.path.join(tmpdir,'plot_layout.png'), res = [800, 600])
-        self.data.plot_star(os.path.join(tmpdir,'plot_star.png'), res = [800, 600])
-        self.data.plot_windingfactor(os.path.join(tmpdir,'plot_wf_el.png'), mechanical = False, res = [800, 600])
-        self.data.plot_windingfactor(os.path.join(tmpdir,'plot_wf_mech.png'), mechanical = True, res = [800, 600])
-        self.data.plot_MMK(os.path.join(tmpdir,'plot_MMK.png'), res = [800, 600], phase = 0)
+    def _create_figures(self, tmpdir):
+        """
+        Creates all figures for the winding
+        
+        Parameters
+        ----------
+        tmpdir : string
+                 name of the directory to store the figures
+        """
+        if not os.path.isdir(tmpdir):
+            os.mkdir(tmpdir)
+        self.data.plot_layout(os.path.join(tmpdir,'plot_layout.png'), res = config['plt']['res'])
+        self.data.plot_star(os.path.join(tmpdir,'plot_star.png'), res = config['plt']['res'])
+        self.data.plot_windingfactor(os.path.join(tmpdir,'plot_wf_el.png'), mechanical = False, res = config['plt']['res'])
+        self.data.plot_windingfactor(os.path.join(tmpdir,'plot_wf_mech.png'), mechanical = True, res = config['plt']['res'])
+        self.data.plot_MMK(os.path.join(tmpdir,'plot_MMK.png'), res = config['plt']['res'], phase = 0)
 
     def create(self):
-        #  tmpdir = tempfile.mkdtemp()
+        """
+        Generates the html-report and returns the name of the html file
+
+        Returns
+        -------
+        return : string
+                 The file name of the html-file which is stored in tmp directory
+        """  
+        self.tmpdir = tempfile.mkdtemp()
+        self.filename = os.path.join(self.tmpdir, 'report.html')
         
-        filename = '/media/ramdisk/report.html'
-        tmpdir = '/media/ramdisk'   # for testing
+        #  filename = '/media/ramdisk/report.html'
+        #  tmpdir = '/media/ramdisk'   # for testing
         
-        self.create_figures(tmpdir)
+        self._create_figures(self.tmpdir)
         
         # create table of star of slots
         d = []
@@ -137,27 +165,36 @@ class HtmlReport:
             line = line.replace('{{ TITLE }}', self.data.get_title())
             line = line.replace('{{ NOTES }}', self.data.get_notes())
             
-            line = line.replace('{{ plot_layout }}', os.path.join(tmpdir, 'plot_layout.png'))
+            line = line.replace('{{ plot_layout }}', os.path.join(self.tmpdir, 'plot_layout.png'))
             txt, html = self.data.get_basic_characteristics()
             line = line.replace('{{ table_bc }}', html)
             
-            line = line.replace('{{ plot_star }}', os.path.join(tmpdir, 'plot_star.png'))
+            line = line.replace('{{ plot_star }}', os.path.join(self.tmpdir, 'plot_star.png'))
             line = line.replace('{{ table_star }}', _table_star)
-            line = line.replace('{{ plot_wf_el }}', os.path.join(tmpdir, 'plot_wf_el.png'))
+            line = line.replace('{{ plot_wf_el }}', os.path.join(self.tmpdir, 'plot_wf_el.png'))
             line = line.replace('{{ table_wf_el }}', _table_wf_el)
-            line = line.replace('{{ plot_wf_mech }}', os.path.join(tmpdir, 'plot_wf_mech.png'))
+            line = line.replace('{{ plot_wf_mech }}', os.path.join(self.tmpdir, 'plot_wf_mech.png'))
             line = line.replace('{{ table_wf_mech }}', _table_wf_mech)
-            line = line.replace('{{ plot_MMK }}', os.path.join(tmpdir, 'plot_MMK.png'))
+            line = line.replace('{{ plot_MMK }}', os.path.join(self.tmpdir, 'plot_MMK.png'))
             line = line.replace('{{ table_MMK }}', _table_wf_mech)
             
             _report.append(line)
         
         
-        with open(filename, 'w') as f:
+        with open(self.filename, 'w') as f:
             f.write('\n'.join(_report))
+        return self.filename
+        
 
-        #  import webbrowser
-        #  webbrowser.open(filename)
+    def open_in_browser(self):
+        """
+        Open the html report in the webbrowser
+        """
+        if not os.path.isfile(self.filename):
+            raise Exception('No html report available. Use the ".create()" before')
+        else:
+            import webbrowser
+            webbrowser.open(self.filename)
 
 
 

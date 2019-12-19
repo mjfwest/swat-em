@@ -8,18 +8,8 @@ import importlib
 import swat_em
 importlib.reload(swat_em)
 
-
 from swat_em.datamodel import datamodel
 from swat_em.report import HtmlReport
-
-
-
-
-
-
-
-
-
 
 
 data = datamodel()
@@ -29,3 +19,4 @@ data.set_notes('This is an example machine')
 
 rep = HtmlReport(data)
 rep.create()
+#  rep.open_in_browser()
