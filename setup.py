@@ -16,7 +16,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     #  packages=['swat_em'],
     package_data={'swat_em': ['themes/*', 'ui/*', 'ui/icons/*', 'ui/icons/Qt/*', 
-                              'ui/bitmaps/*', 'doc/manual', 'doc/manual/*']},
+                              'ui/bitmaps/*', 'doc/manual', 'doc/manual/*', 'template/*']},
     platforms="any",
     install_requires=['numpy', 'PyQt5', 'pyqtgraph', 'xlsxwriter'],
     classifiers=[

@@ -10,7 +10,7 @@ del SWAT-EM_portable.zip
 del SWAT-EM_Setup.exe
 
 git clone https://gitlab.com/martinbaun/swat-em.git
-pyinstaller swat-em\swat_em\main.py --name swat-em --noconsole --icon=swat-em\swat_em\ui\icons\app_icon.ico
+pyinstaller swat-em\swat_em\main.py --name swat-em --noconsole  --exclude scipy --exclude matplotlib --icon=swat-em\swat_em\ui\icons\app_icon.ico
 xcopy /e /v swat-em\swat_em\ui .\dist\swat-em\ui\
 xcopy /e /v swat-em\swat_em\doc .\dist\swat-em\doc\
 
