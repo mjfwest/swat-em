@@ -4,8 +4,10 @@ import os
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog,\
                             QInputDialog, QMessageBox, QListWidgetItem,\
-                            QMenu, QAction, QSplashScreen
-from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon,QPixmap
+                            QMenu, QAction, QSplashScreen, QGraphicsScene
+from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon,QPixmap,\
+                        QFont, QPainter
+from PyQt5.QtPrintSupport import QPrintDialog, QPrinter
 from PyQt5 import QtCore
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -26,6 +28,7 @@ import time
 import argparse
 import subprocess
 import platform
+import tempfile
 from swat_em import dialog_genwdg
 from swat_em import dialog_about
 from swat_em import dialog_notes
@@ -69,6 +72,9 @@ class MainWindow(QMainWindow):
         self.projectlist_Button_manual.clicked.connect(self.dialog_EditWindingLayout)
         #  self.projectlist_Button_auto.clicked.connect(self.dialog_GenWinding)
         #  self.projectlist_Button_table.clicked.connect(self.dialog_GenWindingCombinations)
+        #  self.save_report_Button.clicked.connect(self.print_text_report) # TODO: Add report save Dialog 
+        self.actionprint.triggered.connect(self.printer)
+        
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
@@ -153,6 +159,7 @@ class MainWindow(QMainWindow):
         self.fig2 = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
         self.fig3 = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
         self.fig4 = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
+        self.reportEdit.setCurrentFont(QFont("Courier New", 10)) #Or whatever monospace font family you want...
         
         self.update_project_list()
         #  self.update_data_in_GUI()     # not neccessary because of 'update_project_list()
@@ -407,6 +414,7 @@ class MainWindow(QMainWindow):
         self.comboBox_star_harmonics.clear()
         self.comboBox_star_harmonics.addItems([str(k) for k in self.data.results['nu_el']])
         self.comboBox_star_harmonics.blockSignals(False)
+        self.reportEdit.setText(self.data.get_text_report())
         
         
     def update_plot_in_GUI(self, small_update = False):
@@ -421,20 +429,61 @@ class MainWindow(QMainWindow):
         # update only the current tab
         if idx == 0:
             self.fig1.plot_slots(self.data.get_num_slots())
-            self.fig1.plot_coilsides(self.data)
+            self.fig1.plot(self.data)
         if idx == 1: 
-            self.fig2.plot_star(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
+            self.fig2.plot(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
             ForceX = self.checkBoxForceX.isChecked())
         if idx == 2:
             if self.radioButton_electrical.isChecked():
-                self.fig3.plot_windingfactor(self.data, mechanical=False)
+                self.fig3.plot(self.data, mechanical=False)
             elif self.radioButton_mechanical.isChecked():
-                self.fig3.plot_windingfactor(self.data, mechanical=True)
+                self.fig3.plot(self.data, mechanical=True)
         if idx == 3:
             f = _get_float(self.MMK_phase_edit.text())
             f = 0.0 if f is None else f
-            self.fig4.plot_mmk(self.data, f, small_update = small_update)
+            self.fig4.plot(self.data, f, small_update = small_update)
         #  print('duration for plot:', time.time()-t1)
+
+
+    def printer(self):
+        printer = QPrinter(QPrinter.HighResolution)
+
+        dialog = QPrintDialog(printer)
+        
+        # get actual view
+        idx = self.plot_tabs.currentIndex()
+        if idx in [0, 1, 2, 3]:
+            with tempfile.TemporaryDirectory() as tmpdir:
+                if idx == 0:
+                    #  self.data.plot_layout(os.path.join(tmpdir, 'fig.png'))
+                    self.fig1.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+                elif idx == 1:
+                    self.fig2.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+                elif idx == 2:
+                    self.fig3.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+                elif idx == 3:
+                    self.fig4.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+
+                pixmap = QPixmap(os.path.join(tmpdir, 'fig.png'))
+                if dialog.exec_() == QPrintDialog.Accepted:
+                    painter = QPainter(printer)
+
+                    rect = painter.viewport()
+                    size = pixmap.size()
+                    size.scale(rect.size(), QtCore.Qt.KeepAspectRatio)
+                    painter.setViewport(rect.x(), rect.y(), size.width(), size.height())
+                    painter.setWindow(pixmap.rect())
+                    painter.drawPixmap(0, 0, pixmap)
+                    del painter
+        elif idx == 4:
+            if self.reportEdit.textCursor().hasSelection():
+                dlg.addEnabledOption(QPrintDialog.PrintSelection)
+            if dialog.exec_() == QPrintDialog.Accepted:
+                self.reportEdit.print_(printer)
+        
+        del dialog
+        
+
 
         
     def save_to_file(self):

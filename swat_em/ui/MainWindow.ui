@@ -473,6 +473,67 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_report">
+       <attribute name="icon">
+        <iconset>
+         <normaloff>icons/report.png</normaloff>icons/report.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string>Report</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QToolButton" name="save_report_Button">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/save.png</normaloff>icons/save.png</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <widget class="QTextEdit" name="reportEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item row="3" column="0">
@@ -791,7 +852,7 @@
      <x>0</x>
      <y>0</y>
      <width>973</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -859,6 +920,7 @@
    <addaction name="actionsave"/>
    <addaction name="actionsave_as"/>
    <addaction name="actionload"/>
+   <addaction name="actionprint"/>
    <addaction name="actionprint_report"/>
    <addaction name="separator"/>
    <addaction name="actionundo"/>
@@ -962,7 +1024,7 @@
   <action name="actionprint_report">
    <property name="icon">
     <iconset>
-     <normaloff>icons/print.png</normaloff>icons/print.png</iconset>
+     <normaloff>icons/html.png</normaloff>icons/html.png</iconset>
    </property>
    <property name="text">
     <string>create HTML report in webbrowser</string>
@@ -1058,6 +1120,15 @@
    </property>
    <property name="text">
     <string>Add Notes</string>
+   </property>
+  </action>
+  <action name="actionprint">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/print.png</normaloff>icons/print.png</iconset>
+   </property>
+   <property name="text">
+    <string>print</string>
    </property>
   </action>
  </widget>
