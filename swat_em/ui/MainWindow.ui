@@ -34,7 +34,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <property name="iconSize">
        <size>
@@ -923,6 +923,7 @@
    <addaction name="actionsave"/>
    <addaction name="actionsave_as"/>
    <addaction name="actionload"/>
+   <addaction name="actionprint"/>
    <addaction name="separator"/>
    <addaction name="actionundo"/>
    <addaction name="actionredo"/>
