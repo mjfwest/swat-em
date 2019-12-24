@@ -1033,6 +1033,7 @@ def load_models_from_file(fname):
     
     if M['file_format'] == 1:
         models = []
+        data = datamodel()
         data.machinedata = M['machinedata']
         if 'turns' not in data.machinedata.keys():
             data.machinedata['turns'] = 1

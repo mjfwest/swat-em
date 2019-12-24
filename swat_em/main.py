@@ -519,20 +519,25 @@ class MainWindow(QMainWindow):
             return False
 
 
-    def load_from_file(self):
-        if not self.project.get_save_state():
-            ok = QMessageBox.question(self, 'Exit program', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
-            if ok == QMessageBox.Yes:
-                ret = self.save_to_file()
-                if not ret: # user has not saved
+    def load_from_file(self, filename = None):
+        '''
+        loads a *.wdg file in the workspace
+        if filename is not given a file dialog appears
+        '''
+        if not filename:
+            if not self.project.get_save_state():
+                ok = QMessageBox.question(self, 'Exit program', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+                if ok == QMessageBox.Yes:
+                    ret = self.save_to_file()
+                    if not ret: # user has not saved
+                        return
+                if ok == QMessageBox.Cancel: # cancel
                     return
-            if ok == QMessageBox.Cancel: # cancel
-                return
 
         
-        options = QFileDialog.Options()
-        #  options |= QFileDialog.DontUseNativeDialog  # use qt5 dialog instead of os default
-        filename, _ = QFileDialog.getOpenFileName(self,"Open winding file", "","Winding Files (*.wdg)", options=options)
+            options = QFileDialog.Options()
+            #  options |= QFileDialog.DontUseNativeDialog  # use qt5 dialog instead of os default
+            filename, _ = QFileDialog.getOpenFileName(self,"Open winding file", "","Winding Files (*.wdg)", options=options)
         if filename:
             self.project.load_from_file(filename)
             self.statusbar.showMessage('Project loaded: ' + filename, MSG_TIME)
@@ -607,9 +612,7 @@ def main():
         
         if args.loadfile:
             if os.path.isfile(args.loadfile):
-                ex.data.load_from_file(args.loadfile)
-                ex.data.set_filename(args.loadfile)
-                ex.update_data_in_GUI()
+                ex.load_from_file(args.loadfile)
             else:
                 raise(Exception, 'file not found:'.format(args.loadfile))
         splash.close()
