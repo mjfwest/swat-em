@@ -81,7 +81,10 @@ class datamodel:
         return title :  string
                         title
         '''
-        return self.title
+        if self.title == '':
+            return 'Untitled'
+        else:
+            return self.title
     
     
     def get_notes(self):
@@ -474,6 +477,36 @@ class datamodel:
         return self.machinedata['phasenames']
     
     
+    def get_windingfactor_el(self):
+        '''
+        Returns the windings factors with respect to the electrical
+        ordinal numbers
+        
+        Returns
+        -------
+        return nu: numpy array
+                   ordinal numbers
+        return kw: 2D numpy array
+                   windings factors, (one column for each phase)
+        '''
+        return np.array(self.results['nu_el']), np.array(self.results['kw_el'])
+
+
+    def get_windingfactor_mech(self):
+        '''
+        Returns the windings factors with respect to the electrical
+        ordinal numbers
+        
+        Returns
+        -------
+        return nu: numpy array
+                   ordinal numbers
+        return kw: 2D numpy array
+                   windings factors, (one column for each phase)
+        '''
+        return np.array(self.results['nu_mech']), np.array(self.results['kw_mech'])
+
+
     def get_turns(self):
         '''
         Returns the number of turns. If all coil sides has the same
@@ -623,7 +656,8 @@ class datamodel:
             res = config['plt']['res']
         plt = plots._slot_plot(None, None, self)
         plt.plot_slots(self.get_num_slots())
-        plt.plot_coilsides(self, fname = filename, res = res, show = show)
+        plt.plot(self, show = show)
+        plt.save(fname = filename, res = res)
         
         
     def plot_star(self, filename, 
@@ -650,11 +684,10 @@ class datamodel:
         if res == None:
             res = config['plt']['res']
         plt = plots._slot_star(None, None, self, None)
-        plt.plot_star(self, harmonic_idx = 0, 
+        plt.plot(self, harmonic_idx = 0, 
                             ForceX = ForceX, 
-                            fname = filename, 
-                            res = res, 
                             show = show)
+        plt.save(fname = filename, res = res)
 
 
     def plot_windingfactor(self, filename, res = None, mechanical = True, show = False):
@@ -678,10 +711,8 @@ class datamodel:
         if res == None:
             res = config['plt']['res']
         plt = plots._windingfactor(None, None, self, None)
-        plt.plot_windingfactor(self, mechanical = mechanical, 
-                                     fname = filename, 
-                                     res = res, 
-                                     show = show)
+        plt.plot(self, mechanical = mechanical, show = show)
+        plt.save(fname = filename, res = res)
 
 
     def plot_MMK(self, filename, res = None, phase = 0, show = False):
@@ -704,11 +735,9 @@ class datamodel:
         if res == None:
             res = config['plt']['res']
         plt = plots._mmk(None, None, self, None)
-        plt.plot_mmk(self, phase = phase, 
-                           fname = filename, 
-                           res = res, 
-                           show = show)
-
+        plt.plot(self, phase = phase, show = show)
+        plt.save(fname = filename, res = res)
+        
 
     def save_to_file(self, fname):
         '''
@@ -740,157 +769,43 @@ class datamodel:
             self.results = data.results
 
 
-
-
-
-"""
-    def save_to_file(self, fname):
+    def export_xlsx(self, fname):
         '''
-        Saves the data to file. 
+        Export the results to Excel xlsx file. 
 
         Parameters
         ----------
         fname :  string
                  file name
         ''' 
-        def complex2tuple_1(cplx):
-            '''
-            converts complex data to tuple of (real, imag)-part
-            
-            Parameters
-            ----------
-            fname : list
-                    with complex numbers
-            '''
-            for k1 in range(len(cplx)):
-                        cplx[k1] = (cplx[k1].real, cplx[k1].imag)
-            return cplx
-       
-        def complex2tuple_3(cplx):
-            '''
-            converts complex data to tuple of (real, imag)-part
-            
-            Parameters
-            ----------
-            fname : list(list(list))
-                    3 nested lists with complex numbers
-            '''
-            for k1 in range(len(cplx)):
-                for k2 in range(len(cplx[k1])):
-                    for k3 in range(len(cplx[k1][k2])):
-                        cplx[k1][k2][k3] = (cplx[k1][k2][k3].real, cplx[k1][k2][k3].imag)
-            return cplx
-        
-        M = {}
-        M['file_format'] = self.file_format
-        M['machinedata'] = self.machinedata
-        M['results'] = copy.deepcopy(self.results)
-        
-        # convert lists with complex numbers to tuple with real and imag
-        if 'Ei_el' in M['results'].keys():
-            M['results']['Ei_el'] = complex2tuple_3(M['results']['Ei_el'])
-        
-        if 'Ei_mech' in M['results'].keys():
-            M['results']['Ei_mech'] = complex2tuple_3(M['results']['Ei_mech'])
-        
-        if 'MMK' in M['results'].keys():
-            M['results']['MMK']['HA'] = complex2tuple_1(M['results']['MMK']['HA'])
-        
-        # convert fractional number
-        if 'q' in M['results'].keys():
-            M['results']['q'] = str(M['results']['q'])
-            
-        if 'basic_char' in M['results'].keys():
-            if 'q' in M['results']['basic_char'].keys():
-                M['results']['basic_char']['q'] = str(M['results']['basic_char']['q'])
-        
-        # save as compressed file
-        with gzip.GzipFile(fname, 'w') as f:
-            s = json.dumps(M, indent = 2)                  # string
-            f.write(s.encode('utf-8'))           # bytes        
-            
-        # save as ASCII file
-        #  with open(fname, 'w') as f:
-            #  json.dump(M, f, indent = 2)
-        self.actual_state_saved = True
+        rep.export_xlsx(fname, self)
 
 
-    def load_from_file(self, fname):
+    def export_text_report(self, fname):
         '''
-        Load data from file. 
+        Export winding report as a text file. 
 
         Parameters
         ----------
         fname :  string
                  file name
         ''' 
-        
-        def tuple2complex_1(cplx):
-            '''
-            converts tuple of (real, imag) to complex number
-            
-            Parameters
-            ----------
-            fname : list
-                    with complex numbers
-            '''
-            for k1 in range(len(cplx)):
-                        cplx[k1] = cplx[k1][0] + 1j*cplx[k1][1]
-            return cplx
-        
-        def tuple2complex_3(cplx):
-            '''
-            converts tuple of (real, imag) to complex number
-            
-            Parameters
-            ----------
-            fname : list(list(list))
-                    3 nested lists with tuples
-            '''
-            for k1 in range(len(cplx)):
-                for k2 in range(len(cplx[k1])):
-                    for k3 in range(len(cplx[k1][k2])):
-                        cplx[k1][k2][k3] = cplx[k1][k2][k3][0] + 1j*cplx[k1][k2][k3][1]
-            return cplx
-        
-        
-        if os.path.isfile(fname):
-            self.reset_results()
-            # load ASCII file
-            #  with open(fname) as f:
-                #  M = json.load(f)
-            
-            # load compressed file
-            with gzip.GzipFile(fname) as f:  # gzip
-                s = f.read()                    # bytes
-                s = s.decode('utf-8')           # string
-                M = json.loads(s)               # data  
-            
-            self.machinedata = M['machinedata']
-            
+        txt_rep = rep.TextReport(self)
+        txt_rep.save(fname)
 
-            
-            # convert lists with tuple of real and imag to complex number
-            if 'Ei_el' in M['results'].keys():
-                M['results']['Ei_el'] = tuple2complex_3(M['results']['Ei_el'])
-            
-            if 'Ei_mech' in M['results'].keys():
-                M['results']['Ei_mech'] = tuple2complex_3(M['results']['Ei_mech'])
-            
-            if 'MMK' in M['results'].keys():
-                M['results']['MMK']['HA'] = tuple2complex_1(M['results']['MMK']['HA'])
-            
-            # convert fractional number
-            if 'q' in M['results'].keys():
-                M['results']['q'] = fractions.Fraction(M['results']['q'])
-            
-            if 'basic_char' in M['results'].keys():
-                if 'q' in M['results']['basic_char'].keys():
-                    M['results']['basic_char']['q'] = fractions.Fraction(M['results']['basic_char']['q'])
-            
-                self.results = copy.deepcopy(M['results'])
-            self.actual_state_saved = True
-"""
+
+    def get_text_report(self):
+        '''
+        Returns a winding report. 
+
+        Return
+        ----------
+        report :  string
+                  Report
+        ''' 
+        txt_rep = rep.TextReport(self)
+        return txt_rep.get_report()
+
 
 
 class project:
@@ -910,7 +825,6 @@ class project:
     
     def set_save_state(self, state):
         self._is_saved = state
-    
     
     def save_undo_state(self):
         '''saves the actual state of the models for undo function'''
