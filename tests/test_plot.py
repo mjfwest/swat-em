@@ -11,13 +11,13 @@ from swat_em.datamodel import datamodel
 def test_image_export():
 
     def clean_up():
-        try:
-            os.remove('plot_layout.png')
-            os.remove('plot_star.png')
-            os.remove('plot_wf.png')
-            os.remove('plot_MMK.png')
-        except:
-            pass
+        for f in ['plot_layout.png', 'plot_star.png', 'plot_wf.png',
+                  'plot_MMK.png']:
+            try:
+                os.remove(f)
+            except:
+                pass
+
     
     data = datamodel()
     data.genwdg(Q = 12, P = 2, m = 3, w = -1, layers = 1, turns = 1000)
