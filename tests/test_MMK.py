@@ -38,17 +38,6 @@ def test1():
     idx = data.results['nu_el'].index(1)
     assert np.round(kw1, 4) == np.round(data.results['kw_el'][idx][0], 4) # phase U
     
-    #  import matplotlib.pyplot as plt
-    #  try: # Interaktives Plotten, wenn Skript aus der ipython Konsole aufgerufen wird
-        #  __IPYTHON__
-        #  plt.ion()
-    #  except NameError:
-        #  pass
-    #  plt.figure(1)
-    #  plt.clf()
-    #  plt.grid(True)
-    #  plt.stem(range(len(theta)), theta, 'r', markerfmt=' ') #, basefmt=' '
-    #  plt.plot(phi, MMK)
 
 
 
@@ -77,17 +66,6 @@ def test2():
     idx = data.results['nu_el'].index(1)
     assert np.round(kw1, 4) == np.round(data.results['kw_el'][idx][0], 4) # phase U
     
-    #  import matplotlib.pyplot as plt
-    #  try: # Interaktives Plotten, wenn Skript aus der ipython Konsole aufgerufen wird
-        #  __IPYTHON__
-        #  plt.ion()
-    #  except NameError:
-        #  pass
-    #  plt.figure(1)
-    #  plt.clf()
-    #  plt.grid(True)
-    #  plt.stem(range(len(theta)), theta, 'r', markerfmt=' ') #, basefmt=' '
-    #  plt.plot(phi, MMK)
 
 
 def test3():
@@ -115,17 +93,6 @@ def test3():
     idx = data.results['nu_el'].index(1)
     assert np.round(kw1, 4) == np.round(data.results['kw_el'][idx][0], 4) # phase U
     
-    #  import matplotlib.pyplot as plt
-    #  try: # Interaktives Plotten, wenn Skript aus der ipython Konsole aufgerufen wird
-        #  __IPYTHON__
-        #  plt.ion()
-    #  except NameError:
-        #  pass
-    #  plt.figure(1)
-    #  plt.clf()
-    #  plt.grid(True)
-    #  plt.stem(range(len(theta)), theta, 'r', markerfmt=' ') #, basefmt=' '
-    #  plt.plot(phi, MMK)
 
 
 
