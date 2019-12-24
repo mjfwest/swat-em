@@ -34,7 +34,6 @@ from swat_em import dialog_about
 from swat_em import dialog_notes
 from swat_em import dialog_winding_layout
 from swat_em import dialog_import_winding
-from swat_em import dialog_factors
 from swat_em import dialog_settings
 from swat_em.config import config, save_config
 from swat_em import datamodel
@@ -60,7 +59,6 @@ class MainWindow(QMainWindow):
 
         self.DIALOG_GenWinding = dialog_genwdg.GenWinding2()
         self.DIALOG_GenWindingCombinations = dialog_genwdg.GenWindingCombinations()
-        self.DIALOG_AdditionalFactors = dialog_factors.Factors(self.data)
 
         # Connect the buttons
         self.Button_exit.clicked.connect(self.close)
@@ -70,9 +68,7 @@ class MainWindow(QMainWindow):
         self.projectlist_Button_clone.clicked.connect(self.projectlist_clone)
         self.projectlist_Button_notes.clicked.connect(self.dialog_get_notes)
         self.projectlist_Button_manual.clicked.connect(self.dialog_EditWindingLayout)
-        #  self.projectlist_Button_auto.clicked.connect(self.dialog_GenWinding)
-        #  self.projectlist_Button_table.clicked.connect(self.dialog_GenWindingCombinations)
-        #  self.save_report_Button.clicked.connect(self.print_text_report) # TODO: Add report save Dialog 
+        self.save_report_Button.clicked.connect(self.export_to_txt)
         self.actionprint.triggered.connect(self.printer)
         
         
@@ -89,7 +85,6 @@ class MainWindow(QMainWindow):
         self.actionload.triggered.connect(self.load_from_file)
         self.actionProgram_Info.triggered.connect(dialog_about.about)
         self.actionShow_winding_layout.triggered.connect(self.dialog_EditWindingLayout)
-        self.actionAdditional_factors.triggered.connect(self.dialog_AdditionalFactors)
         self.actionSettings.triggered.connect(self.dialog_settings)
         self.actionundo.triggered.connect(self.undo)
         self.actionredo.triggered.connect(self.redo)
@@ -359,9 +354,6 @@ class MainWindow(QMainWindow):
                 self.update_project_list(switch_to_new = True)
             self.update_data_in_GUI()
 
-
-    def dialog_AdditionalFactors(self):
-        ret = self.DIALOG_AdditionalFactors.run()
 
 
     def dialog_get_notes(self):
