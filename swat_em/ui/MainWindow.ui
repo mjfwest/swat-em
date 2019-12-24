@@ -862,7 +862,7 @@
     <addaction name="actionload"/>
     <addaction name="actionsave"/>
     <addaction name="actionsave_as"/>
-    <addaction name="actionprint_report"/>
+    <addaction name="actionprint"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuTools">
@@ -870,8 +870,11 @@
      <string>Tools</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="actionExport_report"/>
+    <addaction name="actionprint_report"/>
     <addaction name="actionAdditional_factors"/>
+    <addaction name="separator"/>
+    <addaction name="actionExport_Text_report"/>
+    <addaction name="actionExport_data_to_Excel"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
    </widget>
@@ -920,8 +923,6 @@
    <addaction name="actionsave"/>
    <addaction name="actionsave_as"/>
    <addaction name="actionload"/>
-   <addaction name="actionprint"/>
-   <addaction name="actionprint_report"/>
    <addaction name="separator"/>
    <addaction name="actionundo"/>
    <addaction name="actionredo"/>
@@ -930,6 +931,10 @@
    <addaction name="actionGenerate_winding"/>
    <addaction name="actionGenerate_winding_combinations"/>
    <addaction name="actionImport_from_file"/>
+   <addaction name="separator"/>
+   <addaction name="actionprint_report"/>
+   <addaction name="actionExport_Text_report"/>
+   <addaction name="actionExport_data_to_Excel"/>
    <addaction name="separator"/>
    <addaction name="actionSettings"/>
    <addaction name="actionHelp"/>
@@ -1129,6 +1134,24 @@
    </property>
    <property name="text">
     <string>print</string>
+   </property>
+  </action>
+  <action name="actionExport_data_to_Excel">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/excel.png</normaloff>icons/excel.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export data to Excel</string>
+   </property>
+  </action>
+  <action name="actionExport_Text_report">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/text.png</normaloff>icons/text.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export text report</string>
    </property>
   </action>
  </widget>

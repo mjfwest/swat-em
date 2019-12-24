@@ -794,6 +794,26 @@ class datamodel:
         txt_rep.save(fname)
 
 
+    def export_html_report(self, fname = None):
+        '''
+        Returns a winding report. 
+        
+        Parameters
+        ----------
+        fname :  string
+                 file name for html file. If not given a file is created
+                 in the temp dir of the file system (the file name ist
+                 returned by this function)
+                 
+        Returns
+        -------
+        return : string
+                 The file name of the html-file which is stored in tmp directory
+        ''' 
+        html_rep = rep(self, fname)
+        return html_rep.create()
+
+
     def get_text_report(self):
         '''
         Returns a winding report. 
@@ -805,6 +825,7 @@ class datamodel:
         ''' 
         txt_rep = rep.TextReport(self)
         return txt_rep.get_report()
+
 
 
 

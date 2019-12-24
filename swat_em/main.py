@@ -122,6 +122,9 @@ class MainWindow(QMainWindow):
 
         # TODO
         self.actionprint_report.triggered.connect(self.create_report)
+        self.actionExport_data_to_Excel.triggered.connect(self.export_to_excel)
+        self.actionExport_Text_report.triggered.connect(self.export_to_txt)
+        
         self.actionHelp.triggered.connect(self.open_manual)
         
         self.plot_tabs.currentChanged.connect(lambda: self.update_plot_in_GUI(small_update = False))
@@ -581,6 +584,33 @@ class MainWindow(QMainWindow):
         rep = report.HtmlReport(self.data)
         rep.create()
         rep.open_in_browser()
+
+
+    def export_to_excel(self):
+        '''
+        Export to excel
+        '''
+        options = QFileDialog.Options()
+        filename, _ = QFileDialog.getSaveFileName(self,"Save to Excel file", "","Excel (*.xlsx)", options=options)
+        if filename:
+            if not filename.endswith('.xlsx'):
+                filename += '.xlsx'
+            self.data.export_xlsx(filename)
+
+
+
+    def export_to_txt(self):
+        '''
+        Export text report
+        '''
+        options = QFileDialog.Options()
+        filename, _ = QFileDialog.getSaveFileName(self,"Save to Text file", "","Text (*.txt)", options=options)
+        if not filename.endswith('.txt'):
+                filename += '.txt'
+        if filename:
+            self.data.export_text_report(filename)
+
+
 
 
 def main():

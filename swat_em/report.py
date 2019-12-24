@@ -93,7 +93,7 @@ class HtmlReport:
         self.data.plot_windingfactor(os.path.join(tmpdir,'plot_wf_mech.png'), mechanical = True, res = config['plt']['res'])
         self.data.plot_MMK(os.path.join(tmpdir,'plot_MMK.png'), res = config['plt']['res'], phase = 0)
 
-    def create(self):
+    def create(self, filename = None):
         """
         Generates the html-report and returns the name of the html file
 
@@ -102,8 +102,12 @@ class HtmlReport:
         return : string
                  The file name of the html-file which is stored in tmp directory
         """  
-        self.tmpdir = tempfile.mkdtemp()
-        self.filename = os.path.join(self.tmpdir, 'report.html')
+        if filename == None:
+            self.tmpdir = tempfile.mkdtemp()
+            self.filename = os.path.join(self.tmpdir, 'report.html')
+        else:
+            self.tmpdir = os.path.abspath(os.path.dirname(filename))
+            self.filename = filename
         
         #  filename = '/media/ramdisk/report.html'
         #  tmpdir = '/media/ramdisk'   # for testing
