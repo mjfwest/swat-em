@@ -18,7 +18,7 @@ setuptools.setup(
     package_data={'swat_em': ['themes/*', 'ui/*', 'ui/icons/*', 'ui/icons/Qt/*', 
                               'ui/bitmaps/*', 'doc/manual', 'doc/manual/*']},
     platforms="any",
-    install_requires=['numpy', 'PyQt5', 'matplotlib', 'pyqtgraph'],
+    install_requires=['numpy', 'PyQt5', 'pyqtgraph', 'xlsxwriter'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
