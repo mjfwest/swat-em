@@ -108,11 +108,16 @@ class HtmlReport:
         else:
             self.tmpdir = os.path.abspath(os.path.dirname(filename))
             self.filename = filename
+        self.contentdir = os.path.splitext(self.filename)[0] + '-files'
+        try:
+            os.mkdir(self.contentdir)
+        except:
+            pass
         
         #  filename = '/media/ramdisk/report.html'
         #  tmpdir = '/media/ramdisk'   # for testing
         
-        self._create_figures(self.tmpdir)
+        self._create_figures(self.contentdir)
         
         # create table of star of slots
         d = []
@@ -170,17 +175,17 @@ class HtmlReport:
             line = line.replace('{{ TITLE }}', self.data.get_title())
             line = line.replace('{{ NOTES }}', self.data.get_notes())
             
-            line = line.replace('{{ plot_layout }}', os.path.join(self.tmpdir, 'plot_layout.png'))
+            line = line.replace('{{ plot_layout }}', os.path.join(self.contentdir, 'plot_layout.png'))
             txt, html = self.data.get_basic_characteristics()
             line = line.replace('{{ table_bc }}', html)
             
-            line = line.replace('{{ plot_star }}', os.path.join(self.tmpdir, 'plot_star.png'))
+            line = line.replace('{{ plot_star }}', os.path.join(self.contentdir, 'plot_star.png'))
             line = line.replace('{{ table_star }}', _table_star)
-            line = line.replace('{{ plot_wf_el }}', os.path.join(self.tmpdir, 'plot_wf_el.png'))
+            line = line.replace('{{ plot_wf_el }}', os.path.join(self.contentdir, 'plot_wf_el.png'))
             line = line.replace('{{ table_wf_el }}', _table_wf_el)
-            line = line.replace('{{ plot_wf_mech }}', os.path.join(self.tmpdir, 'plot_wf_mech.png'))
+            line = line.replace('{{ plot_wf_mech }}', os.path.join(self.contentdir, 'plot_wf_mech.png'))
             line = line.replace('{{ table_wf_mech }}', _table_wf_mech)
-            line = line.replace('{{ plot_MMK }}', os.path.join(self.tmpdir, 'plot_MMK.png'))
+            line = line.replace('{{ plot_MMK }}', os.path.join(self.contentdir, 'plot_MMK.png'))
             line = line.replace('{{ table_MMK }}', _table_wf_mech)
             
             _report.append(line)

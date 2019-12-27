@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
+import shutil
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import importlib
 import swat_em
-importlib.reload(swat_em)
-
 from swat_em.datamodel import datamodel
 from swat_em.report import HtmlReport
 
@@ -17,6 +15,10 @@ def clean_up():
             os.remove(f)
         except:
             pass
+    try:
+        shutil.rmtree('report-files/')
+    except:
+        pass
 
 def test_html_report():
     clean_up()
