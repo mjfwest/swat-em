@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to SWAT-EM's documentation!
+Welcome to SWAT-EM's API documentation!
 ===================================
 
 .. toctree::
@@ -13,10 +13,17 @@ Welcome to SWAT-EM's documentation!
    
 .. include:: ../../../README.rst
 
+
+.. include:: basics.rst
+
+.. include:: results.rst
    
+   
+Reference
+=========
+
 .. automodule:: swat_em
    :members:
-
 
 
 .. autoclass:: swat_em.datamodel.datamodel
