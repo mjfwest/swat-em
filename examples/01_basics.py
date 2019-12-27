@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # 01_basics.py - Use winding generator
 
-import sys, os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from swat_em import datamodel
 
 
