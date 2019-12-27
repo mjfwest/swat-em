@@ -6,10 +6,6 @@ from swat_em import datamodel
 
 # A more complex winding (overlapping full pitch winding with coil shortening)
 data = datamodel()
-Q = 12
-P = 2
-m = 3
-l = 2
 data.genwdg(Q = 12, P = 2, m = 3, layers = 1) 
 
 print('fundamental winding factor: ', data.get_fundamental_windingfactor())

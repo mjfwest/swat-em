@@ -14,7 +14,6 @@ data.genwdg(Q = Q, P = P, m = 3, layers = 1)
 print(data)             # print infos for the winding
 
 
-
 # Generate a simple tooth-coil winding
 # Therefore we have to define the winding stepwidth = 1 and
 # a lower number of slots
