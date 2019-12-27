@@ -7,6 +7,6 @@ __author__ = 'Martin Baun'
 __license__ = 'MIT License'
 __copyright__ = 'Copyright 2018-2019 Martin Baun'
 
-from swat_em.datamodel import datamodel
+from swat_em.datamodel import datamodel, project
 
     

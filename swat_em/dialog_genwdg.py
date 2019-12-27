@@ -99,7 +99,7 @@ class GenWinding2(QDialog):
         elif self.radioButton_dlayer.isChecked():
             self.layers = 2
 
-        self.data = datamodel.datamodel()
+        self.data = datamodel()
         self.data.set_machinedata(Q = self.Q, m = self.m, p = self.P/2)
         ret = wdggenerator.genwdg(self.Q, self.P, self.m, self.w, self.layers)
         self.data.set_phases(S = ret['phases'], wstep = ret['wstep'])
@@ -208,7 +208,7 @@ class GenWindingCombinations(QDialog):
         for iQ, kQ in enumerate(self.Qlist):
             self.data.append([])
             for iP, kP in enumerate(self.Plist):
-                d = datamodel.datamodel()
+                d = datamodel()
                 d.set_machinedata(Q = kQ, m = self.m, p = kP/2)
                 ret = wdggenerator.genwdg(kQ, kP, self.m, wstep, self.layers)
                 d.set_phases(S = ret['phases'], wstep = ret['wstep'])

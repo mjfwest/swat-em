@@ -36,7 +36,7 @@ from swat_em import dialog_winding_layout
 from swat_em import dialog_import_winding
 from swat_em import dialog_settings
 from swat_em.config import config, save_config
-from swat_em import datamodel
+from swat_em import datamodel, project
 from swat_em import wdggenerator
 from swat_em import plots
 from swat_em import report
@@ -50,8 +50,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.data = datamodel.datamodel()
-        self.project = datamodel.project()
+        self.data = datamodel()
+        self.project = project()
 
         # Set up the user interface from Designer.
         uic.loadUi(os.path.join(__dir__, 'ui', 'MainWindow.ui'), self)
@@ -129,13 +129,13 @@ class MainWindow(QMainWindow):
         
 
         #  initial windings  -----------------------------------
-        self.data = datamodel.datamodel()
+        self.data = datamodel()
         self.data.genwdg(Q = 12, P = 2, m = 3, w = -1, layers = 1)
         self.data.set_notes('Winding example for a overlapping single layer winding for a 12 slots, 10 poles machine')
         self.data.set_title('12-2 overlapping winding')
         self.project.add_model(self.data)
 
-        self.data = datamodel.datamodel()
+        self.data = datamodel()
         self.data.genwdg(Q = 9, P = 8, m = 3, w = 1, layers = 2, turns = 10)
         self.data.set_notes('Winding example for a tooth-coil-winding for 9 slots, 8 poles machine')
         self.data.set_title('9-8 tooth-coil winding')
@@ -283,7 +283,7 @@ class MainWindow(QMainWindow):
             self.save_undo_state()
             wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'])
             
-            data = datamodel.datamodel()
+            data = datamodel()
             data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
             data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
             data.analyse_wdg()
@@ -306,7 +306,7 @@ class MainWindow(QMainWindow):
             self.save_undo_state()
             wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'])
             
-            data = datamodel.datamodel()
+            data = datamodel()
             data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
             data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
             data.analyse_wdg()
@@ -341,7 +341,7 @@ class MainWindow(QMainWindow):
         if ret:
             self.save_undo_state()
             
-            data = datamodel.datamodel()
+            data = datamodel()
             data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
             data.set_phases(ret['phases'], wstep = ret['w'], turns = ret['turns'])
             data.analyse_wdg()
