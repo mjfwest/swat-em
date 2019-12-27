@@ -11,6 +11,7 @@ from swat_em import analyse
 
 import numpy as np
 import time
+import os
 
 import pyqtgraph as pg
 import pyqtgraph.exporters
@@ -164,9 +165,12 @@ class _slot_plot:
     def save(self, fname, res):
         if self.show:
             self.app.processEvents()
-        exporter = pg.exporters.ImageExporter(self.fig.plotItem)#plotItem
-        exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
-        exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+        if os.path.splitext(fname)[-1].upper() == '.SVG':
+            exporter = pg.exporters.SVGExporter(self.fig.plotItem)
+        else:
+            exporter = pg.exporters.ImageExporter(self.fig.plotItem)
+            exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+            exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
         exporter.export(fname)
 
 
@@ -292,9 +296,12 @@ class _slot_star:
     def save(self, fname, res):
         if self.show:
             self.app.processEvents()
-        exporter = pg.exporters.ImageExporter(self.fig.plotItem)#plotItem
-        exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
-        exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+        if os.path.splitext(fname)[-1].upper() == '.SVG':
+            exporter = pg.exporters.SVGExporter(self.fig.plotItem)
+        else:
+            exporter = pg.exporters.ImageExporter(self.fig.plotItem)
+            exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+            exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
         exporter.export(fname)
             
 
@@ -383,9 +390,12 @@ class _windingfactor:
     def save(self, fname, res):
         if self.show:
             self.app.processEvents()
-        exporter = pg.exporters.ImageExporter(self.fig.plotItem)#plotItem
-        exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
-        exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+        if os.path.splitext(fname)[-1].upper() == '.SVG':
+            exporter = pg.exporters.SVGExporter(self.fig.plotItem)
+        else:
+            exporter = pg.exporters.ImageExporter(self.fig.plotItem)
+            exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+            exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
         exporter.export(fname)
 
 
@@ -499,9 +509,13 @@ class _mmk:
 
     def save(self, fname, res):
         self.app.processEvents()
-        exporter = pg.exporters.ImageExporter(self.l.ci)#plotItem
-        exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
-        exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+        
+        if os.path.splitext(fname)[-1].upper() == '.SVG':
+            exporter = pg.exporters.SVGExporter(self.l.ci)
+        else:
+            exporter = pg.exporters.ImageExporter(self.l.ci)
+            exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+            exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
         exporter.export(fname)
 
 
