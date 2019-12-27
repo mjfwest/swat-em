@@ -7,7 +7,8 @@ __author__ = 'Martin Baun'
 __license__ = 'MIT License'
 __copyright__ = 'Copyright 2018-2019 Martin Baun'
 
-__dir__ = os.path.dirname(os.path.abspath(__file__))
+#  __dir__ = os.path.dirname(os.path.abspath(__file__))
 
+from swat_em.datamodel import datamodel
 
     

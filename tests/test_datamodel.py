@@ -8,7 +8,7 @@ from swat_em import datamodel
 
 def test1():
     print('Test saving and loading of data files inc. results and options')
-    data = datamodel.datamodel()
+    data = datamodel()
     data.set_machinedata(Q = 12, p = 5, m = 3)
 
     U = [[1,8],[-2,-7]]
@@ -19,7 +19,7 @@ def test1():
     data.analyse_wdg()
 
     data.save_to_file('savefile.wdg')
-    data2 = datamodel.datamodel()
+    data2 = datamodel()
     data2.load_from_file('savefile.wdg')
     os.remove('savefile.wdg')
 

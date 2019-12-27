@@ -6,7 +6,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 
 from swat_em.wdggenerator import genwdg
-from swat_em.datamodel import datamodel
+#  from swat_em.datamodel import datamodel
+from swat_em import datamodel
 from swat_em.config import config, get_phase_color
 
 
