@@ -37,6 +37,24 @@ class datamodel:
         self.actual_state_saved = False
         
     
+    def __str__(self):
+        txt = []
+        txt.append('WINDING DATAMODEL')
+        txt.append('=================')
+        txt.append('')
+        txt.append('Title: ' + self.get_title())
+        txt.append('Number of slots:  {}'.format(self.get_num_slots()))        
+        txt.append('Number of poles:  {}'.format(2*self.get_num_polepairs()))
+        txt.append('Number of phases: {}'.format(self.get_num_phases()))
+        txt.append('Number of layers: {}'.format(self.get_num_layers()))
+        txt.append('Winding step    : {}'.format(self.get_windingstep()))
+        
+        txt.append('Number of slots per pole per phase: {}'.format(self.get_q()))
+        wf = [str(round(k, 3)) for k in self.get_fundamental_windingfactor()]
+        txt.append('Fundamental winding factor: {}'.format(', '.join(wf)))
+        return '\n'.join(txt)
+    
+    
     def reset_data(self):
         '''
         resets all data of the datamodel
@@ -161,7 +179,7 @@ class datamodel:
         self.results['error'] = error
     
     
-    def genwdg(self, Q, P, m, w, layers, turns = 1):
+    def genwdg(self, Q, P, m, layers, w = -1, turns = 1):
         '''
         Generates a winding layout and stores it in the datamodel
 
@@ -822,8 +840,8 @@ class datamodel:
         return : string
                  The file name of the html-file which is stored in tmp directory
         ''' 
-        html_rep = rep(self, fname)
-        return html_rep.create()
+        html_rep = rep.HtmlReport(self)
+        return html_rep.create(fname)
 
 
     def get_text_report(self):
