@@ -507,6 +507,18 @@ class datamodel:
         return np.array(self.results['nu_mech']), np.array(self.results['kw_mech'])
 
 
+    def get_fundamental_windingfactor(self):
+        '''
+        Returns the fundamental winding factors for each phase
+        
+        Returns
+        -------
+        return kw: list
+                   windings factors, (one entry for each phase)
+        '''
+        return self.results['kw_el'][0]
+
+
     def get_turns(self):
         '''
         Returns the number of turns. If all coil sides has the same
