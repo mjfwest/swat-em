@@ -45,16 +45,11 @@ induction machines:
 
 .. code-block:: python
 
-    data = datamodel()      # generate a datamodel for the winding
-    Q = 6                   # number of slots
-    P = 2                   # number of pole pairs
-    data.genwdg(Q = Q, P = P, m = 3, layers = 1)
-    print(data)             # print infos for the winding
-
-For first impression we can print the winding to get informations:
-
-.. code-block:: python
-
+    >>> data = datamodel()      # generate a datamodel for the winding
+    >>> Q = 6                   # number of slots
+    >>> P = 2                   # number of pole pairs
+    >>> data.genwdg(Q = Q, P = P, m = 3, layers = 1)
+    >>> print(data)             # print infos for the winding
     WINDING DATAMODEL
     =================
 
@@ -101,18 +96,14 @@ winding layers:
 
 .. code-block:: python
 
-    data = datamodel()      # generate a datamodel for the winding
-    Q = 3                   # number of slots
-    P = 2                   # number of pole pairs
-    w = 1                   # step width for the coil in slots
+    >>> data = datamodel()      # generate a datamodel for the winding
+    >>> Q = 3                   # number of slots
+    >>> P = 2                   # number of pole pairs
+    >>> w = 1                   # step width for the coil in slots
 
-    # generate winding automatically
-    data.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
-    print(data)             # print infos for the winding
-
-
-.. code-block:: python
-
+    >>> # generate winding automatically
+    >>> data.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
+    >>> print(data)             # print infos for the winding
     WINDING DATAMODEL
     =================
 
@@ -130,20 +121,16 @@ winding layers:
 
 A more complex winding
 ----------------------
+A more complex winding (overlapping full pitch winding with coil shortening)
 
 .. code-block:: python
 
-    # A more complex winding (overlapping full pitch winding with coil shortening)
-    data = datamodel()
-    Q = 12
-    P = 2
-    w = 5     # without shortening w would be 6 for this winding
-    data.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
-    print(data)
-
-
-.. code-block:: python
-
+    >>> data = datamodel()
+    >>> Q = 12
+    >>> P = 2
+    >>> w = 5     # without shortening w would be 6 for this winding
+    >>> data.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
+    >>> print(data)
     WINDING DATAMODEL
     =================
 
