@@ -1,5 +1,5 @@
-Results
-=======
+Getting Results
+===============
 After generating a winding, swat-em analyze it and provides the results:
 
 .. code-block:: python

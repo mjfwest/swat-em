@@ -21,6 +21,7 @@ import sys
 __dir__ = os.path.abspath(__file__)
 sys.path.insert(0, os.path.abspath(os.path.join(__dir__, '..', '..', '..', '..')))
 import swat_em
+import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
 
@@ -94,6 +95,18 @@ todo_include_todos = False
 #
 html_theme = 'alabaster'
 #  html_theme = 'neo_rtd_theme'
+
+html_theme = 'sphinx_rtd_theme'
+html_static_path = ['_static']
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+#  html_logo = '../../../swat_em/ui/bitmaps/splash.png'# 'img/logo.svg'
+html_theme_options = {
+    'logo_only': True,
+    'display_version': False,
+}
+
+
+
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
