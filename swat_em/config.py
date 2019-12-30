@@ -101,7 +101,7 @@ def save_config(config):
     '''
     user_config_dir = get_config_dir()
     if not os.path.isdir(user_config_dir):
-        os.mkdir(user_config_dir)
+        os.makedirs(user_config_dir)
     with open(os.path.join(user_config_dir, 'config.json'), 'w') as f:
         json.dump(config, f, indent = 2)
 
@@ -118,7 +118,7 @@ def load_config():
     '''
     user_config_dir = get_config_dir()
     if not os.path.isdir(user_config_dir):
-        os.mkdir(user_config_dir)
+        os.makedirs(user_config_dir)
 
     if os.path.isfile(os.path.join(user_config_dir, 'config.json')):
         with open(os.path.join(user_config_dir, 'config.json')) as f:
