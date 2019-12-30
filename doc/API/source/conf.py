@@ -32,7 +32,8 @@ import sphinx_rtd_theme
 # extensions coming with Sphinx (named 'stophinx.ext.*') or your custom
 # Add any Sphinx extension module names here, as strings. They can be
 # ones.
-extensions = ['sphinx.ext.autodoc'] #, 'sphinx.ext.mathjax'
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.coverage',
+              'sphinx.ext.viewcode'] #, 'sphinx.ext.mathjax'
 
 # ACHTUNG: Nachfolgendes selbst hinzugefügtes erweitertes Menü
 # scheint noch nicht zu funktionieren
@@ -93,7 +94,7 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+#  html_theme = 'alabaster'
 #  html_theme = 'neo_rtd_theme'
 
 html_theme = 'sphinx_rtd_theme'

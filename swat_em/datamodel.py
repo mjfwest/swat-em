@@ -84,8 +84,8 @@ class datamodel:
 
         Parameters
         ----------
-        return title :  string
-                        title
+        title : string
+                title
         '''
         self.title = title
     
@@ -96,8 +96,8 @@ class datamodel:
 
         Returns
         ----------
-        return title :  string
-                        title
+        title : string
+                title
         '''
         if self.title == '':
             return 'Untitled'
@@ -111,8 +111,8 @@ class datamodel:
 
         Returns
         ----------
-        return notes :  string
-                        Some notes
+        notes : string
+                Some notes
         '''
         return self.notes
         
@@ -280,8 +280,8 @@ class datamodel:
 
         Returns
         -------
-        return MMK: list
-                    radial force modes
+        MMK: list
+             radial force modes
         '''
         if num_modes == None:
             num_modes = config['radial_force']['num_modes']
@@ -299,7 +299,8 @@ class datamodel:
 
         Returns
         -------
-        return t: integer
+        t: integer
+           Periodicity for the winding layout
         '''
         l, ls, lcol = self.get_layers()
         layers, Q = l.shape
@@ -325,8 +326,8 @@ class datamodel:
 
         Returns
         -------
-        return Q: integer
-                  number of slots
+        Q: integer
+           number of slots
         '''
         return self.machinedata['Q']
     
@@ -349,8 +350,8 @@ class datamodel:
 
         Returns
         -------
-        return p: integer
-                  number of pole-pairs
+        p: integer
+           number of pole-pairs
         '''
         return self.machinedata['p']
     
@@ -373,8 +374,8 @@ class datamodel:
 
         Returns
         -------
-        return m: integer
-                  number of phases
+        m: integer
+           number of phases
         '''
         return self.machinedata['m']
     
@@ -397,8 +398,8 @@ class datamodel:
 
         Returns
         -------
-        return w: integer
-                  winding step
+        w: integer
+           winding step
         '''
         return self.machinedata['wstep']
     
@@ -428,8 +429,8 @@ class datamodel:
 
         Returns
         -------
-        return phases: list of lists
-                       winding layout
+        phases: list of lists
+                winding layout
         '''
         return self.machinedata['phases']
         
@@ -447,12 +448,12 @@ class datamodel:
 
         Returns
         -------
-        return layers:     numpy array 
-                           winding layout
-        return slayers:    numpy array 
-                           same as 'layers' but as string
-        return layers_col: numpy array 
-                           phase colors
+        layers:     numpy array 
+                    winding layout
+        slayers:    numpy array 
+                    same as 'layers' but as string
+        layers_col: numpy array 
+                    phase colors
         '''
         N = self.get_num_layers()
         Q = self.get_num_slots()
@@ -483,14 +484,14 @@ class datamodel:
         
         Returns
         -------
-        return phasenames: list
-                           names of the phases
+        phasenames: list
+                    names of the phases
 
         Examples
-        -------
-        # if there are m = 3 phases:
+        --------
+        if there are m = 3 phases:
         >>> data.get_phasenames()
-            ['A', 'B', 'C']
+        ['A', 'B', 'C']
         '''
         return self.machinedata['phasenames']
     
@@ -502,10 +503,10 @@ class datamodel:
         
         Returns
         -------
-        return nu: numpy array
-                   ordinal numbers
-        return kw: 2D numpy array
-                   windings factors, (one column for each phase)
+        nu: numpy array
+            ordinal numbers
+        kw: 2D numpy array
+            windings factors, (one column for each phase)
         '''
         return np.array(self.results['nu_el']), np.array(self.results['kw_el'])
 
@@ -517,10 +518,10 @@ class datamodel:
         
         Returns
         -------
-        return nu: numpy array
-                   ordinal numbers
-        return kw: 2D numpy array
-                   windings factors, (one column for each phase)
+        nu: numpy array
+            ordinal numbers
+        kw: 2D numpy array
+            windings factors, (one column for each phase)
         '''
         return np.array(self.results['nu_mech']), np.array(self.results['kw_mech'])
 
@@ -531,8 +532,8 @@ class datamodel:
         
         Returns
         -------
-        return kw: list
-                   windings factors, (one entry for each phase)
+        kw: list
+            windings factors, (one entry for each phase)
         '''
         return self.results['kw_el'][0]
 
@@ -547,8 +548,8 @@ class datamodel:
         
         Returns
         -------
-        return turns: integer, float or list of lists
-                      number of turns 
+        turns: integer, float or list of lists
+               number of turns 
         '''
         return self.machinedata['turns']
     
@@ -562,7 +563,7 @@ class datamodel:
         (phases)
         
         Parameters
-        -------
+        ----------
         turns: integer, float or list of lists
                number of turns 
         '''
@@ -575,8 +576,8 @@ class datamodel:
 
         Returns
         -------
-        return layers:  Fraction
-                        number of slots per pole per phase
+        layers: Fraction
+                number of slots per pole per phase
         '''
         if 'q' in self.results.keys():
             return self.results['q']
@@ -837,8 +838,8 @@ class datamodel:
                  
         Returns
         -------
-        return : string
-                 The file name of the html-file which is stored in tmp directory
+        filnename : string
+                    The file name of the html-file which is stored in tmp directory
         ''' 
         html_rep = rep.HtmlReport(self)
         return html_rep.create(fname)

@@ -4,30 +4,44 @@
    contain the root `toctree` directive.
 
 Welcome to SWAT-EM's API documentation!
-===================================
+=======================================
 
+This documentation is for scripting "SWAT-EM".
+SWAT-EM is a software for designing and analyzing of windings systems for electrical
+machines. Currently supported are rotating field windings (permanent-magnet motors,
+induction motors, synchronout reluctance motors) with any number of phases. This can
+be distributed full pitch winding, distributed fractional slot winding or tooth-coil winding.
+The design can be done by
+
+- Generating with manual allocation of the coil sides to stator slots
+- Defining individual number of turns for each coil
+- Automatic winding generators
+- Tables of possible winding systems for slot/pole combinations
+
+Analyzing features
+
+- Calculation of the winding factor based on the voltage star of slots
+- Plot of the winding layout
+- Plot of stator ampere-conductor distribution and the magnetomotive force (MMF)
+- Plot of the slot voltage phasors
+- Plot of the winding factor
+- Max. possible number of parallel circuit connection of coils
+
+
+
+Table of Contents
+-----------------
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :glob:
+    
+    install
+    basics
+    results
+    reference
    
    
-.. include:: ../../../README.rst
 
-
-.. include:: basics.rst
-
-.. include:: results.rst
-   
-   
-Reference
-=========
-
-.. automodule:: swat_em
-   :members:
-
-
-.. autoclass:: swat_em.datamodel.datamodel
-    :members:
 
 
 Indices and tables
