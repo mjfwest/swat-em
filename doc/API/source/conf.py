@@ -33,7 +33,7 @@ import sphinx_rtd_theme
 # Add any Sphinx extension module names here, as strings. They can be
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.coverage',
-              'sphinx.ext.viewcode'] #, 'sphinx.ext.mathjax'
+              'sphinx.ext.viewcode', 'sphinx.ext.mathjax'] #, 'sphinx.ext.mathjax'
 
 # ACHTUNG: Nachfolgendes selbst hinzugefügtes erweitertes Menü
 # scheint noch nicht zu funktionieren

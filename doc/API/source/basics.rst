@@ -45,11 +45,11 @@ induction machines:
 
 .. code-block:: python
 
-    >>> data = datamodel()      # generate a datamodel for the winding
+    >>> wdg = datamodel()      # generate a datamodel for the winding
     >>> Q = 6                   # number of slots
     >>> P = 2                   # number of pole pairs
-    >>> data.genwdg(Q = Q, P = P, m = 3, layers = 1)
-    >>> print(data)             # print infos for the winding
+    >>> wdg.genwdg(Q = Q, P = P, m = 3, layers = 1)
+    >>> print(wdg)             # print infos for the winding
     WINDING DATAMODEL
     =================
 
@@ -79,8 +79,6 @@ systems - tooth coils. To get such a winding the winding step
 must be exactely :math:`W=1`. This means, that the distance between a
 wire and its reverse wire is one slot.
 
-simplest winding.
-
 .. figure:: fig/winding_sketch_toothcoils.png
     :width: 300
     :alt: Alternative text
@@ -96,14 +94,14 @@ winding layers:
 
 .. code-block:: python
 
-    >>> data = datamodel()      # generate a datamodel for the winding
+    >>> wdg = datamodel()      # generate a datamodel for the winding
     >>> Q = 3                   # number of slots
     >>> P = 2                   # number of pole pairs
     >>> w = 1                   # step width for the coil in slots
 
     >>> # generate winding automatically
-    >>> data.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
-    >>> print(data)             # print infos for the winding
+    >>> wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
+    >>> print(wdg)             # print infos for the winding
     WINDING DATAMODEL
     =================
 
@@ -116,7 +114,11 @@ winding layers:
     Number of slots per pole per phase: 1/2
     Fundamental winding factor: 0.866, 0.866, 0.866
 
+.. figure:: fig/toothcoil_3_2.png
+    :alt: Alternative text
+    :figclass: align-center
 
+    Winding layout with 3 slots, 2 poles and 3 phases
 
 
 A more complex winding
@@ -125,12 +127,12 @@ A more complex winding (overlapping full pitch winding with coil shortening)
 
 .. code-block:: python
 
-    >>> data = datamodel()
+    >>> wdg = datamodel()
     >>> Q = 12
     >>> P = 2
     >>> w = 5     # without shortening w would be 6 for this winding
-    >>> data.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
-    >>> print(data)
+    >>> wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
+    >>> print(wdg)
     WINDING DATAMODEL
     =================
 
@@ -143,5 +145,8 @@ A more complex winding (overlapping full pitch winding with coil shortening)
     Number of slots per pole per phase: 2
     Fundamental winding factor: 0.933, 0.933, 0.933
 
+.. figure:: fig/overlapping_12_2.png
+    :alt: Alternative text
+    :figclass: align-center
 
-
+    Winding layout with 12 slots, 2 poles and 3 phases

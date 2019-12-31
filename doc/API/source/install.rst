@@ -13,7 +13,7 @@ install it from the project root directory::
 
 
 If you running windows and don't want to deal with a python interpreter
-you can download an '*'.exe installer or a  portable '*'.zip version which 
+you can download an \*.exe installer or a  portable \*.zip version which 
 includes all python dependencies from https://sourceforge.net/projects/swat-em/
 
 

@@ -5,11 +5,11 @@ from swat_em import datamodel
 
 
 # A more complex winding (overlapping full pitch winding with coil shortening)
-data = datamodel()
-data.genwdg(Q = 12, P = 2, m = 3, layers = 1) 
+wdg = datamodel()
+wdg.genwdg(Q = 12, P = 2, m = 3, layers = 1) 
 
-print('fundamental winding factor: ', data.get_fundamental_windingfactor())
-print('winding step              : ', data.get_windingstep())
+print('fundamental winding factor: ', wdg.get_fundamental_windingfactor())
+print('winding step              : ', wdg.get_windingstep())
 
 
 # Get the winding layout. For each phase there is a list of the 1st and 
@@ -17,7 +17,7 @@ print('winding step              : ', data.get_windingstep())
 # list is empty. An entry of the lists define the slot number in which
 # is a coil-side of the phase is located. A negative number means, that 
 # the winding direction is reversed in the slot.
-print('winding layout:', data.get_phases())
+print('winding layout:', wdg.get_phases())
 
 
 # The winding factor depends on the harmonic number. There are two 
@@ -29,7 +29,7 @@ print('winding layout:', data.get_phases())
 # pairs and if you want to analyze the harmonic content of the winding
 # for example.
 # Attention: The winding factor is calculated for each phase seperately.
-nu, kw = data.get_windingfactor_el()
+nu, kw = wdg.get_windingfactor_el()
 print('nu kw')
 for k in range(len(nu)):
     print(nu[k], kw[k])
@@ -37,7 +37,7 @@ for k in range(len(nu)):
 
 # the datamodel() object stores the data in dictionaries. The user 
 # have direct access:
-print('Data for the machine: ', data.machinedata.keys())
+print('Data for the machine: ', wdg.machinedata.keys())
 
 # ... and all results:
-print('Data for the machine: ', data.results.keys())
+print('Data for the machine: ', wdg.results.keys())

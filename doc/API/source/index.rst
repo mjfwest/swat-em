@@ -7,10 +7,10 @@ Welcome to SWAT-EM's API documentation!
 =======================================
 
 This documentation is for scripting "SWAT-EM".
-SWAT-EM is a software for designing and analyzing of windings systems for electrical
+SWAT-EM is a software for designing and analyzing winding systems for electrical
 machines. Currently supported are rotating field windings (permanent-magnet motors,
 induction motors, synchronout reluctance motors) with any number of phases. This can
-be distributed full pitch winding, distributed fractional slot winding or tooth-coil winding.
+be distributed full pitch or fractional slot winding or tooth-coil winding.
 The design can be done by
 
 - Generating with manual allocation of the coil sides to stator slots
@@ -38,6 +38,8 @@ Table of Contents
     install
     basics
     results
+    plots
+    fileio
     reference
    
    

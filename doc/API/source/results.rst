@@ -4,11 +4,11 @@ After generating a winding, swat-em analyze it and provides the results:
 
 .. code-block:: python
 
-    >>> data = datamodel()
-    >>> data.genwdg(Q = 12, P = 2, m = 3, layers = 1) 
-    >>> print('fundamental winding factor: ', data.get_fundamental_windingfactor())
+    >>> wdg = datamodel()
+    >>> wdg.genwdg(Q = 12, P = 2, m = 3, layers = 1) 
+    >>> print('fundamental winding factor: ', wdg.get_fundamental_windingfactor())
     fundamental winding factor:  [0.9659258262890683, 0.9659258262890683, 0.9659258262890684]
-    >>> print('winding step: ', data.get_windingstep())
+    >>> print('winding step: ', wdg.get_windingstep())
     winding step:  6
 
 
@@ -23,7 +23,7 @@ the winding direction is reversed in the slot.
 
 .. code-block:: python
 
-    >>> print('winding layout:', data.get_phases())
+    >>> print('winding layout:', wdg.get_phases())
     winding layout: [[[1, 2, -7, -8], []], [[5, 6, -11, -12], []], [[-3, -4, 9, 10], []]]
 
 
@@ -39,7 +39,7 @@ Attention: The winding factor is calculated for each phase seperately.
 
 .. code-block:: python
 
-    >>> nu, kw = data.get_windingfactor_el()
+    >>> nu, kw = wdg.get_windingfactor_el()
     >>> for k in range(len(nu)):
     >>>     print(nu[k], kw[k])
     1 [0.96592583 0.96592583 0.96592583]
@@ -57,10 +57,10 @@ have direct access:
 
 .. code-block:: python
 
-    >>> print('Data for the machine: ', data.machinedata.keys())
+    >>> print('Data for the machine: ', wdg.machinedata.keys())
     Data for the machine:  dict_keys(['Q', 'p', 'm', 'phases', 'wstep', 'turns', 'phasenames'])
     >>> # ... and all results:
-    >>> print('Data for the machine: ', data.results.keys())
+    >>> print('Data for the machine: ', wdg.results.keys())
     Data for the machine:  dict_keys(['q', 'nu_el', 'Ei_el', 'kw_el', 'phaseangle_el', 'nu_mech', 'Ei_mech', 'kw_mech', 'phaseangle_mech', 'valid', 'error', 't', 'wdg_is_symmetric', 'wdg_periodic', 'MMK', 'basic_char'])
 
 
