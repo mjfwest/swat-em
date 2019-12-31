@@ -597,9 +597,9 @@ class MainWindow(QMainWindow):
         '''
         options = QFileDialog.Options()
         filename, _ = QFileDialog.getSaveFileName(self,"Save to Text file", "","Text (*.txt)", options=options)
-        if not filename.endswith('.txt'):
-                filename += '.txt'
         if filename:
+            if not filename.endswith('.txt'):
+                    filename += '.txt'
             self.data.export_text_report(filename)
 
 
