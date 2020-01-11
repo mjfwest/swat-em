@@ -34,6 +34,7 @@ def get_init_config():
     config['N_nu_mech'] = 19
     config['max_nu_MMK'] = 19
     config['kw_min'] = 0.01
+    config['num_MMF_points'] = 3601
     config['plot_MMF_harmonics'] = 0.15
     config['plt'] = {
                      'lw': 2.0,

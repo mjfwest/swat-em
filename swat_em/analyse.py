@@ -23,6 +23,35 @@ def get_basic_characteristics(Q, P, m, S, turns=1):
     return bc
     
 
+def double_linked_leakage(kw, nu, p):
+    '''
+    Returns the coefficient of the double linkead leakage flux.
+
+    Parameters
+    ----------
+    kw :     list or array
+             mechanical winding factor
+    nu :     list or array
+             ordinal number with respect to the mechanical winding factor.
+    p  :     integer
+             number of pole pairs
+             
+    Returns
+    -------
+    return : float
+             coefficient of the double linkead leakage flux
+    '''
+    kw = np.abs(kw)
+    sigma_d = 0.0
+    for k in range(len(kw)):
+        if nu[k] != p: 
+            sigma_d += (kw[k]/(nu[k]/p))**2
+        else:
+            kw1 = kw[k]
+    sigma_d /= kw1**2
+    return sigma_d
+
+
 def wdg_get_periodic(Ei, S):
     '''
     Returns the symmetry factor for the winding 
@@ -413,7 +442,7 @@ def DFT(vect):
     N = len(vect)
     yy = 2./N*np.fft.fft(vect)
     yy[0] = np.mean(vect)
-    return yy  
+    return yy[:N//2]
 
 
 def _get_float(txt):
