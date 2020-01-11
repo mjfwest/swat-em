@@ -244,6 +244,7 @@ class datamodel:
                 self.get_phases(),
                 self.get_turns())
             bc['r'] = self.get_radial_force_modes(num_modes = config['radial_force']['num_modes'])
+            bc['sigma_d'] = self.get_double_linked_leakage()
             self.results['basic_char'] = bc
         else:
             bc = self.results['basic_char']
@@ -254,6 +255,7 @@ class datamodel:
                ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])]]
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
+        dat.append(['double linked leakage ', rep.italic('σ<sub>d: </sub>'), str(round(bc['sigma_d'], 3))])
         dat.append(['lcm(Q, P) ', '', str(bc['lcmQP'])])
         dat.append(['periodic base winding ', rep.italic('t: '), str(bc['t'])])
         

@@ -6,6 +6,7 @@ import os
 import tempfile
 import numpy as np
 import xlsxwriter
+import re
 from swat_em import analyse
 from swat_em.config import config
 
@@ -61,6 +62,34 @@ def table(dat, header=[]):
     txt.append('</table>')
     return txt
 
+def num2str(number, maxlen=8):
+    """
+    Converts a number to string with max number of signs
+
+    Parameters
+    ----------
+    number : scalar, array_like, string
+             Number to convert
+    maxlen : integer
+             Max. length to convert
+           
+    Returns
+    -------
+    return : string / list of strings / ndarray of strings
+             string with the number           
+    """
+    numstring = str(number)
+    ematch = re.search('[eE].+', numstring)
+    if ematch:
+        # number in scientific
+        exp = ematch.group()
+        length = min(len(numstring), maxlen) - len(exp)
+        numstring = numstring[:length] + exp
+    else:
+        numstring = numstring[:maxlen]
+    if number >= 0.0:
+        numstring = ' ' + numstring[:-1]
+    return numstring
 
 
 class HtmlReport:
@@ -392,13 +421,35 @@ class TextReport:
         
         for k in range(len(bc['kw1'])):
             self._txt.append('Fundamental winding factor           kw1: {} (phase{})'.format(round(bc['kw1'][k], 3), k+1))
+        self._txt.append('Double linked leakage            sigma_d: {} (from MMF)'.format(round(bc['sigma_d'], 3)) )
         self._txt.append('\n')
+        
+        self._txt.append('Harmonic content of the winding faktor (electrical)')
+        self._txt.append('nu_el\t' + '\t'.join(['kw ('+k+')' for k in self.data.get_phasenames()]))
+        nu, kw = self.data.get_windingfactor_el()
+
+        for knu in range(len(nu)):
+            kw_ = [num2str(k, 8) for k in kw[knu]]
+            self._txt.append( str(nu[knu])+'\t'+ '\t'.join(kw_) )
+        self._txt.append('\n')
+        
+        self._txt.append('Harmonic content of the winding faktor (mechanical)')
+        self._txt.append('nu_mech\t' + '\t'.join(['kw ('+k+')' for k in self.data.get_phasenames()]))
+        nu, kw = self.data.get_windingfactor_mech()
+
+        for knu in range(len(nu)):
+            kw_ = [num2str(k, 8) for k in kw[knu]]
+            self._txt.append( str(nu[knu])+'\t'+ '\t'.join(kw_) )
+        self._txt.append('\n')
+        
         
         self._txt.append('FORCES')
         self._txt.append('======')
         self._txt.append('Cogging torque ordinal numbers for pm-machines: {}, {}, {}, ...'.format(bc['lcmQP'], bc['lcmQP']*2, bc['lcmQP']*3))
         r_ = [str(i) for i in bc['r']]
         self._txt.append('The winding leads to radial forces with modes r: {}, ...'.format(', '.join(r_)))
+
+        #  self._txt.append()
 
         #  self._txt.append()
         #  self._txt.append()
