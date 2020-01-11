@@ -226,7 +226,7 @@ class datamodel:
         '''
         l = 1
         for p in self.get_phases():
-            if len(p[1]) > 1:
+            if len(p[1]) > 0:
                 l = 2
         return l
 
