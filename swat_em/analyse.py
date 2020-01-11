@@ -42,13 +42,17 @@ def double_linked_leakage(kw, nu, p):
              coefficient of the double linkead leakage flux
     '''
     kw = np.abs(kw)
+    kw1 = 0
     sigma_d = 0.0
     for k in range(len(kw)):
         if nu[k] != p: 
             sigma_d += (kw[k]/(nu[k]/p))**2
         else:
             kw1 = kw[k]
-    sigma_d /= kw1**2
+    if kw1 != 0:
+        sigma_d /= kw1**2
+    else:
+        sigma_d = -1
     return sigma_d
 
 
