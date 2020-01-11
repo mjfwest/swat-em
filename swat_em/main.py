@@ -121,6 +121,7 @@ class MainWindow(QMainWindow):
         self.actionExport_Text_report.triggered.connect(self.export_to_txt)
         
         self.actionHelp.triggered.connect(self.open_manual)
+        self.actionScripting_Manual.triggered.connect(self.open_api_manual)
         
         self.plot_tabs.currentChanged.connect(lambda: self.update_plot_in_GUI(small_update = False))
         self.radioButton_electrical.toggled.connect(self.update_plot_in_GUI)
@@ -581,6 +582,18 @@ class MainWindow(QMainWindow):
             os.startfile(doc)
         else:                                   # linux variants
             subprocess.call(('xdg-open', doc))
+
+
+    def open_api_manual(self):
+        doc = os.path.join(__dir__, 'doc', 'api', 'api_manual.pdf')
+        #  subprocess.Popen(['open', doc], shell=True)
+        if platform.system() == 'Darwin':       # macOS
+            subprocess.call(('open', doc))
+        elif platform.system() == 'Windows':    # Windows
+            os.startfile(doc)
+        else:                                   # linux variants
+            subprocess.call(('xdg-open', doc))
+
 
     def create_report(self):
         rep = report.HtmlReport(self.data)

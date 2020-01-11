@@ -163,11 +163,10 @@ class datamodel:
             with phase 1 in in slot 1 and in slot 2 with negativ winding direction. 
             For double layer windings there must be additional lists:
             S = [[[1, -4], [-3, 6]], [[3, -6], [-5, 2]], [[-2, 5], [4, -1]]]
-                     |        '-> second layer
-                     '-> first layer  
+            Hint: [[[first layer], [second layer]], ... ]
+                     
         wstep : integer
                 winding step (slots as unit)
-        
         ''' 
         if not hasattr(S[0][0], '__iter__'):
             for k in range(len(S)):

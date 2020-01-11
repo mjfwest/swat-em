@@ -14,6 +14,17 @@ help:
 
 .PHONY: help Makefile
 
+
+install: 
+	mkdir -p ../../swat_em/doc/api
+	cp build/latex/SWAT-EM.pdf ../../swat_em/doc/api/api_manual.pdf
+.PHONY: install
+
+
+
+
+
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile

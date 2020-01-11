@@ -34,7 +34,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>2</number>
       </property>
       <property name="iconSize">
        <size>
@@ -870,9 +870,8 @@
      <string>Tools</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="actionprint_report"/>
-    <addaction name="actionAdditional_factors"/>
     <addaction name="separator"/>
+    <addaction name="actionprint_report"/>
     <addaction name="actionExport_Text_report"/>
     <addaction name="actionExport_data_to_Excel"/>
     <addaction name="separator"/>
@@ -882,6 +881,7 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionScripting_Manual"/>
     <addaction name="actionHelp"/>
     <addaction name="actionProgram_Info"/>
    </widget>
@@ -1024,7 +1024,13 @@
      <normaloff>icons/help.png</normaloff>icons/help.png</iconset>
    </property>
    <property name="text">
-    <string>Help</string>
+    <string>Manual</string>
+   </property>
+   <property name="iconText">
+    <string>Manual</string>
+   </property>
+   <property name="toolTip">
+    <string>Manual</string>
    </property>
   </action>
   <action name="actionprint_report">
@@ -1153,6 +1159,11 @@
    </property>
    <property name="text">
     <string>Export text report</string>
+   </property>
+  </action>
+  <action name="actionScripting_Manual">
+   <property name="text">
+    <string>Scripting Manual</string>
    </property>
   </action>
  </widget>
