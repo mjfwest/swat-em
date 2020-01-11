@@ -13,6 +13,12 @@ import numpy as np
 import time
 import os
 
+# WORKAROUND for pyqtgraph's printing system
+#  from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
+#  import PyQt5.QtGui
+#  PyQt5.QtGui.QPrinter = QPrinter
+#  PyQt5.QtGui.QPrintDialog = QPrintDialog
+
 import pyqtgraph as pg
 import pyqtgraph.exporters
 pg.setConfigOption('background', 'w')
@@ -172,6 +178,12 @@ class _slot_plot:
             exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
             exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
         exporter.export(fname)
+    
+    
+    #  def printing(self):
+        #  exporter = pg.exporters.PrintExporter(self.fig.plotItem)
+        #  exporter.export()
+
 
 
 
@@ -303,7 +315,12 @@ class _slot_star:
             exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
             exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
         exporter.export(fname)
-            
+
+
+    #  def printing(self):
+        #  exporter = pg.exporters.PrintExporter(self.fig.plotItem)
+        #  exporter.export()
+
 
 class _windingfactor:
     def __init__(self, layout, widget, data, table):
@@ -398,6 +415,10 @@ class _windingfactor:
             exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
         exporter.export(fname)
 
+
+    #  def printing(self):
+        #  exporter = pg.exporters.PrintExporter(self.fig.plotItem)
+        #  exporter.export()
 
 
 class _mmk:
@@ -519,4 +540,6 @@ class _mmk:
         exporter.export(fname)
 
 
-
+    #  def printing(self):
+        #  exporter = pg.exporters.PrintExporter(self.l.ci)
+        #  exporter.export()

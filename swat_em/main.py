@@ -131,7 +131,7 @@ class MainWindow(QMainWindow):
         #  initial windings  -----------------------------------
         self.data = datamodel()
         self.data.genwdg(Q = 12, P = 2, m = 3, w = -1, layers = 1)
-        self.data.set_notes('Winding example for a overlapping single layer winding for a 12 slots, 10 poles machine')
+        self.data.set_notes('Winding example for a overlapping single layer winding for a 12 slots, 2 poles machine')
         self.data.set_title('12-2 overlapping winding')
         self.project.add_model(self.data)
 
@@ -450,7 +450,7 @@ class MainWindow(QMainWindow):
         if idx in [0, 1, 2, 3]:
             with tempfile.TemporaryDirectory() as tmpdir:
                 if idx == 0:
-                    #  self.data.plot_layout(os.path.join(tmpdir, 'fig.png'))
+                    #  ## self.data.plot_layout(os.path.join(tmpdir, 'fig.png'))
                     self.fig1.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
                 elif idx == 1:
                     self.fig2.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
@@ -470,6 +470,16 @@ class MainWindow(QMainWindow):
                     painter.setWindow(pixmap.rect())
                     painter.drawPixmap(0, 0, pixmap)
                     del painter
+        # PRINTING DOESN't Work well
+        #  if idx == 0:
+            #  self.fig1.printing()
+        #  elif idx == 1:
+            #  self.fig2.printing()
+        #  elif idx == 2:
+            #  self.fig3.printing()
+        #  elif idx == 3:
+            #  self.fig4.printing()
+            
         elif idx == 4:
             if self.reportEdit.textCursor().hasSelection():
                 dlg.addEnabledOption(QPrintDialog.PrintSelection)
