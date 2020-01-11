@@ -15,8 +15,9 @@ setuptools.setup(
     url="https://gitlab.com/martinbaun/swat-em",
     packages=setuptools.find_packages(),
     #  packages=['swat_em'],
-    package_data={'swat_em': ['themes/*', 'ui/*', 'ui/icons/*', 'ui/icons/Qt/*', 
-                              'ui/bitmaps/*', 'doc/manual', 'doc/manual/*', 'template/*']},
+    package_data={'swat_em': ['themes/*', 'ui/*', 'ui/icons/*',
+                              'ui/bitmaps/*', 'doc/manual', 'doc/manual/*',
+                              'doc/api', 'doc/api/*', 'template/*']},
     platforms="any",
     install_requires=['numpy', 'PyQt5', 'pyqtgraph', 'xlsxwriter'],
     classifiers=[
