@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>818</width>
-    <height>665</height>
+    <height>684</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -250,7 +250,7 @@
          <property name="minimumSize">
           <size>
            <width>300</width>
-           <height>240</height>
+           <height>260</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -537,7 +537,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>

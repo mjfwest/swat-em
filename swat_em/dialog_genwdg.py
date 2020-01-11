@@ -173,7 +173,8 @@ class GenWindingCombinations(QDialog):
                                         't (symmetry)',
                                         'a (parallel circuit)',
                                         'lcm(Q,2p) (least common multiple)',
-                                        'r1 (first mode of radial force)'])
+                                        'r1 (first mode of radial force)',
+                                        'sigma_d (double linked leakage)'])
         self.comboBox_plotval.currentIndexChanged.connect(self.update_table)
         #  self.generate()
 
@@ -258,6 +259,8 @@ class GenWindingCombinations(QDialog):
                             txt = str(bc['lcmQP'])
                         elif idx == 5:
                             txt = str(bc['r'][0])
+                        elif idx == 6:
+                            txt = str(round(bc['sigma_d'], 3))
 
                         self.table.setItem(iQ, iP, QTableWidgetItem(txt))
                         q = bc['q']

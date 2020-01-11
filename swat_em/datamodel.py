@@ -161,10 +161,22 @@ class datamodel:
             winding layout for every phase, for example:
             S = [[1,-2], [3,-4], [5,-6]]. This means there are 3 phases
             with phase 1 in in slot 1 and in slot 2 with negativ winding direction. 
+            For double layer windings there must be additional lists:
+            S = [[[1, -4], [-3, 6]], [[3, -6], [-5, 2]], [[-2, 5], [4, -1]]]
+                     |        '-> second layer
+                     '-> first layer  
         wstep : integer
                 winding step (slots as unit)
         
         ''' 
+        if not hasattr(S[0][0], '__iter__'):
+            for k in range(len(S)):
+                S[k] = [S[k], []]
+        if hasattr(turns, '__iter__'):
+            if not hasattr(turns[0][0], '__iter__'):
+                for k in range(len(turns)):
+                    turns[k] = [turns[k], []]  
+        
         self.machinedata['phases'] = S
         self.set_turns(turns)
         self.actual_state_saved = False
@@ -214,7 +226,7 @@ class datamodel:
         '''
         l = 1
         for p in self.get_phases():
-            if len(p[1]) > 1:
+            if len(p[1]) > 0:
                 l = 2
         return l
 
@@ -232,6 +244,7 @@ class datamodel:
                 self.get_phases(),
                 self.get_turns())
             bc['r'] = self.get_radial_force_modes(num_modes = config['radial_force']['num_modes'])
+            bc['sigma_d'] = self.get_double_linked_leakage()
             self.results['basic_char'] = bc
         else:
             bc = self.results['basic_char']
@@ -242,6 +255,7 @@ class datamodel:
                ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])]]
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
+        dat.append(['double linked leakage ', rep.italic('σ<sub>d: </sub>'), str(round(bc['sigma_d'], 3))])
         dat.append(['lcm(Q, P) ', '', str(bc['lcmQP'])])
         dat.append(['periodic base winding ', rep.italic('t: '), str(bc['t'])])
         
@@ -290,6 +304,60 @@ class datamodel:
         return analyse.calc_radial_force_modes(self.results['MMK']['MMK'], 
                                                self.get_num_phases(),
                                                num_modes = num_modes)
+
+        
+    def get_num_series_turns(self):
+        '''
+        Returns the number of turns in series per phase.
+        If the number of coil sides per phase or number of turns per
+        phase is not identically than a mean value of turns of all
+        phases is returned.
+
+        Returns
+        -------
+        w: number
+           number of turns in series per phase
+        '''
+        S2 = analyse._flatten(self.get_phases())
+        turns2 = self.get_turns()
+        if hasattr(turns2, '__iter__'):
+            turns2 = analyse._flatten(turns2)
+        if not hasattr(turns2, '__iter__'): # constant number of turns
+            w = 0
+            for k in S2:
+                w += len(k)
+            w *= turns2
+        else:                               # variable number of turns
+            w = 0
+            for k1 in range(len(S2)):
+                for k2 in range(len(S2[k1])):
+                    w += S2[k1][k2] * turns2[k1][k2]
+        w = w / 2 / self.get_num_phases()
+        return w
+
+    
+    def get_double_linked_leakage(self):
+        '''
+        Returns the coefficient of the double linkead leakage flux.
+        This number is a measure of the harmonic content of the 
+        MMF in the airgap caused by the winding. As higher the number
+        as higher the harmonics.
+
+        Returns
+        -------
+        sigma_d: float
+                 coefficient of the double linkead leakage flux
+        '''
+        if 'MMK' not in self.results.keys():
+            self._calc_MMK()
+        Cnu = np.abs(analyse.DFT(self.results['MMK']['MMK'][:-1]))[1:]
+        nu = np.arange(1, len(Cnu)+1)
+        p = self.get_num_polepairs()
+        I = 1                            # current for MMK
+        w = self.get_num_series_turns()
+        kw = Cnu * np.pi * nu / (3*np.sqrt(2)*I*w)
+        sigma_d = analyse.double_linked_leakage(kw, nu, p)
+        return sigma_d
 
 
     def calc_num_basic_windings_t(self):
@@ -658,7 +726,8 @@ class datamodel:
         phi, MMK, theta = analyse.calc_MMK(self.get_num_slots(),
                                    self.get_num_phases(),
                                    self.get_phases(),
-                                   self.get_turns())
+                                   self.get_turns(),
+                                   N = config['num_MMF_points'])
         nu = list(range(config['max_nu_MMK']+1))
         HA = analyse.DFT(MMK[:-1])[:config['max_nu_MMK']+1]
         self.results['MMK'] = {}
