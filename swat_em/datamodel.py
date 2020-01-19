@@ -264,7 +264,8 @@ class datamodel:
                ['Number of empty slots ', rep.italic('Qes: '),  str(self.get_num_empty_slots())],
                ['Number of poles ',    rep.italic('2p: '), str(2*self.get_num_polepairs())],
                ['Number of phases ',   rep.italic('m: '),  str(self.get_num_phases())],
-               ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])]]
+               ['slots per 2p per m ', rep.italic('q: '),  str(self.get_q())]]
+        
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
         dat.append(['double linked leakage ', rep.italic('σ<sub>d: </sub>'), str(round(bc['sigma_d'], 3))])
@@ -367,8 +368,11 @@ class datamodel:
         p = self.get_num_polepairs()
         I = 1                            # current for MMK
         w = self.get_num_series_turns()
-        kw = Cnu * np.pi * nu / (3*np.sqrt(2)*I*w)
-        sigma_d = analyse.double_linked_leakage(kw, nu, p)
+        if w != 0:
+            kw = Cnu * np.pi * nu / (3*np.sqrt(2)*I*w)
+            sigma_d = analyse.double_linked_leakage(kw, nu, p)
+        else:
+            sigma_d = -1
         return sigma_d
 
 
@@ -500,8 +504,10 @@ class datamodel:
         self.machinedata['Qes'] = Qes
     
     def get_num_empty_slots(self):
-        return self.machinedata['Qes']
-    
+        if self.machinedata['Qes'] is not None:
+            return self.machinedata['Qes']
+        else:
+            return 0
     
     def get_phases(self):
         '''
@@ -666,8 +672,11 @@ class datamodel:
         layers: Fraction
                 number of slots per pole per phase
         '''
-        if 'q' in self.results.keys():
-            return self.results['q']
+        if 'q' not in self.results.keys():
+            q = fractions.Fraction((self.get_num_slots()-self.get_num_empty_slots()) / (
+            self.get_num_phases()*2*self.get_num_polepairs())).limit_denominator(100)
+            self.results['q'] = q
+        return self.results['q']
     
     
     def _set_q(self, q):
@@ -689,7 +698,7 @@ class datamodel:
         self.reset_results()
         
         # number of slots per pole and phase
-        self.q = fractions.Fraction(self.get_num_slots() / (
+        self.q = fractions.Fraction((self.get_num_slots()-self.get_num_empty_slots()) / (
             self.get_num_phases()*2*self.get_num_polepairs())).limit_denominator(100)
         self._set_q(self.q)
         self.n = self.q.denominator
