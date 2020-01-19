@@ -305,13 +305,13 @@ class MainWindow(QMainWindow):
         ret = self.DIALOG_GenWindingCombinations.run()
         if ret:
             self.save_undo_state()
-            wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'])
+            wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'], ret['Nes'])
             
             data = datamodel()
             data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
-            data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
+            data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])
             data.analyse_wdg()
-            data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
+            data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'], info = wdglayout['info'])            
             if ret['overwrite']:
                 self.data = data
                 self.project.replace_model_by_index(data, self.project_listWidget.currentRow())

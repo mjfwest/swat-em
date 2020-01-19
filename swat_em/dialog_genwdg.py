@@ -101,9 +101,9 @@ class GenWinding2(QDialog):
 
         self.data = datamodel()
         self.data.set_machinedata(Q = self.Q, m = self.m, p = self.P/2)
-        ret = wdggenerator.genwdg(self.Q, self.P, self.m, self.w, self.layers)
+        ret = wdggenerator.genwdg(self.Q, self.P, self.m, self.w, self.layers, 0)# TODO: replace 0 with number of empty slots
         self.data.set_phases(S = ret['phases'], wstep = ret['wstep'])
-        self.data.set_valid(ret['valid'], ret['error'])
+        self.data.set_valid(ret['valid'], ret['error'], ret['info'])
         bc, bc_str = self.data.get_basic_characteristics()
         #  self.textBrowser_wdginfo.setPlainText(bc_str)
         self.textBrowser_wdginfo.setHtml(bc_str)
@@ -155,6 +155,7 @@ class GenWindingCombinations(QDialog):
         self.colorlabel1.setStyleSheet("background-color:#ADD8E6;");
         self.colorlabel2.setStyleSheet("background-color:#E6C3AD;");
         self.colorlabel3.setStyleSheet("background-color:#BCFFBC;");
+        self.colorlabel4.setStyleSheet("background-color:#E9AEE2;");
         
         # update 'w' and update winding
         self.spinBox_Q1.valueChanged.connect(self.generate)
@@ -164,6 +165,7 @@ class GenWindingCombinations(QDialog):
         self.spinBox_m.valueChanged.connect(self.generate)
         self.radioButton_slayer.toggled.connect(self.generate)
         self.checkBox_toothcoil.toggled.connect(self.generate)
+        self.checkBox_empty_slots.toggled.connect(self.generate)
         
         self.tableCombinations.itemSelectionChanged.connect(self.combination_selected)
         
@@ -192,6 +194,10 @@ class GenWindingCombinations(QDialog):
             wstep = 1
         else:
             wstep = -1
+        if self.checkBox_empty_slots.isChecked():
+            empty_slots = -1
+        else:
+            empty_slots = 0
         
         if self.radioButton_slayer.isChecked():
             self.layers = 1
@@ -211,9 +217,10 @@ class GenWindingCombinations(QDialog):
             for iP, kP in enumerate(self.Plist):
                 d = datamodel()
                 d.set_machinedata(Q = kQ, m = self.m, p = kP/2)
-                ret = wdggenerator.genwdg(kQ, kP, self.m, wstep, self.layers)
+                ret = wdggenerator.genwdg(kQ, kP, self.m, wstep, self.layers, empty_slots)
                 d.set_phases(S = ret['phases'], wstep = ret['wstep'])
-                d.set_valid(ret['valid'], ret['error'])
+                d.set_valid(ret['valid'], ret['error'], ret['info'])
+                d.set_num_empty_slots(ret['Qes'])
                 bc, bc_str = d.get_basic_characteristics()
                 self.data[iQ].append(d)
         self.update_table()
@@ -243,7 +250,7 @@ class GenWindingCombinations(QDialog):
         for iQ, kQ in enumerate(self.Qlist):
             self.data.append([])
             for iP, kP in enumerate(self.Plist):
-                if self.data[iQ][iP].results['valid'] and self.data[iQ][iP].results['basic_char']['sym']:
+                if self.data[iQ][iP].generator_info['valid'] and self.data[iQ][iP].results['basic_char']['sym']:
                     bc = self.data[iQ][iP].results['basic_char']
                     if bc['kw1'][0] > 0.01:
                         idx = self.comboBox_plotval.currentIndex()
@@ -271,6 +278,8 @@ class GenWindingCombinations(QDialog):
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#E6C3AD'))
                         else:
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#BCFFBC'))
+                        if self.data[iQ][iP].get_num_empty_slots() != 0:
+                            self.table.item(iQ, iP).setBackground(QtGui.QColor('#E9AEE2'))
                         self.table.item(iQ, iP).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled) # note editable
 
         for iP, kP in enumerate(self.Plist):
@@ -333,6 +342,7 @@ class GenWindingCombinations(QDialog):
                 ret['m'] = self.data[row][column].get_num_phases()
                 ret['w'] = self.data[row][column].get_windingstep()
                 ret['layers'] = self.layers
+                ret['Qes'] = self.data[row][column].get_num_empty_slots()
                 ret['overwrite'] = overwrite
                 return ret
             else:

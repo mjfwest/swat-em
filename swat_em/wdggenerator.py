@@ -6,6 +6,7 @@ import fractions
 #  from collections import deque
 import math
 import numpy as np
+from swat_em import analyse
 
 
 def is_even(val):
@@ -15,7 +16,7 @@ def is_even(val):
     return True if abs(val) % 2 == 0 else False
 
 
-def genwdg(Q, P, m, w, layers):
+def genwdg(Q, P, m, w, layers, empty_slots = 0):
     """
     Generates a winding layout.
 
@@ -55,8 +56,20 @@ def genwdg(Q, P, m, w, layers):
     #  if not wdglayout:
         #  print('No winding found')
     
+    
+    
+    #  if empty_slots != 0:
+        #  ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
+    #  else:
+        #  ret = winding_from_star_of_slot(Q, P, m, w, layers)
+    
     ret = winding_from_star_of_slot(Q, P, m, w, layers)
-        
+    if not ret['valid']:
+        ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
+    
+    
+    
+    
     return ret
 
 
@@ -441,7 +454,7 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
                 w = Q/P
 
             
-    ret = {'phases': phases, 'wstep': w, 'valid': valid, 'error': error }
+    ret = {'phases': phases, 'wstep': w, 'valid': valid, 'error': error, 'info': '', 'Qes': 0}
     return ret
 
 
@@ -463,8 +476,10 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
     info = ''
     valid = True
 
-    
-    n_wc = n_lay*(N-n_es)/(2*m)
+    if n_es >= 0:
+        n_wc = n_lay*(N-n_es)/(2*m)
+    else:
+        n_wc = n_lay*(N- 0  )/(2*m)
     t = math.gcd(N, p)
 
     # symmetric winding?
@@ -472,16 +487,18 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
         g = n_lay*N / (2*m*t)
     else:
         g = N / (2*m*t)
-    if int(g) != g:
-        valid = False
-        error += 'winding not symmetric'
+    #  if int(g) != g:
+        #  if int(n_wc) != n_wc:
+            #  valid = False
+            #  error += 'winding not symmetric'
 
 
     # dead coil winding (empty slots)
-    n_es = int(N - 2*m*int(n_wc) / n_lay)
+    if n_es == -1:
+        n_es = int(N - 2*m*int(n_wc) / n_lay)
     if n_es != 0:
         info += 'attention: dead coil winding'
-
+    print('empty_slots:', n_es)
     q = fractions.Fraction( (N-n_es) / (2*p*m) ).limit_denominator(1000)
     a = int(q)
     z = q.numerator - a
@@ -517,12 +534,12 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
 
     # non-ruduced and normal systems
     if m%2 != 0:
-        print(WDT)
+        #  print(WDT)
         a = WDT[:,:int(n_c/2)]
         b = WDT[:,int(n_c/2):] * (-1)
         b = np.roll(b, -shift, axis=0)
         WDT2 = np.append(a,b,axis=1)
-        print(WDT2)
+        #  print(WDT2)
     else:
         dx = int(n_c/2)
         dy = int(m/2)
@@ -559,5 +576,33 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
     if n_lay == 1:
         w = fractions.Fraction(N / (2*p))
     
-    ret = {'phases': S, 'wstep': w, 'valid': valid, 'error': error, 'info': info }
+    
+    
+    S2 = analyse._flatten(S)
+    # test if the number of positve and negative coil sides are equal
+    for k in range(len(S2)):
+        s = S2[k]
+        pos = 0; neg = 0
+        for w in s:
+            if w > 0:
+                pos += 1
+            elif w < 0:
+                neg += 1
+        if pos != neg:
+            error += 'Phase {} has {} postive and {} negative coil sides'.format(k+1, pos, neg)
+            valid = False
+    
+    l = [len(s) for s in S2]
+    if len(set(l)) != 1:
+        txt = 'Not all phases have the same number of coil sides:<br>'            
+        for k in range(len(S)):
+            txt += 'Phase {} hat {} coilsides<br>'.format(k+1, l[k])
+        error.append(txt)
+
+
+    
+    
+    
+    
+    ret = {'phases': S, 'wstep': w, 'valid': valid, 'error': error, 'info': info, 'Qes': n_es}
     return ret
