@@ -305,7 +305,7 @@ class MainWindow(QMainWindow):
         ret = self.DIALOG_GenWindingCombinations.run()
         if ret:
             self.save_undo_state()
-            wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'], ret['Nes'])
+            wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'], ret['Qes'])
             
             data = datamodel()
             data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
