@@ -5,7 +5,7 @@ Provides functions for analyzing windings
 import numpy as np
 import fractions
 import math
-from collections import Counter
+from collections import Counter, deque
 
 
 def calc_q(Q, p, m):
@@ -13,7 +13,17 @@ def calc_q(Q, p, m):
 
 def get_basic_characteristics(Q, P, m, S, turns=1):
     q = fractions.Fraction(Q / (m * P)).limit_denominator(100)
-    Ei, kw = calc_star(Q, S, turns, P/2, 1)
+    
+    S2 = _flatten(S)
+    if hasattr(turns, '__iter__'):
+        turns = _flatten(turns)
+    for k in range(len(S2)):
+        idx = np.argsort(np.abs(S2[k]))
+        S2[k] = np.array(S2[k])[idx]
+        if hasattr(turns, '__iter__'):
+            turns[k] =  np.array(turns[k])[idx]
+    Ei, kw = calc_star(Q, S2, turns, P/2, 1)
+    
     a = wdg_get_periodic([Ei], S)
     a = a[0]  # phase 1
     sym = wdg_is_symmetric([Ei], m)
@@ -42,13 +52,10 @@ def double_linked_leakage(kw, nu, p):
              coefficient of the double linkead leakage flux
     '''
     kw = np.abs(kw)
-    kw1 = 0
-    sigma_d = 0.0
-    for k in range(len(kw)):
-        if nu[k] != p: 
-            sigma_d += (kw[k]/(nu[k]/p))**2
-        else:
-            kw1 = kw[k]
+    kw1 = kw[list(nu).index(p)]
+    sigma_d = np.sum((kw/(nu/p))**2)
+    sigma_d -= (kw1)**2
+    
     if kw1 != 0:
         sigma_d /= kw1**2
     else:
@@ -98,7 +105,10 @@ def wdg_get_periodic(Ei, S):
             a_max = 0
             #  a_list = [1]
             for k in range(len(ei_pos)):   # all combinations of connections of coil sides
-                angles = np.angle(ei_pos + np.roll(ei_neg, k))
+#                angles = np.angle(ei_pos + np.roll(ei_neg, k))
+                d = deque(ei_neg)
+                d.rotate(k)
+                angles = np.angle(ei_pos + np.array(d))
                 angles = np.round(angles, 4)
                 c = Counter(angles)
                 a = min(c.values())
@@ -133,34 +143,29 @@ def wdg_is_symmetric(Ei, m):
         return None
     ei = Ei[0] # only for fundamental
     angles = [np.angle(sum(k))/np.pi*180 for k in ei]
-    angles = [np.round(k, 4) for k in angles]
+    angles = np.round(angles, 4)
     length = [np.abs(sum(k)) for k in ei]
-    #  print('angles1', angles)
-    if m % 2 == 0: # shift all phasors to >180 for even number of phases
-        angles = np.array(angles)
-        angles += 360
-        angles -= min(angles)
-        for k in range(len(angles)):
-            if angles[k] < 180:
-                angles[k] += 360
-        angles = angles.tolist()
 
+    if m % 2 == 0: # shift all phasors to >180 for even number of phases
+        # angles = np.array(angles)
+        angles += 360
+        angles -= np.min(angles)
+        angles[angles<180] += 360
     angles.sort()
-    #  print('angles2', angles)
+
     if m%2 == 0:
         target_angle = 360 / (2*m)
     else:
         target_angle = 360 / m
     diff = np.diff(angles)
     sym = True
-    #  print('diff', diff)
     # Test for phase angles
     for d in diff:
-        if not np.isclose(target_angle, d, rtol=1e-02, atol=1e-02):
+        if not math.isclose(target_angle, d, rel_tol=1e-02, abs_tol=1e-02):
             sym = False
     # Test for amplitude
     for k in range(1, len(length)):
-        if not np.isclose(length[0], length[k], rtol=1e-02, atol=1e-02):
+        if not math.isclose(length[0], length[k], rel_tol=1e-02, abs_tol=1e-02):
             sym = False
     return sym
 
@@ -239,9 +244,19 @@ def calc_kw(Q, S, turns, p, N_nu, config):
     nu = [] # order
     wf = [] # winding factor
     Ei = [] # slot voltage vectors
+    
+    S2 = _flatten(S)
+    if hasattr(turns, '__iter__'):
+        turns = _flatten(turns)
+    for k in range(len(S2)):
+        idx = np.argsort(np.abs(S2[k]))
+        S2[k] = np.array(S2[k])[idx]
+        if hasattr(turns, '__iter__'):
+            turns[k] =  np.array(turns[k])[idx]
+    
     k = 1
     while len(wf) < N_nu:
-        a, b = calc_star(Q, S, turns, p, k)
+        a, b = calc_star(Q, S2, turns, p, k)
         if np.all(np.abs(b) > config['kw_min']):
             nu.append(k)
             wf.append(b)
@@ -256,7 +271,6 @@ def calc_kw(Q, S, turns, p, N_nu, config):
     
     return nu, Ei, wf, phase
     
-   
 
 def calc_star(Q, S, turns, p, nu):
     '''
@@ -285,36 +299,18 @@ def calc_star(Q, S, turns, p, nu):
                winding factor (absolute value) for every phase
                kw[phase]
     '''
-    S2 = _flatten(S)
-    if hasattr(turns, '__iter__'):
-        turns2 = _flatten(turns)
-    for k in range(len(S)):
-        idx = np.argsort(np.abs(S2[k]))
-        S2[k] = np.array(S2[k])[idx]
-        if hasattr(turns, '__iter__'):
-            turns2[k] =  np.array(turns2[k])[idx]
+    S2 = S
     Ei = []
     kw = []
     for i, s in enumerate(S2):
-        if hasattr(turns, '__iter__'):
-            turn = turns2[i]
-        else:
-            turn = turns
-        
-        alpha = 2.*nu*p*np.pi/(Q) * np.abs(s)
-        
-        #  for k in range(len(s)):
-            #  if s[k] < 0:
-                #  alpha[k] += np.pi           # negative Zeiger umklappen
+        turn = turns[i] if hasattr(turns, '__iter__') else turns
+        alpha = 2.*nu*p*np.pi/Q * np.abs(s)
         alpha[s<0] += np.pi
         
         a = turn*np.exp(1j*alpha)           # Spannungsvektoren berechnen
-        if sum(a) != 0.0:
-            b = abs(sum(a)) / sum(np.abs(a))
-        else:
-            b = 0.0
-        Ei.append( a.tolist() )
-        kw.append( b )
+        b = np.abs(sum(a)) / sum(np.abs(a)) if sum(a) != 0.0 else 0.0
+        Ei.append(a)
+        kw.append(b)
     return Ei, kw
 
 
@@ -355,9 +351,8 @@ def calc_MMK(Q, m, S, turns = 1, N = 3601, angle = 0):
         if hasattr(turns, '__iter__'):
             turns2[k] =  np.array(turns2[k])[idx]
     
-
-    # step function
     def h(x):
+        '''step function'''
         return np.where(x<0., 0., 1.)
 
     phi = np.linspace(0, 2*np.pi, N)
@@ -378,12 +373,12 @@ def calc_MMK(Q, m, S, turns = 1, N = 3601, angle = 0):
             idx = idx-Q if idx > Q else idx
             VZ = np.sign(phase[k2])
             theta[idx-1] += VZ*I[k1]*turn
-    MMK = np.zeros(np.shape(phi))
+    MMK = np.zeros(phi.shape)
     for k in range(Q):
         MMK += theta[k] * h(phi-2*np.pi/Q*k)
     MMK -= np.mean(MMK[:-1])
-    phi = phi/max(phi)*Q
-    return phi.tolist(), MMK.tolist(), theta.tolist()
+    phi = phi/np.max(phi)*Q
+    return phi, MMK, theta
 
 
 def calc_radial_force_modes(MMK, m, num_modes = 4):
