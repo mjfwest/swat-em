@@ -397,7 +397,7 @@ class TextReport:
         self._txt.append('Machine data')
         self._txt.append('============')
         self._txt.append('Number of slots        Q: {}'.format(self.data.get_num_slots()))
-        self._txt.append('Number of pole pairs  2p: {}'.format(self.data.get_num_polepairs()))
+        self._txt.append('Number of pole pairs   p: {}'.format(self.data.get_num_polepairs()))
         self._txt.append('Number of phases       m: {}'.format(self.data.get_num_phases()))
         self._txt.append('Number of slots/phase  q: {}'.format(self.data.get_q()))
         self._txt.append('\n')
