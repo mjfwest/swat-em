@@ -38,8 +38,11 @@ def genwdg(Q, P, m, w, layers, empty_slots = 0):
     return : list
              winding layout (right and left layers) for every phase
     """  
-    ret = winding_from_star_of_slot(Q, P, m, w, layers)
-    if not ret['valid'] and empty_slots != 0:
+    if empty_slots <= 0:
+        ret = winding_from_star_of_slot(Q, P, m, w, layers)
+        if not ret['valid'] and empty_slots != 0:
+            ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
+    else:
         ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
     return ret
 
@@ -229,6 +232,12 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
     Based on:
     Caruso, Massimo & Di Tommaso, Antonino & Marignetti, Fabrizio & Miceli, Rosario & Galluzzo, Giuseppe. (2018). A General Mathematical Formulation for Winding Layout Arrangement of Electrical Machines. Energies. 11. 446. 10.3390/en11020446. 
     '''
+    error = ''
+    info = ''
+    valid = True
+    S = [[[]]*m]
+    w = -1
+    
     N = Q
     p = P // 2
     n_lay = layers
@@ -236,143 +245,127 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
         w = Q // P
         if w <= 0:
             w = 1
+    
+    if m != 1 and Q % m != 0:
+        valid = False
+        error += 'Number of slots must be a multiple of the number of phases'
+    
+    if valid:
+        if n_es >= 0:
+            n_wc = n_lay*(N-n_es)/(2*m)
+        else:
+            n_wc = n_lay*(N- 0  )/(2*m)
+        t = math.gcd(N, p)
 
-    error = ''
-    info = ''
-    valid = True
+        # symmetric winding?
+        if m%2 == 0:
+            g = n_lay*N / (2*m*t)
+        else:
+            g = N / (2*m*t)
+        #  if int(g) != g:
+            #  if int(n_wc) != n_wc:
+                #  valid = False
+                #  error += 'winding not symmetric'
 
-    if n_es >= 0:
-        n_wc = n_lay*(N-n_es)/(2*m)
-    else:
-        n_wc = n_lay*(N- 0  )/(2*m)
-    t = math.gcd(N, p)
+    if valid:
+        # dead coil winding (empty slots)
+        if n_es == -1:
+            n_es = int(N - 2*m*int(n_wc) / n_lay)
 
-    # symmetric winding?
-    if m%2 == 0:
-        g = n_lay*N / (2*m*t)
-    else:
-        g = N / (2*m*t)
-    #  if int(g) != g:
-        #  if int(n_wc) != n_wc:
-            #  valid = False
-            #  error += 'winding not symmetric'
-
-
-    # dead coil winding (empty slots)
-    if n_es == -1:
-        n_es = int(N - 2*m*int(n_wc) / n_lay)
-    if n_es != 0:
-        info += 'attention: dead coil winding'
-    #  print('empty_slots:', n_es)
-    q = fractions.Fraction( (N-n_es) / (2*p*m) ).limit_denominator(1000)
-    a = int(q)
-    z = q.numerator - a
+        if n_es != 0:
+            info += 'attention: dead coil winding'
+        #  print('empty_slots:', n_es)
+        q = fractions.Fraction( (N-n_es) / (2*p*m) ).limit_denominator(1000)
+        a = int(q)
+        z = q.numerator - a
 
 
-
-    # create winding distribution table
-    n_c = int(N / m)
-    WDT = np.zeros(m*n_c, dtype=int)
-    i=1
-    while i <= N:
-        ind = np.mod(p*(i-1)+1, N)
-        if ind == 0:
-            ind = N
-        while WDT[ind-1] != 0:
+    if valid:
+        # create winding distribution table
+        n_c = int(N / m)
+        #  print('Q', Q, 'p', p, 'n_c', n_c)
+        WDT = np.zeros(m*n_c, dtype=int)
+        i=1
+        while i <= N:
+            ind = np.mod(p*(i-1)+1, N)
+            if ind == 0:
+                ind = N
+            while WDT[ind-1] != 0:
+                ind = ind+1
+            WDT[ind-1] = i
+            i = i+1
             ind = ind+1
-        WDT[ind-1] = i
-        i = i+1
-        ind = ind+1
 
-    WDT = WDT.reshape(m, n_c)
+        WDT = WDT.reshape(m, n_c)
 
 
-    if m%2 == 0:
-        shift = int(m/2-1)
-    else:
-        shift = int( (m-1)/2 )
+        if m%2 == 0:
+            shift = int(m/2-1)
+        else:
+            shift = int( (m-1)/2 )
 
     # for some bar windings
     #  if fractions.Fraction(n_wc).limit_denominator(1000).denominator == 2:
         #  shift = n_wc + 1 # this  
         #  shift = n_wc - 1 # or this is possible
-
-    # non-ruduced and normal systems
-    if m%2 != 0:
-        a = WDT[:,:int(n_c/2)]
-        b = WDT[:,int(n_c/2):] * (-1)
-        b = np.roll(b, -shift, axis=0)
-        WDT2 = np.append(a,b,axis=1)
-    else:
-        dx = int(n_c/2)
-        dy = int(m/2)
-        a = WDT[:dy,:dx]
-        b = WDT[:dy,dx:] * (-1)
-        c = WDT[dy:,:dx] * (-1)
-        d = WDT[dy:,dx:]
-        
+    
+    if valid:
         #  print('Q', Q, 'p', p, 'n_es', n_es, 'n_c', n_c)
-        try:
-            left = np.append(a, b, axis=0)
-            right = np.append(c, d, axis=0)
-            WDT2 = np.append(left, right, axis=1)
-        except:
-            # Error
-            WDT2 = WDT
-            valid = False
-            error += 'winding not feasable'
+        # non-ruduced and normal systems
+        if m%2 != 0:
+            a = WDT[:,:int(n_c/2)]
+            b = WDT[:,int(n_c/2):] * (-1)
+            b = np.roll(b, -shift, axis=0)
+            WDT2 = np.append(a,b,axis=1)
+        else:
+            dx = int(n_c/2)
+            dy = int(m/2)
+            a = WDT[:dy,:dx]
+            b = WDT[:dy,dx:] * (-1)
+            c = WDT[dy:,:dx] * (-1)
+            d = WDT[dy:,dx:]
             
-    if n_es > 0:
-        WDT2 = WDT2[:,:-int(n_es/m)]
+            
+            try:
+                left = np.append(a, b, axis=0)
+                right = np.append(c, d, axis=0)
+                WDT2 = np.append(left, right, axis=1)
+            except:
+                # Error
+                WDT2 = WDT
+                valid = False
+                error += 'winding not feasable'
+                
+        if n_es > 0:
+            WDT2 = WDT2[:,:-int(n_es/m)]
 
-    S = []
-    for k in range(np.shape(WDT2)[0]):
-        s = WDT2[k,:]
-        idx = np.argsort(np.abs(s))
-        s = s[idx]
-        S.append([s.tolist(),[]])
+        S = []
+        for k in range(np.shape(WDT2)[0]):
+            s = WDT2[k,:]
+            idx = np.argsort(np.abs(s))
+            s = s[idx]
+            S.append([s.tolist(),[]])
 
-    if n_lay == 2:
-        for k in range(len(S)):
-            for s in S[k][0]:
-                sign = 1 if s > 0 else -1
-                s = abs(s) + w
-                while s > N:
-                    s -= N
-                while s < 1:
-                    s += N
-                S[k][1].append(sign*(-1)*s)
+        if n_lay == 2:
+            for k in range(len(S)):
+                for s in S[k][0]:
+                    sign = 1 if s > 0 else -1
+                    s = abs(s) + w
+                    while s > N:
+                        s -= N
+                    while s < 1:
+                        s += N
+                    S[k][1].append(sign*(-1)*s)
+        
+        if n_lay == 1:
+            w = fractions.Fraction(N / (2*p))
     
-    if n_lay == 1:
-        w = fractions.Fraction(N / (2*p))
-    
-    
-    
-    S2 = analyse._flatten(S)
-    # test if the number of positve and negative coil sides are equal
-    for k in range(len(S2)):
-        s = S2[k]
-        pos = 0; neg = 0
-        for w in s:
-            if w > 0:
-                pos += 1
-            elif w < 0:
-                neg += 1
-        if pos != neg:
-            error += 'Phase {} has {} postive and {} negative coil sides'.format(k+1, pos, neg)
+    if valid:
+        v, x = analyse.check_number_of_coilsides(S)
+        if not v:
             valid = False
-    
-    l = [len(s) for s in S2]
-    if len(set(l)) != 1:
-        txt = 'Not all phases have the same number of coil sides:<br>'            
-        for k in range(len(S)):
-            txt += 'Phase {} hat {} coilsides<br>'.format(k+1, l[k])
-        error.append(txt)
+        error += x
+        
 
-
-    
-    
-    
-    
     ret = {'phases': S, 'wstep': w, 'valid': valid, 'error': error, 'info': info, 'Qes': n_es}
     return ret

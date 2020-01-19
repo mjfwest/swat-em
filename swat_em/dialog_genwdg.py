@@ -61,6 +61,7 @@ class GenWinding2(QDialog):
         self.spinBox_Q.valueChanged.connect(self.QmP_changed)
         self.spinBox_P.valueChanged.connect(self.QmP_changed)
         self.spinBox_m.valueChanged.connect(self.QmP_changed)
+        self.spinBox_empty_slots.valueChanged.connect(self.QmP_changed)
         
         # update winding
         self.radioButton_slayer.toggled.connect(self.update)
@@ -93,6 +94,7 @@ class GenWinding2(QDialog):
         self.P = self.spinBox_P.value()
         self.m = self.spinBox_m.value()
         self.w = self.spinBox_w.value()
+        Qes = self.spinBox_empty_slots.value()
         
         if self.radioButton_slayer.isChecked():
             self.layers = 1
@@ -101,9 +103,10 @@ class GenWinding2(QDialog):
 
         self.data = datamodel()
         self.data.set_machinedata(Q = self.Q, m = self.m, p = self.P/2)
-        ret = wdggenerator.genwdg(self.Q, self.P, self.m, self.w, self.layers, 0)# TODO: replace 0 with number of empty slots
+        ret = wdggenerator.genwdg(self.Q, self.P, self.m, self.w, self.layers, Qes)
         self.data.set_phases(S = ret['phases'], wstep = ret['wstep'])
         self.data.set_valid(ret['valid'], ret['error'], ret['info'])
+        self.data.set_num_empty_slots(ret['Qes'])
         bc, bc_str = self.data.get_basic_characteristics()
         #  self.textBrowser_wdginfo.setPlainText(bc_str)
         self.textBrowser_wdginfo.setHtml(bc_str)
@@ -111,7 +114,7 @@ class GenWinding2(QDialog):
         
         self.table = self.tableWindingLayout
         self.table.clear()
-        if bc['sym']:            
+        if bc['sym'] and self.data.generator_info['valid'] :            
             self.table.setRowCount(self.layers)
             self.table.setColumnCount(self.data.get_num_slots())
             
@@ -137,7 +140,8 @@ class GenWinding2(QDialog):
             else:
                 overwrite = False
             ret = {'Q': self.Q, 'P': self.P, 'm': self.m, 'w': self.w, 
-            'layers': self.layers, 'overwrite': overwrite}
+            'layers': self.layers, 'overwrite': overwrite,
+            'Qes': self.data.get_num_empty_slots()}
             return ret
         else:
             return None

@@ -276,13 +276,19 @@ class datamodel:
         dat.append(['parallel connection ', rep.italic('a: '), ','.join(a_)])
         r_ = [str(i) for i in bc['r']]
         dat.append(['radial force modes ', rep.italic('r: '), ','.join(r_)+',..'])
-        if bc['sym'] and bc['a']:
+        if bc['sym']:# and bc['a']:
             dat.append(['symmetric ', '', str(bc['sym'])])
         else:
             dat.append([rep.red('symmetric '), '', rep.red(str(bc['sym']))])
+        #  if 'valid' in self.generator_info.keys():
+            #  if self.generator_info['valid']:
+                #  dat.append(['valid ', '', 'True'])
+        #  else:
+            #  dat.append([rep.red('valid '), '', rep.red('False')])
+            
         txt = rep.table(dat)
-        if self.results['error']:
-            txt.append(rep.red('error: ' + str(self.results['error'])))
+        if bc['error']:
+            txt.append(rep.red('error: ' + str(bc['error'])))
         
         if len(self.notes) > 0:
             #  txt.append('<br><br>' + rep.bold(Notes) + ':<br>')
