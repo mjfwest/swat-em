@@ -750,7 +750,8 @@ class datamodel:
         self.actual_state_saved = False
         
         # MMK
-        self._calc_MMK()
+        if 'MMK' not in self.results.keys():
+            self._calc_MMK()
         
         bc, bc_txt = self.get_basic_characteristics()
         self.results['basic_char'] = bc
@@ -769,7 +770,7 @@ class datamodel:
         self.results['MMK']['phi'] = phi
         self.results['MMK']['theta'] = theta
         self.results['MMK']['nu'] = nu
-        self.results['MMK']['HA'] = HA.tolist()
+        self.results['MMK']['HA'] = HA
 
 
     def plot_layout(self, filename, res = None, show = False):
