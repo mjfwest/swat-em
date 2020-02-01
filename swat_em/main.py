@@ -285,7 +285,7 @@ class MainWindow(QMainWindow):
             wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'], ret['Qes'])
             
             data = datamodel()
-            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
+            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'], Qes = ret['Qes'])
             data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
             data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'],
                            info = wdglayout['info'])   
@@ -309,7 +309,7 @@ class MainWindow(QMainWindow):
             wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'], ret['Qes'])
             
             data = datamodel()
-            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
+            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'], Qes = ret['Qes'])
             data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])
             data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'], info = wdglayout['info'])
             data.analyse_wdg()
