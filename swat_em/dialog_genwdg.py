@@ -45,8 +45,6 @@ class NewWinding(QDialog):
 
         
 
-
-
 class GenWinding2(QDialog):
     def __init__(self):
         super().__init__()
@@ -108,9 +106,7 @@ class GenWinding2(QDialog):
         self.data.set_valid(ret['valid'], ret['error'], ret['info'])
         self.data.set_num_empty_slots(ret['Qes'])
         bc, bc_str = self.data.get_basic_characteristics()
-        #  self.textBrowser_wdginfo.setPlainText(bc_str)
         self.textBrowser_wdginfo.setHtml(bc_str)
-        
         
         self.table = self.tableWindingLayout
         self.table.clear()
@@ -145,8 +141,6 @@ class GenWinding2(QDialog):
             return ret
         else:
             return None
-
-
 
 
 class GenWindingCombinations(QDialog):
@@ -353,11 +347,6 @@ class GenWindingCombinations(QDialog):
                 return None
         else:
             return None
-
-
-
-
-
 
 
 

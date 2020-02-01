@@ -11,6 +11,7 @@ from collections import Counter, deque
 def calc_q(Q, p, m):
     return fractions.Fraction(Q / (m * 2*p)).limit_denominator(100)
 
+
 def get_basic_characteristics(Q, P, m, S, turns=1, Qes = 0):
     q = fractions.Fraction((Q-Qes) / (m * P)).limit_denominator(100)
     

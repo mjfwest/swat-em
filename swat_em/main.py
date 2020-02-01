@@ -282,16 +282,9 @@ class MainWindow(QMainWindow):
         ret = self.DIALOG_GenWinding.run()
         if ret:
             self.save_undo_state()
-            #  wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'], ret['Qes'])
-            
             data = datamodel()
             data.genwdg(Q = ret['Q'], P = ret['P'], m = ret['m'], w = ret['w'], 
                         layers = ret['layers'], empty_slots = ret['Qes'])
-            #  data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'], Qes = ret['Qes'])
-            #  data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
-            #  data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'],
-                           #  info = wdglayout['info'])   
-            #  data.analyse_wdg()
             if ret['overwrite']:
                 self.data = data
                 self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
@@ -308,19 +301,10 @@ class MainWindow(QMainWindow):
         ret = self.DIALOG_GenWindingCombinations.run()
         if ret:
             self.save_undo_state()
-            #  wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'], ret['Qes'])
-            
             data = datamodel()
             data.genwdg(Q = ret['Q'], P = ret['P'], m = ret['m'], w = ret['w'], 
                         layers = ret['layers'], empty_slots = ret['Qes'])
-            
-            #  data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'], Qes = ret['Qes'])
-            #  data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])
-            #  data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'], info = wdglayout['info'])
-            #  data.analyse_wdg()
-            
-            
-                        
+
             if ret['overwrite']:
                 self.data = data
                 self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
@@ -330,7 +314,7 @@ class MainWindow(QMainWindow):
             self.update_data_in_GUI()
 
     def dialog_ImportWinding(self):
-
+        '''Import windings from file to workspace'''
         DIALOG_ImportWinding = dialog_import_winding.import_winding()
         ret = DIALOG_ImportWinding.run()
         if ret is not None:
@@ -401,7 +385,6 @@ class MainWindow(QMainWindow):
         if ret:
             config = ret
             save_config(config)
-            #  self.data.analyse_wdg()        # recalc the winding model
             self.project.analyse_all_models() # recalc all models
             self.update_data_in_GUI()
 
@@ -411,7 +394,6 @@ class MainWindow(QMainWindow):
         plots all winding data in gui
         '''
         bc, bc_str = self.data.get_basic_characteristics()
-        
         self.textBrowser_wdginfo.setHtml(bc_str)
         
         self.comboBox_star_harmonics.blockSignals(True)   # prevent double plotting on startup
@@ -481,15 +463,6 @@ class MainWindow(QMainWindow):
                     painter.setWindow(pixmap.rect())
                     painter.drawPixmap(0, 0, pixmap)
                     del painter
-        # PRINTING DOESN't Work well
-        #  if idx == 0:
-            #  self.fig1.printing()
-        #  elif idx == 1:
-            #  self.fig2.printing()
-        #  elif idx == 2:
-            #  self.fig3.printing()
-        #  elif idx == 3:
-            #  self.fig4.printing()
             
         elif idx == 4:
             if self.reportEdit.textCursor().hasSelection():
@@ -500,8 +473,6 @@ class MainWindow(QMainWindow):
         del dialog
         
 
-
-        
     def save_to_file(self):
         '''
         returns True if file is saved
@@ -550,9 +521,7 @@ class MainWindow(QMainWindow):
                 if ok == QMessageBox.Cancel: # cancel
                     return
 
-        
             options = QFileDialog.Options()
-            #  options |= QFileDialog.DontUseNativeDialog  # use qt5 dialog instead of os default
             filename, _ = QFileDialog.getOpenFileName(self,"Open winding file", "","Winding Files (*.wdg)", options=options)
         if filename:
             self.project.load_from_file(filename)
@@ -623,7 +592,6 @@ class MainWindow(QMainWindow):
             self.data.export_xlsx(filename)
 
 
-
     def export_to_txt(self):
         '''
         Export text report
@@ -634,7 +602,6 @@ class MainWindow(QMainWindow):
             if not filename.endswith('.txt'):
                     filename += '.txt'
             self.data.export_text_report(filename)
-
 
 
 

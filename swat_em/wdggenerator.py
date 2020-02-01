@@ -206,7 +206,6 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
                 a = phases[km]
                 a2 = [[], []]
                 for k in range(len(a[0])):
-                    #  print(a[0][k], a[1][k])
                     if not is_even(a[0][k]):    # use only the odd slots
                         a2[0].append(a[0][k])
                         a2[0].append(a[1][k])   # from second layer to first layer

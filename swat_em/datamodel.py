@@ -34,7 +34,6 @@ class datamodel:
     def __init__(self):
         self.reset_data()
         self.reset_results()
-        self.actual_state_saved = False
         
     
     def __str__(self):
@@ -66,7 +65,6 @@ class datamodel:
             self.machinedata[key] = None
         self.set_turns(1)
         self.set_machinedata(Qes = 0)
-        #  self.actual_state_saved = False
         self.generator_info ={}
     
     
@@ -77,7 +75,6 @@ class datamodel:
         self.results = {}
         for key in self.results_keys:
             self.results[key] = None
-        self.actual_state_saved = False
     
     
     def set_title(self, title):
@@ -152,7 +149,6 @@ class datamodel:
             self.set_num_phases(int(m))
         if Qes:
             self.set_num_empty_slots(int(Qes))
-        #  self.actual_state_saved = False
         
         
     def set_phases(self, S, turns = 1, wstep = None):
@@ -182,7 +178,6 @@ class datamodel:
         
         self.machinedata['phases'] = S
         self.set_turns(turns)
-        self.actual_state_saved = False
         self.set_machinedata(m = len(S))
         self.machinedata['phasenames'] = [string.ascii_uppercase[k] for k in range(len(S))]
         if wstep:
@@ -214,12 +209,11 @@ class datamodel:
         turns  : integer
                  number of turns per coil
         empty_slots : integer
-                      Defines the number of empty slots ("dead coil winding")
-                       -1: Choose number of empty slots automatically (the smallest
-                          possible number is choosen)
-                        0: No empty slots
-                       >0: Manual defined number of empty slots
-                      
+        Defines the number of empty slots ("dead coil winding")
+        -1: Choose number of empty slots automatically (the smallest
+          possible number is choosen)
+        0: No empty slots
+        >0: Manual defined number of empty slots
         '''
         
         
@@ -229,7 +223,6 @@ class datamodel:
         self.set_phases(S = wdglayout['phases'], turns = turns, wstep = wdglayout['wstep'])
         self.set_valid(valid = wdglayout['valid'], error = wdglayout['error'], info = wdglayout['info'])
         self.analyse_wdg()
-        #  self.actual_state_saved = True # Simulate save state
 
 
     def get_num_layers(self):
@@ -744,12 +737,9 @@ class datamodel:
         # winding symmetric?
         self.results['wdg_is_symmetric'] = analyse.wdg_is_symmetric(self.results['Ei_el'],
             self.machinedata['m'])
-        #  print(self.results['wdg_is_symmetric'])
         
         # periodicity of the winding (radial force, parallel connection)? 
         self.results['wdg_periodic'] = analyse.wdg_get_periodic(self.results['Ei_el'], self.machinedata['phases'])
-        #  print(self.results['wdg_periodic'])
-        self.actual_state_saved = False
         
         # MMK
         if 'MMK' not in self.results.keys():
@@ -1058,7 +1048,6 @@ class project:
         if data.title == '':
             name = self.gen_model_name()
             data.set_title(name)
-            #  data.actual_state_saved = False
         self.models.append(data)
         
     def get_titles(self):
@@ -1081,7 +1070,6 @@ class project:
         '''duplicates the model with the index 'idx' '''
         data = copy.deepcopy(self.models[idx])
         data.set_title(data.get_title() + '_copy')
-        #  data.actual_state_saved = False
         self.add_model(data)
 
     def rename_by_index(self, idx, newname):
@@ -1202,7 +1190,8 @@ def load_models_from_file(fname):
         models = []
         for m in M['models']:
             data = datamodel()
-            data.machinedata = m['machinedata']
+            for key, value in m['machinedata'].items():
+                data.machinedata[key] = value
             data.set_title(m['title'])
             data.set_notes(m['notes'])
             data.analyse_wdg()

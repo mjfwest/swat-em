@@ -10,8 +10,6 @@ else:
     __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 
-
-
 class import_winding(QDialog):
     '''
     Dialog for importing windings from a file
@@ -74,7 +72,6 @@ class import_winding(QDialog):
         for item in self.items:
             item.setCheckState(0, False)
     
-
     
     def run(self):
         options = QFileDialog.Options()
@@ -92,12 +89,4 @@ class import_winding(QDialog):
         else:
             return None
         
-
-        
-        
-        
-
-        
-    
-
 
