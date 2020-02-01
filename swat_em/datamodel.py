@@ -65,6 +65,7 @@ class datamodel:
         for key in self.machinedata_keys:
             self.machinedata[key] = None
         self.set_turns(1)
+        self.set_machinedata(Qes = 0)
         #  self.actual_state_saved = False
         self.generator_info ={}
     
@@ -188,7 +189,7 @@ class datamodel:
             self.set_windingstep(int(wstep))
         
 
-    def set_valid(self, valid, error, info):
+    def set_valid(self, valid, error, info = ''):
         self.generator_info['valid'] = valid
         self.generator_info['error'] = error
         self.generator_info['info'] = info
@@ -249,11 +250,12 @@ class datamodel:
         '''
         if not 'basic_char' in self.results.keys():
             bc = analyse.get_basic_characteristics(
-                self.get_num_slots(),
+                self.get_num_slots() ,
                 2*self.get_num_polepairs(),
                 self.get_num_phases(),
                 self.get_phases(),
-                self.get_turns())
+                self.get_turns(),
+                self.get_num_empty_slots())
             bc['r'] = self.get_radial_force_modes(num_modes = config['radial_force']['num_modes'])
             bc['sigma_d'] = self.get_double_linked_leakage()
             self.results['basic_char'] = bc
@@ -264,7 +266,7 @@ class datamodel:
                ['Number of empty slots ', rep.italic('Qes: '),  str(self.get_num_empty_slots())],
                ['Number of poles ',    rep.italic('2p: '), str(2*self.get_num_polepairs())],
                ['Number of phases ',   rep.italic('m: '),  str(self.get_num_phases())],
-               ['slots per 2p per m ', rep.italic('q: '),  str(self.get_q())]]
+               ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])]]
         
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
