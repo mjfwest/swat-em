@@ -282,13 +282,14 @@ class MainWindow(QMainWindow):
         ret = self.DIALOG_GenWinding.run()
         if ret:
             self.save_undo_state()
-            wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'])
+            wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'], ret['Qes'])
             
             data = datamodel()
-            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
+            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'], Qes = ret['Qes'])
             data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
+            data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'],
+                           info = wdglayout['info'])   
             data.analyse_wdg()
-            data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
             if ret['overwrite']:
                 self.data = data
                 self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
@@ -305,13 +306,14 @@ class MainWindow(QMainWindow):
         ret = self.DIALOG_GenWindingCombinations.run()
         if ret:
             self.save_undo_state()
-            wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'])
+            wdglayout = wdggenerator.genwdg(ret['Q'], ret['P'], ret['m'], ret['w'], ret['layers'], ret['Qes'])
             
             data = datamodel()
-            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
-            data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])            
+            data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'], Qes = ret['Qes'])
+            data.set_phases(wdglayout['phases'], wstep = wdglayout['wstep'])
+            data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'], info = wdglayout['info'])
             data.analyse_wdg()
-            data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])            
+                        
             if ret['overwrite']:
                 self.data = data
                 self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
@@ -404,12 +406,13 @@ class MainWindow(QMainWindow):
         bc, bc_str = self.data.get_basic_characteristics()
         
         self.textBrowser_wdginfo.setHtml(bc_str)
-        self.update_plot_in_GUI()
         
         self.comboBox_star_harmonics.blockSignals(True)   # prevent double plotting on startup
         self.comboBox_star_harmonics.clear()
         self.comboBox_star_harmonics.addItems([str(k) for k in self.data.results['nu_el']])
         self.comboBox_star_harmonics.blockSignals(False)
+        
+        self.update_plot_in_GUI()
         self.reportEdit.setText(self.data.get_text_report())
         
         
