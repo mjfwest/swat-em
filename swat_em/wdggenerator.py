@@ -6,6 +6,7 @@ import fractions
 #  from collections import deque
 import math
 import numpy as np
+from swat_em import analyse
 
 
 def is_even(val):
@@ -15,7 +16,7 @@ def is_even(val):
     return True if abs(val) % 2 == 0 else False
 
 
-def genwdg(Q, P, m, w, layers):
+def genwdg(Q, P, m, w, layers, empty_slots = 0):
     """
     Generates a winding layout.
 
@@ -37,144 +38,13 @@ def genwdg(Q, P, m, w, layers):
     return : list
              winding layout (right and left layers) for every phase
     """  
-    #  q = fractions.Fraction(Q/(m*P)).limit_denominator(100)
-    #  n = q.denominator
-    #  z = q.numerator
-    
-    #  wdglayout = None
-    #  if q >= 1:    # overlapping winding
-        #  if layers == 1:
-            #  wdglayout = overlapping_fractional_slot_slayer(Q, P, m)
-        #  else:
-            #  wdglayout = overlapping_fractional_slot_dlayer(Q, P, m, w)
-    #  else:         # tooth coil winding
-        #  if layers == 1:
-            #  wdglayout = toothcoil_slayer(Q, P, m)
-        #  else:
-            #  wdglayout = toothcoil_dlayer(Q, P, m)
-    #  if not wdglayout:
-        #  print('No winding found')
-    
-    ret = winding_from_star_of_slot(Q, P, m, w, layers)
-        
+    if empty_slots <= 0:
+        ret = winding_from_star_of_slot(Q, P, m, w, layers)
+        if not ret['valid'] and empty_slots != 0:
+            ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
+    else:
+        ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
     return ret
-
-
-
-
-'''
-
-
-def toothcoil_dlayer(Q, P, m):
-    """
-    Generates winding layout for double layer tooth coil winding 
-
-    Parameters
-    ----------
-    Q :      integer
-             number of slots
-    P :      integer
-             number of poles
-    m :      integer
-             number of phases
-             
-    Returns
-    -------
-    return : list
-             winding layout for every phase
-    """ 
-    q = fractions.Fraction(Q/(m*P)).limit_denominator(100)
-    n = q.denominator
-    z = q.numerator
-    cpph = int(Q / m)    # coils per phase
-    
-    phases = {}
-    sign = 1
-    i = 1
-    for k in range(int(cpph/z)): # for every smallest periodic part of the winding
-        for km in range(m):
-            if km not in phases.keys():
-                phases[km] = [[],[]]
-            for k in range(z):
-                phases[km][0].append(i*sign)
-                i += 1
-                phases[km][1].append(-i*sign)
-                sign *= -1
-            sign *= -1
-
-    # The algorithm starts with a half slot: 1, 2, 2, 3, 3 ... Q+1
-    # So the last slot is Q+1 and have to be reduced to slot 1
-    for key, value in phases.items():
-        for i, k in enumerate(value[0]):
-            if k > Q:
-                phases[key][0][i] = 1
-            elif k < -Q:
-                phases[key][0][i] = -1
-        for i, k in enumerate(value[1]):
-            if k > Q:
-                phases[key][1][i] = 1
-            elif k < -Q:
-                phases[key][1][i] = -1
-        
-    phases_list = [value for key, value in phases.items()]
-    return phases_list
-
-
-def toothcoil_slayer(Q, P, m):
-    """
-    Generates winding layout for single layer tooth coil winding 
-
-    Parameters
-    ----------
-    Q :      integer
-             number of slots
-    P :      integer
-             number of poles
-    m :      integer
-             number of phases
-             
-    Returns
-    -------
-    return : list
-             winding layout for every phase
-    """  
-    q = fractions.Fraction(Q/(m*P)).limit_denominator(100)
-    n = q.denominator
-    z = q.numerator
-    cpph = int(Q / m / 2)    # coils per phase
-    
-    phases = {}
-    sign = 1
-    i = 1
-    if z%2 == 0: # z is even
-        for k in range(int(cpph/z*2)): # for every smallest periodic part of the winding
-            for km in range(m):
-                if km not in phases.keys():
-                    phases[km] = []
-                for k in range(int(z/2)):
-                    phases[km].append(i*sign)
-                    i += 1
-                    phases[km].append(-i*sign)
-                    i += 1
-                sign *= -1
-                
-    else: # z is odd
-        toggle = 1
-        for k in range(int(cpph/z*2)): # for every smallest periodic part of the winding
-            for km in range(m):
-                if km not in phases.keys():
-                    phases[km] = []
-                for k in range(int((z+toggle)/2)):
-                    phases[km].append(i*sign)
-                    i += 1
-                    phases[km].append(-i*sign)
-                    i += 1
-                sign *= -1                    
-                toggle *= -1
-
-    phases_list = [[value] for key, value in phases.items()]
-    return phases_list
-'''
 
 
 def overlapping_fractional_slot_slayer(Q, P, m):
@@ -242,110 +112,22 @@ def overlapping_fractional_slot_slayer(Q, P, m):
         phases[k] = [phases[k], []]
     return phases
 
-'''
-# Noch zu testen!!!
-def overlapping_fractional_slot_dlayer(Q, P, m, w):
-    p = P/2
-    q = fractions.Fraction(Q/(m*2*p)).limit_denominator(100)
-    g = 0  # number of full slots
-    while q > g:
-        q -= 1
-        g += 1    
-    z2 = q.numerator
-    n = q.denominator
-    
-    # build sequence of coil sides (half of the coil side pairs of the coils)
-    cgroups = []    
-    for k in range(n):
-        if k < z2:
-            cgroups.append(g+1)
-        if k < (n-z2):
-            cgroups.append(g)
-    cgroups *= m
-    
-    # build sequnce of coil sides for each phase (complete pair)
-    cgroups_per_phase = [[] for k in range(m) ]
-    i = 0
-    for g in cgroups:        
-        cgroups_per_phase[i].append(g)
-        cgroups_per_phase[i].append(-g)
-        i += 1
-        if i >= m:
-            i = 0
-    
-    if m == 3: # change phase sequence for generating the winding layout
-        cgroups_per_phase[1], cgroups_per_phase[2] = cgroups_per_phase[2], cgroups_per_phase[1]
-    
-    for i in range(m):
-        if i%2 is not 0:
-            l = deque(cgroups_per_phase[i])
-            l.rotate(1)
-            cgroups_per_phase[i] = list(l)    
 
-    phases = [[[], []] for k in range(m) ]
-    i = 1
-    while i < Q:
-        for cs in zip(*cgroups_per_phase):
-            for km in range(len(cs)):
-                for s in range(abs(cs[km])):
-                    if cs[km] > 0:
-                        phases[abs(km)][0].append(-i)
-                    else:
-                        phases[abs(km)][0].append(i)
-                    i += 1
-    # print('phases', phases)
-    # print('w', w)
-
-    if m == 3: # change phase sequence again
-        phases[1], phases[2] = phases[2], phases[1]
-    
-    for km in range(m):
-        for ks in range(len(phases[km][0])):
-            tmp = phases[km][0][ks]
-            tmp2 = abs(tmp) + w
-            if tmp2 < 1:
-                tmp2 += Q
-            if tmp2 > Q:
-                tmp2 -= Q            
-            if tmp > 0:    # change polarity (opposite coils side)
-                tmp2 *= -1
-                        
-            phases[km][1].append(tmp2)
-    
-    # print('phases', phases)
-    
-    
-    
-    
-    
-    
-    
-    return phases
-
-'''
 
 
 def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
-    #  if layers == 1:
-        #  if w == -1:
-            #  w = Q // P
-            #  if w <= 0:
-                #  w = 1
-    #  elif layers == 2:
-        #  if w == -1:
-            #  w = Q // P
-            #  if w <= 0:
-                #  w = 1
+    '''
+    Based on:
+    N. Bianchi and M. Dai Pre, "Use of the star of slots in designing fractional-slot single-layer synchronous motors," in IEE Proceedings - Electric Power Applications, vol. 153, no. 3, pp. 459-466, 1 May 2006.
+    doi: 10.1049/ip-epa:20050284
+    keywords: {synchronous motors;machine windings;torque;losses;fault tolerance;harmonics;coils;fractional-slot winding;single-layer synchronous motor;end-winding loss reduction;torque ripple;mutual coupling reduction;fault-tolerant application;one side coil;slot star;graphical representation;analytical formulation;harmonic content},
+    URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1629527&isnumber=34185
+    '''
     if w == -1:
         w = Q // P
         if w <= 0:
             w = 1
-    # single layer is only feasable if winding step is odd
-    # reduce windings step if it is even
-    # if layers == 1:
-        # if w > 1 and is_even(w):
-            # w -= 1
-    # print('w', w)
+
     p = P//2
     
     error = ''
@@ -441,16 +223,21 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
                 w = Q/P
 
             
-    ret = {'phases': phases, 'wstep': w, 'valid': valid, 'error': error }
+    ret = {'phases': phases, 'wstep': w, 'valid': valid, 'error': error, 'info': '', 'Qes': 0}
     return ret
 
 
 def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
-    #  Algorithm based on:
-    #  A General Mathematical Formulation for Winding
-    #  Layout Arrangement of Electrical Machines
-    #  Massimo Caruso, Antonino Oscar Di Tommaso, Fabrizio Marignetti
-    #  Rosario Miceli and Giuseppe Ricco Galluzzo
+    '''
+    Based on:
+    Caruso, Massimo & Di Tommaso, Antonino & Marignetti, Fabrizio & Miceli, Rosario & Galluzzo, Giuseppe. (2018). A General Mathematical Formulation for Winding Layout Arrangement of Electrical Machines. Energies. 11. 446. 10.3390/en11020446. 
+    '''
+    error = ''
+    info = ''
+    valid = True
+    S = [[[]]*m]
+    w = -1
+    
     N = Q
     p = P // 2
     n_lay = layers
@@ -458,106 +245,127 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
         w = Q // P
         if w <= 0:
             w = 1
-
-    error = ''
-    info = ''
-    valid = True
-
     
-    n_wc = n_lay*(N-n_es)/(2*m)
-    t = math.gcd(N, p)
-
-    # symmetric winding?
-    if m%2 == 0:
-        g = n_lay*N / (2*m*t)
-    else:
-        g = N / (2*m*t)
-    if int(g) != g:
+    if m != 1 and Q % m != 0:
         valid = False
-        error += 'winding not symmetric'
+        error += 'Number of slots must be a multiple of the number of phases'
+    
+    if valid:
+        if n_es >= 0:
+            n_wc = n_lay*(N-n_es)/(2*m)
+        else:
+            n_wc = n_lay*(N- 0  )/(2*m)
+        t = math.gcd(N, p)
+
+        # symmetric winding?
+        if m%2 == 0:
+            g = n_lay*N / (2*m*t)
+        else:
+            g = N / (2*m*t)
+        #  if int(g) != g:
+            #  if int(n_wc) != n_wc:
+                #  valid = False
+                #  error += 'winding not symmetric'
+
+    if valid:
+        # dead coil winding (empty slots)
+        if n_es == -1:
+            n_es = int(N - 2*m*int(n_wc) / n_lay)
+
+        if n_es != 0:
+            info += 'attention: dead coil winding'
+        #  print('empty_slots:', n_es)
+        q = fractions.Fraction( (N-n_es) / (2*p*m) ).limit_denominator(1000)
+        a = int(q)
+        z = q.numerator - a
 
 
-    # dead coil winding (empty slots)
-    n_es = int(N - 2*m*int(n_wc) / n_lay)
-    if n_es != 0:
-        info += 'attention: dead coil winding'
-
-    q = fractions.Fraction( (N-n_es) / (2*p*m) ).limit_denominator(1000)
-    a = int(q)
-    z = q.numerator - a
-
-
-
-    # create winding distribution table
-    n_c = int(N / m)
-    WDT = np.zeros(m*n_c, dtype=int)
-    i=1
-    while i <= N:
-        ind = np.mod(p*(i-1)+1, N)
-        if ind == 0:
-            ind = N
-        while WDT[ind-1] != 0:
+    if valid:
+        # create winding distribution table
+        n_c = int(N / m)
+        #  print('Q', Q, 'p', p, 'n_c', n_c)
+        WDT = np.zeros(m*n_c, dtype=int)
+        i=1
+        while i <= N:
+            ind = np.mod(p*(i-1)+1, N)
+            if ind == 0:
+                ind = N
+            while WDT[ind-1] != 0:
+                ind = ind+1
+            WDT[ind-1] = i
+            i = i+1
             ind = ind+1
-        WDT[ind-1] = i
-        i = i+1
-        ind = ind+1
 
-    WDT = WDT.reshape(m, n_c)
+        WDT = WDT.reshape(m, n_c)
 
 
-    if m%2 == 0:
-        shift = int(m/2-1)
-    else:
-        shift = int( (m-1)/2 )
+        if m%2 == 0:
+            shift = int(m/2-1)
+        else:
+            shift = int( (m-1)/2 )
 
     # for some bar windings
     #  if fractions.Fraction(n_wc).limit_denominator(1000).denominator == 2:
         #  shift = n_wc + 1 # this  
         #  shift = n_wc - 1 # or this is possible
-
-    # non-ruduced and normal systems
-    if m%2 != 0:
-        print(WDT)
-        a = WDT[:,:int(n_c/2)]
-        b = WDT[:,int(n_c/2):] * (-1)
-        b = np.roll(b, -shift, axis=0)
-        WDT2 = np.append(a,b,axis=1)
-        print(WDT2)
-    else:
-        dx = int(n_c/2)
-        dy = int(m/2)
-        a = WDT[:dy,:dx]
-        b = WDT[:dy,dx:] * (-1)
-        c = WDT[dy:,:dx] * (-1)
-        d = WDT[dy:,dx:]
-        
-        left = np.append(a, b, axis=0)
-        right = np.append(c, d, axis=0)
-        WDT2 = np.append(left, right, axis=1)
-        
-    if n_es > 0:
-        WDT2 = WDT2[:,:-int(n_es/m)]
-
-    S = []
-    for k in range(np.shape(WDT2)[0]):
-        s = WDT2[k,:]
-        idx = np.argsort(np.abs(s))
-        s = s[idx]
-        S.append([s.tolist(),[]])
-
-    if n_lay == 2:
-        for k in range(len(S)):
-            for s in S[k][0]:
-                sign = 1 if s > 0 else -1
-                s = abs(s) + w
-                while s > N:
-                    s -= N
-                while s < 1:
-                    s += N
-                S[k][1].append(sign*(-1)*s)
     
-    if n_lay == 1:
-        w = fractions.Fraction(N / (2*p))
+    if valid:
+        #  print('Q', Q, 'p', p, 'n_es', n_es, 'n_c', n_c)
+        # non-ruduced and normal systems
+        if m%2 != 0:
+            a = WDT[:,:int(n_c/2)]
+            b = WDT[:,int(n_c/2):] * (-1)
+            b = np.roll(b, -shift, axis=0)
+            WDT2 = np.append(a,b,axis=1)
+        else:
+            dx = int(n_c/2)
+            dy = int(m/2)
+            a = WDT[:dy,:dx]
+            b = WDT[:dy,dx:] * (-1)
+            c = WDT[dy:,:dx] * (-1)
+            d = WDT[dy:,dx:]
+            
+            
+            try:
+                left = np.append(a, b, axis=0)
+                right = np.append(c, d, axis=0)
+                WDT2 = np.append(left, right, axis=1)
+            except:
+                # Error
+                WDT2 = WDT
+                valid = False
+                error += 'winding not feasable'
+                
+        if n_es > 0:
+            WDT2 = WDT2[:,:-int(n_es/m)]
+
+        S = []
+        for k in range(np.shape(WDT2)[0]):
+            s = WDT2[k,:]
+            idx = np.argsort(np.abs(s))
+            s = s[idx]
+            S.append([s.tolist(),[]])
+
+        if n_lay == 2:
+            for k in range(len(S)):
+                for s in S[k][0]:
+                    sign = 1 if s > 0 else -1
+                    s = abs(s) + w
+                    while s > N:
+                        s -= N
+                    while s < 1:
+                        s += N
+                    S[k][1].append(sign*(-1)*s)
+        
+        if n_lay == 1:
+            w = fractions.Fraction(N / (2*p))
     
-    ret = {'phases': S, 'wstep': w, 'valid': valid, 'error': error, 'info': info }
+    if valid:
+        v, x = analyse.check_number_of_coilsides(S)
+        if not v:
+            valid = False
+        error += x
+        
+
+    ret = {'phases': S, 'wstep': w, 'valid': valid, 'error': error, 'info': info, 'Qes': n_es}
     return ret

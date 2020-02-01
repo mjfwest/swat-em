@@ -29,7 +29,11 @@ def get_basic_characteristics(Q, P, m, S, turns=1):
     sym = wdg_is_symmetric([Ei], m)
     t = math.gcd(int(Q), int(P/2))
     lcmQP = int(np.lcm(int(Q), int(P)))
-    bc = {'q': q, 'kw1': kw, 'a': a, 'sym': sym, 't': t, 'lcmQP': lcmQP}
+    valid, error = check_number_of_coilsides(S)
+    if not valid:
+        sym = False
+    bc = {'q': q, 'kw1': kw, 'a': a, 'sym': sym, 't': t, 'lcmQP': lcmQP,
+          'error': error}
     return bc
     
 
@@ -168,6 +172,36 @@ def wdg_is_symmetric(Ei, m):
         if not math.isclose(length[0], length[k], rel_tol=1e-02, abs_tol=1e-02):
             sym = False
     return sym
+
+
+
+def check_number_of_coilsides(S):
+    S2 = _flatten(S)
+    valid = True
+    error = ''
+    # test if the number of positve and negative coil sides are equal
+    for k in range(len(S2)):
+        s = S2[k]
+        pos = 0; neg = 0
+        for w in s:
+            if w > 0:
+                pos += 1
+            elif w < 0:
+                neg += 1
+        if pos != neg:
+            error += 'Phase {} has {} postive and {} negative coil sides'.format(k+1, pos, neg)
+            valid = False
+    
+    l = [len(s) for s in S2]
+    if len(set(l)) != 1:
+        error = 'Not all phases have the same number of coil sides:<br>'            
+        for k in range(len(S)):
+            error += 'Phase {} hat {} coilsides<br>'.format(k+1, l[k])
+    return valid, error
+
+
+
+
 
 
 def calc_phaseangle_starvoltage(Ei):

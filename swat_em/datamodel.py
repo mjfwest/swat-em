@@ -26,7 +26,7 @@ class datamodel:
     connect with this class.
     ''' 
     file_format = 1
-    machinedata_keys = ['Q', 'p', 'm', 'phases', 'wstep']
+    machinedata_keys = ['Q', 'p', 'm', 'phases', 'wstep', 'Qes']
     results_keys = ['q', 'nu_el', 'Ei_el', 'kw_el', 'phaseangle_el', 
                     'nu_mech', 'Ei_mech', 'kw_mech', 'phaseangle_mech',
                     'valid', 'error']
@@ -65,7 +65,8 @@ class datamodel:
         for key in self.machinedata_keys:
             self.machinedata[key] = None
         self.set_turns(1)
-        self.actual_state_saved = False
+        #  self.actual_state_saved = False
+        self.generator_info ={}
     
     
     def reset_results(self):
@@ -129,7 +130,7 @@ class datamodel:
         self.notes = notes
     
     
-    def set_machinedata(self, Q = None, p = None, m = None):
+    def set_machinedata(self, Q = None, p = None, m = None, Qes = None):
         '''
         setting the machine data 
 
@@ -148,7 +149,9 @@ class datamodel:
             self.set_num_polepairs(int(p))
         if m:
             self.set_num_phases(int(m))
-        self.actual_state_saved = False
+        if Qes:
+            self.set_num_empty_slots(int(Qes))
+        #  self.actual_state_saved = False
         
         
     def set_phases(self, S, turns = 1, wstep = None):
@@ -185,12 +188,13 @@ class datamodel:
             self.set_windingstep(int(wstep))
         
 
-    def set_valid(self, valid, error):
-        self.results['valid'] = valid
-        self.results['error'] = error
+    def set_valid(self, valid, error, info):
+        self.generator_info['valid'] = valid
+        self.generator_info['error'] = error
+        self.generator_info['info'] = info
     
     
-    def genwdg(self, Q, P, m, layers, w = -1, turns = 1):
+    def genwdg(self, Q, P, m, layers, w = -1, turns = 1, empty_slots = 0):
         '''
         Generates a winding layout and stores it in the datamodel
 
@@ -208,15 +212,23 @@ class datamodel:
                  number of coil sides per slot    
         turns  : integer
                  number of turns per coil
+        empty_slots : integer
+                      Defines the number of empty slots ("dead coil winding")
+                       -1: Choose number of empty slots automatically (the smallest
+                          possible number is choosen)
+                        0: No empty slots
+                       >0: Manual defined number of empty slots
+                      
         '''
         
-        self.set_machinedata(Q, int(P/2), m)
-        wdglayout = wdggenerator.genwdg(Q, P, m, w, layers)
+        
+        wdglayout = wdggenerator.genwdg(Q, P, m, w, layers, empty_slots)
+        self.set_machinedata(Q, int(P/2), m, wdglayout['Qes'])
         
         self.set_phases(S = wdglayout['phases'], turns = turns, wstep = wdglayout['wstep'])
-        self.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
+        self.set_valid(valid = wdglayout['valid'], error = wdglayout['error'], info = wdglayout['info'])
         self.analyse_wdg()
-        self.actual_state_saved = True # Simulate save state
+        #  self.actual_state_saved = True # Simulate save state
 
 
     def get_num_layers(self):
@@ -249,9 +261,11 @@ class datamodel:
             bc = self.results['basic_char']
 
         dat = [['Number of slots ',    rep.italic('Q: '),  str(self.get_num_slots())],
+               ['Number of empty slots ', rep.italic('Qes: '),  str(self.get_num_empty_slots())],
                ['Number of poles ',    rep.italic('2p: '), str(2*self.get_num_polepairs())],
                ['Number of phases ',   rep.italic('m: '),  str(self.get_num_phases())],
-               ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])]]
+               ['slots per 2p per m ', rep.italic('q: '),  str(self.get_q())]]
+        
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
         dat.append(['double linked leakage ', rep.italic('σ<sub>d: </sub>'), str(round(bc['sigma_d'], 3))])
@@ -262,13 +276,19 @@ class datamodel:
         dat.append(['parallel connection ', rep.italic('a: '), ','.join(a_)])
         r_ = [str(i) for i in bc['r']]
         dat.append(['radial force modes ', rep.italic('r: '), ','.join(r_)+',..'])
-        if bc['sym'] and bc['a']:
+        if bc['sym']:# and bc['a']:
             dat.append(['symmetric ', '', str(bc['sym'])])
         else:
             dat.append([rep.red('symmetric '), '', rep.red(str(bc['sym']))])
+        #  if 'valid' in self.generator_info.keys():
+            #  if self.generator_info['valid']:
+                #  dat.append(['valid ', '', 'True'])
+        #  else:
+            #  dat.append([rep.red('valid '), '', rep.red('False')])
+            
         txt = rep.table(dat)
-        if self.results['error']:
-            txt.append(rep.red('error: ' + str(self.results['error'])))
+        if bc['error']:
+            txt.append(rep.red('error: ' + str(bc['error'])))
         
         if len(self.notes) > 0:
             #  txt.append('<br><br>' + rep.bold(Notes) + ':<br>')
@@ -354,8 +374,11 @@ class datamodel:
         p = self.get_num_polepairs()
         I = 1                            # current for MMK
         w = self.get_num_series_turns()
-        kw = Cnu * np.pi * nu / (3*np.sqrt(2)*I*w)
-        sigma_d = analyse.double_linked_leakage(kw, nu, p)
+        if w != 0:
+            kw = Cnu * np.pi * nu / (3*np.sqrt(2)*I*w)
+            sigma_d = analyse.double_linked_leakage(kw, nu, p)
+        else:
+            sigma_d = -1
         return sigma_d
 
 
@@ -482,6 +505,15 @@ class datamodel:
         '''
         self.machinedata['wstep'] = w
     
+    
+    def set_num_empty_slots(self, Qes):
+        self.machinedata['Qes'] = Qes
+    
+    def get_num_empty_slots(self):
+        if self.machinedata['Qes'] is not None:
+            return self.machinedata['Qes']
+        else:
+            return 0
     
     def get_phases(self):
         '''
@@ -646,8 +678,11 @@ class datamodel:
         layers: Fraction
                 number of slots per pole per phase
         '''
-        if 'q' in self.results.keys():
-            return self.results['q']
+        if 'q' not in self.results.keys():
+            q = fractions.Fraction((self.get_num_slots()-self.get_num_empty_slots()) / (
+            self.get_num_phases()*2*self.get_num_polepairs())).limit_denominator(100)
+            self.results['q'] = q
+        return self.results['q']
     
     
     def _set_q(self, q):
@@ -669,7 +704,7 @@ class datamodel:
         self.reset_results()
         
         # number of slots per pole and phase
-        self.q = fractions.Fraction(self.get_num_slots() / (
+        self.q = fractions.Fraction((self.get_num_slots()-self.get_num_empty_slots()) / (
             self.get_num_phases()*2*self.get_num_polepairs())).limit_denominator(100)
         self._set_q(self.q)
         self.n = self.q.denominator
