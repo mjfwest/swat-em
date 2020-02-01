@@ -404,12 +404,13 @@ class MainWindow(QMainWindow):
         bc, bc_str = self.data.get_basic_characteristics()
         
         self.textBrowser_wdginfo.setHtml(bc_str)
-        self.update_plot_in_GUI()
         
         self.comboBox_star_harmonics.blockSignals(True)   # prevent double plotting on startup
         self.comboBox_star_harmonics.clear()
         self.comboBox_star_harmonics.addItems([str(k) for k in self.data.results['nu_el']])
         self.comboBox_star_harmonics.blockSignals(False)
+        
+        self.update_plot_in_GUI()
         self.reportEdit.setText(self.data.get_text_report())
         
         

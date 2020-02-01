@@ -1,7 +1,7 @@
 from PyQt5 import uic
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QTreeWidgetItem, QDialog, QFileDialog
-from swat_em import datamodel
+from swat_em import datamodel, project
 import os
 import sys
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -24,7 +24,7 @@ class import_winding(QDialog):
         
     def create_list(self, filename):
 
-        self.models = datamodel.project()
+        self.models = project()
         self.models.load_from_file(filename)
         
         self.items = []
