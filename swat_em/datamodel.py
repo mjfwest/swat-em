@@ -216,7 +216,6 @@ class datamodel:
         >0: Manual defined number of empty slots
         '''
         
-        
         wdglayout = wdggenerator.genwdg(Q, P, m, w, layers, empty_slots)
         self.set_machinedata(Q, int(P/2), m, wdglayout['Qes'])
         
@@ -251,6 +250,7 @@ class datamodel:
                 self.get_num_empty_slots())
             bc['r'] = self.get_radial_force_modes(num_modes = config['radial_force']['num_modes'])
             bc['sigma_d'] = self.get_double_linked_leakage()
+            bc['t'] = self.get_periodicity_t()
             self.results['basic_char'] = bc
         else:
             bc = self.results['basic_char']
@@ -648,6 +648,60 @@ class datamodel:
         return self.machinedata['turns']
     
     
+    def get_is_symmetric(self):
+        '''
+        Returns the symmetry of the winding
+        
+        Returns
+        -------
+        is_symmetric: Boolean
+                      True if the winding is symmetric
+                      False if the winding is not symmetric 
+        '''
+        return self.results['wdg_is_symmetric']
+        
+        
+    def get_periodicity_t(self):
+        '''
+        Returns the periodicity of the winding. In most cases 
+        t = gcd(Q,p). For user defined windings this may be different.
+        
+        Returns
+        -------
+        t: integer
+           Number of periodic base windings
+        '''
+        if 't' not in self.results:
+            self.results['t'] = self.calc_num_basic_windings_t()
+        return self.results['t']
+        
+        
+    def get_parallel_connections(self):
+        '''
+        Returns all possible parallel connections of the winding.
+        
+        Returns
+        -------
+        a: list
+           Number of possible parallel connections
+        '''
+        return [i for i in analyse.Divisors(self.results['a'])]
+    
+    
+    def get_lcmQP(self):
+        '''
+        Returns the lowest common multiple of the slot number Q and
+        the number of Poles. For permanent-magnet machines this value
+        represents the first ordinal number for the cogging torque.
+        
+        Returns
+        -------
+        lcmQP: integer
+               Lowest common multiple lcm(Q, P)
+        '''
+        return self.results['lcmQP']
+    
+    
     def set_turns(self, turns):
         '''
         Sets the number of turns. If all coil sides has the same
@@ -694,19 +748,21 @@ class datamodel:
         
     def analyse_wdg(self):
         '''
-        analyses the winding (winding factor etc.)
+        Do a detailled analyses of the winding. This includes
+        winding factors, detection of periodicity and symmetry, 
+        radial force modes and so on. Use the get_* functions for 
+        getting the results.
         ''' 
         self.reset_results()
         
         # number of slots per pole and phase
-        self.q = fractions.Fraction((self.get_num_slots()-self.get_num_empty_slots()) / (
+        q = fractions.Fraction((self.get_num_slots()-self.get_num_empty_slots()) / (
             self.get_num_phases()*2*self.get_num_polepairs())).limit_denominator(100)
-        self._set_q(self.q)
-        self.n = self.q.denominator
-        self.z = self.q.numerator
+        self._set_q(q)
         
         # base winding
-        self.results['t'] = math.gcd(self.machinedata['Q'], self.machinedata['p'])
+        #  self.results['t'] = math.gcd(self.machinedata['Q'], self.machinedata['p'])
+        self.results['t'] = self.calc_num_basic_windings_t()
         
         # electrical winding factor
         a, b, c, d = analyse.calc_kw(
@@ -747,6 +803,9 @@ class datamodel:
         
         bc, bc_txt = self.get_basic_characteristics()
         self.results['basic_char'] = bc
+        self.results['t'] = bc['t']
+        self.results['a'] = bc['a']
+        self.results['lcmQP'] = bc['lcmQP']
 
 
     def _calc_MMK(self):

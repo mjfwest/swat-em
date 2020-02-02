@@ -41,3 +41,14 @@ print('Data for the machine: ', wdg.machinedata.keys())
 
 # ... and all results:
 print('Data for the machine: ', wdg.results.keys())
+
+# Use the get_* methods for the results:
+print('\nDETAILLED RESULTS: ')
+print('Is winding symmetric:         ', wdg.get_is_symmetric())
+print('Fundamental winding factor:   ', wdg.get_fundamental_windingfactor())
+print('Number of turns in series:    ', wdg.get_num_series_turns())
+print('Excited radial force modes:   ', wdg.get_radial_force_modes())
+print('Periodictiy:                  ', wdg.get_periodicity_t())
+print('Possible parallel connections:', wdg.get_parallel_connections())
+print('Double linked leakage:        ', wdg.get_double_linked_leakage())
+

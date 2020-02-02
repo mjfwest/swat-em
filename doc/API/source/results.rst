@@ -64,6 +64,25 @@ have direct access:
     Data for the machine:  dict_keys(['q', 'nu_el', 'Ei_el', 'kw_el', 'phaseangle_el', 'nu_mech', 'Ei_mech', 'kw_mech', 'phaseangle_mech', 'valid', 'error', 't', 'wdg_is_symmetric', 'wdg_periodic', 'MMK', 'basic_char'])
 
 
+For getting the results the get_* methods can be used:
+
+.. code-block:: python
+
+    >>> print('Is winding symmetric:', wdg.get_is_symmetric())
+    Is winding symmetric: True
+    >>> print('Fundamental winding factor:', wdg.get_fundamental_windingfactor())
+    Fundamental winding factor: [0.9659258262890683, 0.9659258262890683, 0.9659258262890684]
+    >>> print('Number of turns in series:', wdg.get_num_series_turns())
+    Number of turns in series: 2.0
+    >>> print('Excited radial force modes:', wdg.get_radial_force_modes())
+    Excited radial force modes: [2, 4, 6]
+    >>> print('Periodictiy:', wdg.get_periodicity_t())
+    Periodictiy: 1
+    >>> print('Possible parallel connections:', wdg.get_parallel_connections())
+    Possible parallel connections: [1, 2]
+    >>> print('Double linked leakage:', wdg.get_double_linked_leakage())
+    Double linked leakage: 0.02843683350047214
+
 
 
 
