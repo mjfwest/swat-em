@@ -565,7 +565,7 @@ class datamodel:
                         layers[kl,abs(slot)-1] = (km+1)                    
                         layers_s[kl,abs(slot)-1] = '+'+str(km+1)
                     elif slot < 0:
-                        layers[kl,abs(slot)-1] = -(km+1)                    
+                        layers[kl,abs(slot)-1] = -(km+1)
                         layers_s[kl,abs(slot)-1] = '-'+str(km+1)
                     layers_col[kl, abs(slot)-1] = col
         return layers, layers_s, layers_col
@@ -672,7 +672,10 @@ class datamodel:
            Number of periodic base windings
         '''
         if 't' not in self.results:
-            self.results['t'] = self.calc_num_basic_windings_t()
+            try:
+                self.results['t'] = self.calc_num_basic_windings_t()
+            except:
+                self.results['t'] = -1
         return self.results['t']
         
         
