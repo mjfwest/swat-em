@@ -235,7 +235,8 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
     info = ''
     valid = True
     S = [[[]]*m]
-    w = -1
+    if layers == 1 and w == 1:
+        info += 'Coil pitch w = 1 could not be applied'
     
     N = Q
     p = P // 2
