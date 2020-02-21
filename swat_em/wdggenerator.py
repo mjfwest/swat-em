@@ -74,6 +74,7 @@ def overlapping_fractional_slot_slayer(Q, P, m):
     for g in cgroups:        
         cgroups_per_phase[i].append(g)
         cgroups_per_phase[i].append(-g)
+        #  print('g', g)
         i += 1
         if i >= m:
             i = 0
@@ -103,14 +104,34 @@ def overlapping_fractional_slot_slayer(Q, P, m):
                     else:
                         phases[abs(km)].append(i)
                     i += 1
-    # print('phases', phases)
+    #  print('phases', phases)
+    #  print('cgroups_per_phase', cgroups_per_phase)
 
     if m == 3: # change phase sequence again
         phases[1], phases[2] = phases[2], phases[1]
     
     for k in range(len(phases)):
         phases[k] = [phases[k], []]
-    return phases
+        
+    # windingsteps for the fractional slot winding
+    w = [0]*len(cgroups_per_phase[0])
+    #  for i, cg in enumerate(cgroups_per_phase):
+        #  for k in range(len(cg)):
+            #  w[k] += abs(cg[k])
+            #  print('w[i]', w[i])
+    
+    cg2 = list(map(list, zip(*cgroups_per_phase))) # transpose
+    w = []
+    for cg in cg2:
+        cg = [abs(k) for k in cg]
+        w.append(sum(cg))
+    #  print('w', w)
+    w = w[:len(w)//2]
+    
+    
+    #  print('cg2', cg2)
+    #  print('w', w)
+    return phases, w
 
 
 
@@ -123,6 +144,9 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
     keywords: {synchronous motors;machine windings;torque;losses;fault tolerance;harmonics;coils;fractional-slot winding;single-layer synchronous motor;end-winding loss reduction;torque ripple;mutual coupling reduction;fault-tolerant application;one side coil;slot star;graphical representation;analytical formulation;harmonic content},
     URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1629527&isnumber=34185
     '''
+    if hasattr(w, '__iter__'):
+        w = -1   # fractional slot has list of w's
+    
     if w == -1:
         w = Q // P
         if w <= 0:
@@ -218,8 +242,8 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
                     phases[km][1] = []
             else:
                 #  print('single layer winding not suitable', Q, P)
-                phases = overlapping_fractional_slot_slayer(Q, P, m)
-                w = Q/P
+                phases, w = overlapping_fractional_slot_slayer(Q, P, m)
+                #  w = Q/P
 
             
     ret = {'phases': phases, 'wstep': w, 'valid': valid, 'error': error, 'info': '', 'Qes': 0}

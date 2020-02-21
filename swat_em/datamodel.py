@@ -181,7 +181,7 @@ class datamodel:
         self.set_machinedata(m = len(S))
         self.machinedata['phasenames'] = [string.ascii_uppercase[k] for k in range(len(S))]
         if wstep:
-            self.set_windingstep(int(wstep))
+            self.set_windingstep(wstep)
         
 
     def set_valid(self, valid, error, info = ''):
@@ -847,7 +847,28 @@ class datamodel:
         plt.plot_slots(self.get_num_slots())
         plt.plot(self, show = show)
         plt.save(fname = filename, res = res)
+
+
+    def plot_overhang(self, filename, res = None, show = False, optimize_overhang = False):
+        '''
+        Generates a figure of the winding layout
         
+        Parameters
+        -------
+        filename: string
+                  file-name with extension to save the figure
+        res: list 
+             Resolution for the figure in pixes for x and y direction
+             example: res = [800, 600]
+        show: Bool
+              If true the window pops up for interactive usage
+        '''
+        if res == None:
+            res = config['plt']['res']
+        plt = plots._overhang_plot(None, None, self)
+        plt.plot(show = show, optimize_overhang = optimize_overhang)
+        plt.save(fname = filename, res = res)
+
         
     def plot_star(self, filename, 
                         res = None, 

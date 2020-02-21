@@ -34,7 +34,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -54,7 +54,7 @@
          <normaloff>icons/slot.png</normaloff>icons/slot.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>Winding layout</string>
+        <string>Layout</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
@@ -82,6 +82,51 @@
             <number>0</number>
            </property>
           </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_overhang">
+       <attribute name="icon">
+        <iconset>
+         <normaloff>icons/coil.png</normaloff>icons/coil.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string>Overhang</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="1" column="0">
+         <widget class="QWidget" name="mplwidget_overhang" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <layout class="QVBoxLayout" name="mplvl_overhang">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="checkBox_opt_wdg_overhang">
+          <property name="text">
+           <string>Optimize winding overhang (experimental)</string>
+          </property>
          </widget>
         </item>
        </layout>

@@ -26,6 +26,203 @@ pg.setConfigOption('foreground', 'k')
 pg.setConfigOptions(antialias=True)
 
 
+
+def create_wdg_overhang(S, Q, num_layers, w = None, optimize_wdg_overhang = False):
+    '''
+    Generate the winding overhang (connection of the coil sides).
+
+    Parameters
+    ----------
+    S :                     list of lists
+                            winding layout
+    Q :                     integer
+                            number of slots
+    num_layers :            integer
+                            number winding layers
+    w :                     integer or list of integers
+                            winding step(s)
+                 
+    optimize_wdg_overhang : Boolean
+                            number of phases
+             
+    Returns
+    -------
+    return : list 
+             Winding connections for all phases, len = num_phases,
+             format: [[(from_slot, to_slot, stepwidth, direction), ()], [(), ()], ...]
+             from_slot: slot with positive coil side of the coil
+             to_slot:   slot with negative coil side of the coil
+             stepwidth: distance between from_slot to to_slot
+             direction: winding direction (1: from left to right, -1: from right to left)
+    '''
+    if w is not None:
+        if not hasattr(w, '__iter__'):
+            w = [int(w)]     # int() because w could be Fractional.fraction()
+ 
+        
+    head = []
+    for ph_ in S:
+        head.append([])
+
+        ph = analyse._flatten([ph_])[0]
+        pos = []
+        neg = []
+        for p in ph:
+            if p>0:
+                pos.append(p)
+            else:
+                neg.append(-p)
+        if len(pos) != len(neg):
+            raise Exception('Number of positive and negative coils sides must be equal')
+
+        for kpos in range(len(pos)):
+            
+            diff = []
+            direct_ = []
+            for kneg in range(len(neg)):
+                diff1 = abs(pos[kpos] - neg[kneg])
+                diff2 = abs( abs(pos[kpos] - neg[kneg]) -Q )
+                diff_tmp = diff1 if diff1<diff2 else diff2
+                diff.append(diff_tmp)
+            
+            if w is None or optimize_wdg_overhang:
+                index_min = min(range(len(diff)), key=diff.__getitem__)
+            else:
+                for w_ in w:
+                    if w_ in diff:
+                        index_min = diff.index(w_)
+                        break
+            if neg[index_min] - pos[kpos] == diff[index_min]: # forward, no overflow
+                direct = 1
+            elif neg[index_min] - pos[kpos] + Q == diff[index_min]: # forward, no overflow
+                direct = 1
+            else:
+                direct = -1
+
+            head[-1].append((pos[kpos], neg.pop(index_min), diff[index_min], direct))
+    return head
+
+
+def gen_coil_lines(w, h1 = 0.75, h2 = 1.5, db1 = 0.1, Np1 = 21):
+    '''
+    Create lines of a coil for plotting.
+
+    Parameters
+    ----------
+    w :  integer
+         width of the coil in slots
+    h1:  float
+         height of the coil side in the slot
+    h2:  float
+         max height of the winding overhang
+    db1: float
+         distance of the coil side to the middle of the slot;
+         should be 0..0.2
+    Np1: integer
+         number of plotting points in the line of the winding overhang
+
+    Returns
+    -------
+    x : list 
+        x values of the coil for plotting
+    y : list
+        y values of the coil for plotting
+    '''
+    x1, y1 = db1, h1
+    x2, y2 = w/2, h2
+    x3, y3 = w-db1, h1
+    x4, y4 = x3, -y3
+    x5, y5 = x2, -x2
+    x6, y6 = x1, -y1
+
+    x = []
+    y = []
+    x_ = np.linspace(x1, x3, Np1)
+    y_ = np.interp(x_, [x1,x2,x4], [y1,y2,y3])
+    x += x_.tolist()
+    y += y_.tolist()
+
+    x += x_[::-1].tolist()
+    y += (-1*y_[::-1]).tolist()
+    x.append(x[0])
+    y.append(y[0])
+    return x, y
+
+
+def gen_slot_lines(Q, bz, hz):
+    '''
+    Create lines of a slot for plotting.
+
+    Parameters
+    ----------
+    q :  integer
+         number of slots
+    bz:  float
+         width of the tooth -> Slot width = 1 - bz
+         so bz should be around 0.5
+    hz:  float
+         height of the slots
+
+    Returns
+    -------
+    x : list 
+        x values of the slots for plotting
+    y : list
+        y values of the slots for plotting
+    '''
+    x = []
+    y = []
+    for k in range(Q+1):
+        x1 = k-0.5
+        if k == 0:
+            x += [x1, x1, x1+bz/2, x1+bz/2, x1, np.nan]
+        elif k == Q:
+            x += [x1-bz/2, x1-bz/2, x1, x1, x1-bz/2, np.nan]
+        else:
+            x += [x1-bz/2, x1-bz/2, x1+bz/2, x1+bz/2, x1-bz/2, np.nan]
+        y += [-hz, hz, hz, -hz, -hz, np.nan]
+    return x, y
+
+
+def gen_slot_filling(Q, bz, hz):
+    '''
+    Create lines of a slot for plotting.
+
+    Parameters
+    ----------
+    q :  integer
+         number of slots
+    bz:  float
+         width of the tooth -> Slot width = 1 - bz
+         so bz should be around 0.5
+    hz:  float
+         height of the slots
+
+    Returns
+    -------
+    x : list 
+        x values of the slots for plotting
+    y : list
+        y values (upper lines) of the slots for plotting
+    y_neg : list
+        y values (lower lines) of the slots for plotting
+    '''
+    x = []
+    y = []
+    for k in range(Q+1):
+        x1 = k-0.5
+        if k == 0:
+            x += [x1, x1+bz/2, np.nan]
+        elif k == Q:
+            x += [x1+bz/2, x1+bz/2, np.nan]
+        else:
+            x += [x1-bz/2, x1+bz/2, np.nan]
+        y += [hz, hz, np.nan]
+    y_neg = [-k for k in y]
+    return x, y, y_neg
+
+
+
 class _slot_plot:
     sh = 0.8  # slot height
     sw = 0.75  # slot width
@@ -185,7 +382,150 @@ class _slot_plot:
         #  exporter.export()
 
 
+class _overhang_plot:
+    bz = 0.5  # tooth width
+    hz = 0.5  # slot height
+    h1 = 0.6  # height of the coil side
+    #  h2 = 1.5  # height of the winding overhang
+    db1 = 0.1 # distance between coil side and slot center
+    Np1 = 21  # number of plotting points in the winding overhang per coil
 
+
+    def __init__(self, layout, widget, data):
+        self.layout = layout
+        self.widget = widget
+        self.data = data
+        self.Q = 0
+        self.slot = {}
+        self.devide = 'h'  # slot devide h (horizontal) or v (vertical
+
+        if self.layout is None:
+            self.app = pg.mkQApp()
+            self.fig = pg.PlotWidget() #title='xyz'
+        else:
+            self.fig = pg.PlotWidget()
+            self.layout.addWidget(self.fig)
+        #  self.fig.setAspectLocked(lock=True, ratio=1)
+        self.fig.getAxis('bottom').hide()
+        self.fig.getAxis('left').hide()
+       
+    
+    def plot(self, data = None, show = False, optimize_overhang = False):
+        self.show = show
+        if data is not None:
+            self.data = data
+        
+        S = self.data.get_phases()
+        Q = self.data.get_num_slots()
+        w = self.data.get_windingstep()
+        num_layers = self.data.get_num_layers()
+        
+        self.fig.clear()
+        try:
+            self.leg.scene().removeItem(self.leg)
+        except Exception as e:
+            #  print(e)
+            pass
+        self.leg = self.fig.addLegend(offset=(-10, 10))
+        
+        self.fig.disableAutoRange()# disable because of porformance 
+                                   # (a lot of elements are plottet)
+        
+        # plot slots - lines
+        #  x, y = gen_slot_lines(Q, bz = self.bz, hz = self.hz)
+        #  pen = pg.mkPen(color='#808080', width = 1.5)  
+        #  curve = pg.PlotCurveItem(x, y, pen=pen, connect='finite')
+        #  self.fig.addItem(curve)
+        
+        # plot slots - filling
+        brush = pg.mkBrush(color='#BFBFBF')
+        x, y_upper, y_lower = gen_slot_filling(Q, bz = self.bz, hz = self.hz)
+        c1 = pg.PlotCurveItem(x, y_upper, connect='finite')
+        c2 = pg.PlotCurveItem(x, y_lower, connect='finite')
+        fill = pg.FillBetweenItem(c1, c2, brush = brush)
+        self.fig.addItem(fill)
+
+        
+        # plot coils
+        head = create_wdg_overhang(S, Q, num_layers, w = w, optimize_wdg_overhang = optimize_overhang)
+        i = 1
+        for phase in head:
+            x = []
+            y = []
+            for coil in phase:
+                w = coil[2]
+                x_, y_ = gen_coil_lines(coil[2], h1 = self.h1, h2=0.5+w/6, db1=self.db1, Np1=self.Np1)
+                x_, y_ = np.array(x_), np.array(y_)
+                
+                direct = coil[3]
+                if direct > 0:
+                    x_ += coil[0] - 1
+                else:
+                    x_ += coil[1] - 1
+
+                # split coil on right border
+                x_2 = x_.copy()
+                y_2 = y_.copy()
+                x_2[x_<Q-0.5] = np.nan
+                x_2 -= Q
+                y_2[x_<Q-0.5] = np.nan
+                y_[x_>Q-0.5] = np.nan
+                x_[x_>Q-0.5] = np.nan
+                x += x_.tolist()
+                y += y_.tolist()
+                x += [np.nan]
+                y += [np.nan]
+                x += x_2.tolist()
+                y += y_2.tolist()
+                x += [np.nan]
+                y += [np.nan]
+                
+                # plot arrows (winding direction)
+                arrow = pg.ArrowItem(angle=90, headLen=16, pen={'color': get_phase_color(i-1)}, brush=get_phase_color(i-1))
+                if coil[3] > 0:
+                    arrow.setPos(coil[0]-1+self.db1, 0)
+                else:
+                    arrow.setPos(coil[0]-1-self.db1, 0)
+                self.fig.addItem(arrow)
+                
+                arrow = pg.ArrowItem(angle=-90, headLen=16, pen={'color': get_phase_color(i-1)}, brush=get_phase_color(i-1))
+                if coil[3] > 0:
+                    arrow.setPos(coil[1]-1-self.db1, 0)
+                else:
+                    arrow.setPos(coil[1]-1+self.db1, 0)
+                self.fig.addItem(arrow)
+                
+            pen = pg.mkPen(color = get_phase_color(i-1), width = config['plt']['lw'])  
+            curve = pg.PlotCurveItem(x, y, pen=pen, connect='finite', name = 'Phase '+str(i))
+            self.fig.addItem(curve)
+            i += 1
+
+        # plot slot number
+        for k in range(Q):
+            text = pg.TextItem(anchor=(0.5,0.5))
+            text.setPlainText(str(k+1))
+            text.setPos(k, -self.h1/2)
+            text.setColor('k')
+            self.fig.addItem(text, ignoreBounds=True) # ignore because autoRange have problems with it
+
+
+        self.fig.autoRange()
+        if self.show:
+            self.fig.show()
+            self.app.exec_()
+                
+                
+                
+    def save(self, fname, res):
+        if self.show:
+            self.app.processEvents()
+        if os.path.splitext(fname)[-1].upper() == '.SVG':
+            exporter = pg.exporters.SVGExporter(self.fig.plotItem)
+        else:
+            exporter = pg.exporters.ImageExporter(self.fig.plotItem)
+            exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+            exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+        exporter.export(fname)
 
 
 class _slot_star:

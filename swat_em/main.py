@@ -127,6 +127,7 @@ class MainWindow(QMainWindow):
         self.radioButton_electrical.toggled.connect(self.update_plot_in_GUI)
         self.comboBox_star_harmonics.currentIndexChanged.connect(self.update_plot_in_GUI)
         self.checkBoxForceX.toggled.connect(self.update_plot_in_GUI)
+        self.checkBox_opt_wdg_overhang.toggled.connect(self.update_plot_in_GUI)
         
 
         #  initial windings  -----------------------------------
@@ -155,10 +156,12 @@ class MainWindow(QMainWindow):
         self.MMK_phase_edit.textChanged.connect(lambda: self.update_plot_in_GUI(small_update = True))
         
         self.fig1 = plots._slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
-        self.fig2 = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
-        self.fig3 = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
-        self.fig4 = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
+        self.fig2 = plots._overhang_plot(self.mplvl_overhang, self.mplwidget_overhang, self.data)
+        self.fig3 = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
+        self.fig4 = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
+        self.fig5 = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
         self.reportEdit.setCurrentFont(QFont("Courier New", 10)) #Or whatever monospace font family you want...
+        
         
         self.update_project_list()
         #  self.update_data_in_GUI()     # not neccessary because of 'update_project_list()
@@ -419,17 +422,19 @@ class MainWindow(QMainWindow):
             self.fig1.plot_slots(self.data.get_num_slots())
             self.fig1.plot(self.data)
         if idx == 1: 
-            self.fig2.plot(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
+            self.fig2.plot(self.data, optimize_overhang = self.checkBox_opt_wdg_overhang.isChecked())
+        if idx == 2: 
+            self.fig3.plot(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
             ForceX = self.checkBoxForceX.isChecked())
-        if idx == 2:
-            if self.radioButton_electrical.isChecked():
-                self.fig3.plot(self.data, mechanical=False)
-            elif self.radioButton_mechanical.isChecked():
-                self.fig3.plot(self.data, mechanical=True)
         if idx == 3:
+            if self.radioButton_electrical.isChecked():
+                self.fig4.plot(self.data, mechanical=False)
+            elif self.radioButton_mechanical.isChecked():
+                self.fig4.plot(self.data, mechanical=True)
+        if idx == 4:
             f = _get_float(self.MMK_phase_edit.text())
             f = 0.0 if f is None else f
-            self.fig4.plot(self.data, f, small_update = small_update)
+            self.fig5.plot(self.data, f, small_update = small_update)
         #  print('duration for plot:', time.time()-t1)
 
 
@@ -440,7 +445,7 @@ class MainWindow(QMainWindow):
         
         # get actual view
         idx = self.plot_tabs.currentIndex()
-        if idx in [0, 1, 2, 3]:
+        if idx in [0, 1, 2, 3, 4]:
             with tempfile.TemporaryDirectory() as tmpdir:
                 if idx == 0:
                     #  ## self.data.plot_layout(os.path.join(tmpdir, 'fig.png'))
@@ -451,7 +456,8 @@ class MainWindow(QMainWindow):
                     self.fig3.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
                 elif idx == 3:
                     self.fig4.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-
+                elif idx == 4:
+                    self.fig5.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
                 pixmap = QPixmap(os.path.join(tmpdir, 'fig.png'))
                 if dialog.exec_() == QPrintDialog.Accepted:
                     painter = QPainter(printer)
@@ -464,7 +470,7 @@ class MainWindow(QMainWindow):
                     painter.drawPixmap(0, 0, pixmap)
                     del painter
             
-        elif idx == 4:
+        elif idx == 5:
             if self.reportEdit.textCursor().hasSelection():
                 dlg.addEnabledOption(QPrintDialog.PrintSelection)
             if dialog.exec_() == QPrintDialog.Accepted:
