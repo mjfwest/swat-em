@@ -29,6 +29,7 @@ import argparse
 import subprocess
 import platform
 import tempfile
+from swat_em import __version__
 from swat_em import dialog_genwdg
 from swat_em import dialog_about
 from swat_em import dialog_notes
@@ -67,7 +68,6 @@ class MainWindow(QMainWindow):
         self.projectlist_Button_delete.clicked.connect(self.projectlist_delete)
         self.projectlist_Button_clone.clicked.connect(self.projectlist_clone)
         self.projectlist_Button_notes.clicked.connect(self.dialog_get_notes)
-        self.projectlist_Button_manual.clicked.connect(self.dialog_EditWindingLayout)
         self.save_report_Button.clicked.connect(self.export_to_txt)
         self.actionprint.triggered.connect(self.printer)
         
@@ -161,7 +161,6 @@ class MainWindow(QMainWindow):
         self.fig4 = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
         self.fig5 = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
         self.reportEdit.setCurrentFont(QFont("Courier New", 10)) #Or whatever monospace font family you want...
-        
         
         self.update_project_list()
         #  self.update_data_in_GUI()     # not neccessary because of 'update_project_list()
@@ -415,23 +414,21 @@ class MainWindow(QMainWindow):
         all axes etc. --> speed up, for MMK-phase slider for example
         '''
         # Update Figures
-        idx = self.plot_tabs.currentIndex()
-        #  t1 = time.time()
-        # update only the current tab
-        if idx == 0:
+        tab_name = self.plot_tabs.currentWidget().objectName()
+        if tab_name == 'tab_slot':
             self.fig1.plot_slots(self.data.get_num_slots())
             self.fig1.plot(self.data)
-        if idx == 1: 
+        if tab_name == 'tab_overhang':
             self.fig2.plot(self.data, optimize_overhang = self.checkBox_opt_wdg_overhang.isChecked())
-        if idx == 2: 
+        if tab_name == 'tab_star': 
             self.fig3.plot(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
             ForceX = self.checkBoxForceX.isChecked())
-        if idx == 3:
+        if tab_name == 'tab_wf':
             if self.radioButton_electrical.isChecked():
                 self.fig4.plot(self.data, mechanical=False)
             elif self.radioButton_mechanical.isChecked():
                 self.fig4.plot(self.data, mechanical=True)
-        if idx == 4:
+        if tab_name == 'tab_mmk':
             f = _get_float(self.MMK_phase_edit.text())
             f = 0.0 if f is None else f
             self.fig5.plot(self.data, f, small_update = small_update)
@@ -444,20 +441,21 @@ class MainWindow(QMainWindow):
         dialog = QPrintDialog(printer)
         
         # get actual view
-        idx = self.plot_tabs.currentIndex()
-        if idx in [0, 1, 2, 3, 4]:
+        tab_name = self.plot_tabs.currentWidget().objectName()
+        if tab_name in ['tab_slot', 'tab_overhang', 'tab_star', 'tab_wf', 'tab_mmk']:
             with tempfile.TemporaryDirectory() as tmpdir:
-                if idx == 0:
+                if tab_name == 'tab_slot':
                     #  ## self.data.plot_layout(os.path.join(tmpdir, 'fig.png'))
                     self.fig1.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif idx == 1:
+                elif tab_name == 'tab_overhang':
                     self.fig2.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif idx == 2:
+                elif tab_name == 'tab_star':
                     self.fig3.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif idx == 3:
+                elif tab_name == 'tab_wf':
                     self.fig4.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif idx == 4:
+                elif tab_name == 'tab_mmk':
                     self.fig5.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+
                 pixmap = QPixmap(os.path.join(tmpdir, 'fig.png'))
                 if dialog.exec_() == QPrintDialog.Accepted:
                     painter = QPainter(printer)
@@ -470,7 +468,7 @@ class MainWindow(QMainWindow):
                     painter.drawPixmap(0, 0, pixmap)
                     del painter
             
-        elif idx == 5:
+        elif tab_name == 'tab_report':
             if self.reportEdit.textCursor().hasSelection():
                 dlg.addEnabledOption(QPrintDialog.PrintSelection)
             if dialog.exec_() == QPrintDialog.Accepted:
@@ -621,6 +619,7 @@ def main():
     parser.add_argument(action='store', nargs='?', default='', dest='arg_1', help='*.py scriptfile or *.wdg file')
     parser.add_argument('--load', action='store', default='', dest='loadfile', help='Open an existing *.wdg file')
     parser.add_argument('--script', action='store', default='', dest='scriptfile', help='Open an existing *.py script file')
+    parser.add_argument('--version', action='version', version='%(prog)s ' + __version__, help='Show version')
     args = parser.parse_args()
     
     if len(args.arg_1) > 0:

@@ -869,7 +869,8 @@ class _mmk:
                 self.table.resizeColumnToContents(k1)
 
     def save(self, fname, res):
-        self.app.processEvents()
+        if self.show:
+            self.app.processEvents()
         
         if os.path.splitext(fname)[-1].upper() == '.SVG':
             exporter = pg.exporters.SVGExporter(self.l.ci)

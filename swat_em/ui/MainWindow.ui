@@ -633,7 +633,13 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="projectlist_Button_manual">
+           <widget class="QToolButton" name="projectlist_Button_clone">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>24</width>
@@ -647,14 +653,17 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Manual winding layout</string>
+             <string>clone winding</string>
+            </property>
+            <property name="statusTip">
+             <string/>
             </property>
             <property name="text">
              <string/>
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>icons/edit_manually.png</normaloff>icons/edit_manually.png</iconset>
+              <normaloff>icons/clone.png</normaloff>icons/clone.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -720,50 +729,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <widget class="QToolButton" name="projectlist_Button_clone">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>clone winding</string>
-            </property>
-            <property name="statusTip">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>icons/clone.png</normaloff>icons/clone.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
           </item>
           <item>
            <widget class="QToolButton" name="projectlist_Button_delete">
