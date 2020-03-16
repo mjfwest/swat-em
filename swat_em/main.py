@@ -412,21 +412,19 @@ class MainWindow(QMainWindow):
         all axes etc. --> speed up, for MMK-phase slider for example
         '''
         # Update Figures
-        idx = self.plot_tabs.currentIndex()
-        #  t1 = time.time()
-        # update only the current tab
-        if idx == 0:
+        tab_name = self.plot_tabs.currentWidget().objectName()
+        if tab_name == 'tab_slot':
             self.fig1.plot_slots(self.data.get_num_slots())
             self.fig1.plot(self.data)
-        if idx == 1: 
+        if tab_name == 'tab_star': 
             self.fig2.plot(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
             ForceX = self.checkBoxForceX.isChecked())
-        if idx == 2:
+        if tab_name == 'tab_wf':
             if self.radioButton_electrical.isChecked():
                 self.fig3.plot(self.data, mechanical=False)
             elif self.radioButton_mechanical.isChecked():
                 self.fig3.plot(self.data, mechanical=True)
-        if idx == 3:
+        if tab_name == 'tab_mmk':
             f = _get_float(self.MMK_phase_edit.text())
             f = 0.0 if f is None else f
             self.fig4.plot(self.data, f, small_update = small_update)
@@ -439,17 +437,17 @@ class MainWindow(QMainWindow):
         dialog = QPrintDialog(printer)
         
         # get actual view
-        idx = self.plot_tabs.currentIndex()
-        if idx in [0, 1, 2, 3]:
+        tab_name = self.plot_tabs.currentWidget().objectName()
+        if tab_name in ['tab_slot', 'tab_star', 'tab_wf', 'tab_mmk']:
             with tempfile.TemporaryDirectory() as tmpdir:
-                if idx == 0:
+                if tab_name == 'tab_slot':
                     #  ## self.data.plot_layout(os.path.join(tmpdir, 'fig.png'))
                     self.fig1.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif idx == 1:
+                elif tab_name == 'tab_star':
                     self.fig2.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif idx == 2:
+                elif tab_name == 'tab_wf':
                     self.fig3.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif idx == 3:
+                elif tab_name == 'tab_mmk':
                     self.fig4.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
 
                 pixmap = QPixmap(os.path.join(tmpdir, 'fig.png'))
@@ -464,7 +462,7 @@ class MainWindow(QMainWindow):
                     painter.drawPixmap(0, 0, pixmap)
                     del painter
             
-        elif idx == 4:
+        elif tab_name == 'tab_report':
             if self.reportEdit.textCursor().hasSelection():
                 dlg.addEnabledOption(QPrintDialog.PrintSelection)
             if dialog.exec_() == QPrintDialog.Accepted:
