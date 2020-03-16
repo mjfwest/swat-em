@@ -404,12 +404,14 @@ class MainWindow(QMainWindow):
         '''
         bc, bc_str = self.data.get_basic_characteristics()
         self.textBrowser_wdginfo.setHtml(bc_str)
-        
+        idx_old = self.comboBox_star_harmonics.currentText()
+        idx = self.data.results['nu_el'].index(int(idx_old)) if idx_old else None # remember ordinal number
         self.comboBox_star_harmonics.blockSignals(True)   # prevent double plotting on startup
         self.comboBox_star_harmonics.clear()
         self.comboBox_star_harmonics.addItems([str(k) for k in self.data.results['nu_el']])
         self.comboBox_star_harmonics.blockSignals(False)
-        
+        if idx:
+            self.comboBox_star_harmonics.setCurrentIndex(idx) # restore ordinal number for the new winding
         self.update_plot_in_GUI()
         self.reportEdit.setText(self.data.get_text_report())
         
