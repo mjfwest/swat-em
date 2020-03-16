@@ -29,6 +29,7 @@ import argparse
 import subprocess
 import platform
 import tempfile
+from swat_em import __version__
 from swat_em import dialog_genwdg
 from swat_em import dialog_about
 from swat_em import dialog_notes
@@ -614,6 +615,7 @@ def main():
     parser.add_argument(action='store', nargs='?', default='', dest='arg_1', help='*.py scriptfile or *.wdg file')
     parser.add_argument('--load', action='store', default='', dest='loadfile', help='Open an existing *.wdg file')
     parser.add_argument('--script', action='store', default='', dest='scriptfile', help='Open an existing *.py script file')
+    parser.add_argument('--version', action='version', version='%(prog)s ' + __version__, help='Show version')
     args = parser.parse_args()
     
     if len(args.arg_1) > 0:
