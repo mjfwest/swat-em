@@ -67,7 +67,6 @@ class MainWindow(QMainWindow):
         self.projectlist_Button_delete.clicked.connect(self.projectlist_delete)
         self.projectlist_Button_clone.clicked.connect(self.projectlist_clone)
         self.projectlist_Button_notes.clicked.connect(self.dialog_get_notes)
-        self.projectlist_Button_manual.clicked.connect(self.dialog_EditWindingLayout)
         self.save_report_Button.clicked.connect(self.export_to_txt)
         self.actionprint.triggered.connect(self.printer)
         
