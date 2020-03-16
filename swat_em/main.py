@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
         self.projectlist_Button_notes.clicked.connect(self.dialog_get_notes)
         self.save_report_Button.clicked.connect(self.export_to_txt)
         self.actionprint.triggered.connect(self.printer)
-        
+        self.actionFull_Screen.triggered.connect(self.toggle_fullscreen)
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
@@ -168,6 +168,13 @@ class MainWindow(QMainWindow):
         self.actionundo.setDisabled(True)
         self.actionredo.setDisabled(True)
         self.show()
+    
+    
+    def toggle_fullscreen(self):
+        if self.windowState() & QtCore.Qt.WindowFullScreen:
+            self.showNormal()
+        else:
+            self.showFullScreen()
     
     
     def check_is_saved(self):
