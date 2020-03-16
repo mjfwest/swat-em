@@ -388,7 +388,7 @@ class _overhang_plot:
     h1 = 0.6  # height of the coil side
     #  h2 = 1.5  # height of the winding overhang
     db1 = 0.1 # distance between coil side and slot center
-    Np1 = 21  # number of plotting points in the winding overhang per coil
+    Np1 = 101  # number of plotting points in the winding overhang per coil
 
 
     def __init__(self, layout, widget, data):
