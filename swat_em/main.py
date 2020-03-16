@@ -155,11 +155,11 @@ class MainWindow(QMainWindow):
         self.MMK_phase_edit.textEdited.connect(self.update_MMK_phase_slider)
         self.MMK_phase_edit.textChanged.connect(lambda: self.update_plot_in_GUI(small_update = True))
         
-        self.fig1 = plots._slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
-        self.fig2 = plots._overhang_plot(self.mplvl_overhang, self.mplwidget_overhang, self.data)
-        self.fig3 = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
-        self.fig4 = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
-        self.fig5 = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
+        self.fig_slot = plots._slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
+        self.fig_overhang = plots._overhang_plot(self.mplvl_overhang, self.mplwidget_overhang, self.data)
+        self.fig_star = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
+        self.fig_wf = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
+        self.fig_mmk = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
         self.reportEdit.setCurrentFont(QFont("Courier New", 10)) #Or whatever monospace font family you want...
         
         self.update_project_list()
@@ -416,22 +416,22 @@ class MainWindow(QMainWindow):
         # Update Figures
         tab_name = self.plot_tabs.currentWidget().objectName()
         if tab_name == 'tab_slot':
-            self.fig1.plot_slots(self.data.get_num_slots())
-            self.fig1.plot(self.data)
+            self.fig_slot.plot_slots(self.data.get_num_slots())
+            self.fig_slot.plot(self.data)
         if tab_name == 'tab_overhang':
-            self.fig2.plot(self.data, optimize_overhang = self.checkBox_opt_wdg_overhang.isChecked())
+            self.fig_overhang.plot(self.data, optimize_overhang = self.checkBox_opt_wdg_overhang.isChecked())
         if tab_name == 'tab_star': 
-            self.fig3.plot(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
+            self.fig_star.plot(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
             ForceX = self.checkBoxForceX.isChecked())
         if tab_name == 'tab_wf':
             if self.radioButton_electrical.isChecked():
-                self.fig4.plot(self.data, mechanical=False)
+                self.fig_wf.plot(self.data, mechanical=False)
             elif self.radioButton_mechanical.isChecked():
-                self.fig4.plot(self.data, mechanical=True)
+                self.fig_wf.plot(self.data, mechanical=True)
         if tab_name == 'tab_mmk':
             f = _get_float(self.MMK_phase_edit.text())
             f = 0.0 if f is None else f
-            self.fig5.plot(self.data, f, small_update = small_update)
+            self.fig_mmk.plot(self.data, f, small_update = small_update)
         #  print('duration for plot:', time.time()-t1)
 
 
@@ -446,15 +446,15 @@ class MainWindow(QMainWindow):
             with tempfile.TemporaryDirectory() as tmpdir:
                 if tab_name == 'tab_slot':
                     #  ## self.data.plot_layout(os.path.join(tmpdir, 'fig.png'))
-                    self.fig1.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+                    self.fig_slot.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
                 elif tab_name == 'tab_overhang':
-                    self.fig2.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+                    self.fig_overhang.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
                 elif tab_name == 'tab_star':
-                    self.fig3.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+                    self.fig_star.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
                 elif tab_name == 'tab_wf':
-                    self.fig4.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+                    self.fig_wf.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
                 elif tab_name == 'tab_mmk':
-                    self.fig5.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
+                    self.fig_mmk.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
 
                 pixmap = QPixmap(os.path.join(tmpdir, 'fig.png'))
                 if dialog.exec_() == QPrintDialog.Accepted:
