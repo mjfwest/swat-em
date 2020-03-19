@@ -203,7 +203,7 @@ class MainWindow(QMainWindow):
         self.fig_star = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
         self.fig_wf = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
         self.fig_mmk = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
-        self.reportEdit.setCurrentFont(QFont("Courier New", 10)) #Or whatever monospace font family you want...
+        self.reportEdit.setCurrentFont(QFont("DejaVu Sans Mono", 10))
         
         self.update_project_list()
         #  self.update_data_in_GUI()     # not neccessary because of 'update_project_list()
