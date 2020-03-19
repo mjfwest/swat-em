@@ -136,6 +136,11 @@ class MainWindow(QMainWindow):
         # context-menu on project models
         self.project_listWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
+        self.actionNew = QAction("New Winding", self.project_listWidget, 
+                   icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'new.png')))
+        self.project_listWidget.addAction(self.actionNew)
+        self.actionNew.triggered.connect(self.dialog_new_winding)
+        
         self.actionClone = QAction("clone", self.project_listWidget, 
                    icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'clone.png')))
         self.project_listWidget.addAction(self.actionClone)
@@ -143,8 +148,8 @@ class MainWindow(QMainWindow):
         
         self.actionNotes = QAction("add notes", self.project_listWidget, 
                    icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'notes.png')))
-        self.project_listWidget.addAction(self.actionAdd_Notes)
-        self.actionNotes.triggered.connect(self.projectlist_clone)
+        self.project_listWidget.addAction(self.actionNotes)
+        self.actionNotes.triggered.connect(self.dialog_get_notes)
         
         self.actionDelete = QAction("delete", self.project_listWidget, 
                    icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'delete.png')))        

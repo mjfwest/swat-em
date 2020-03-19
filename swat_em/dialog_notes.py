@@ -1,4 +1,4 @@
-from PyQt5 import uic
+from PyQt5 import uic, QtGui
 from PyQt5.QtWidgets import QDialog
 import os
 import sys
@@ -17,13 +17,12 @@ class get_notes(QDialog):
         uic.loadUi(os.path.join(__dir__, 'ui', 'Notes.ui'), self)
 
 
-
     def run(self):
         self.plainTextEdit.setPlainText(self.init_text)
+        self.plainTextEdit.moveCursor(QtGui.QTextCursor.End)
         
         ok = self.exec_()
         if ok:
-            print(str(self.plainTextEdit.toPlainText()))
             return str(self.plainTextEdit.toPlainText())
         else:
             return None
