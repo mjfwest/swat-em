@@ -6,7 +6,8 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog,\
                             QInputDialog, QMessageBox, QListWidgetItem,\
                             QMenu, QAction, QSplashScreen, QGraphicsScene
 from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon,QPixmap,\
-                        QFont, QPainter
+                        QFont, QPainter, QColor, QSyntaxHighlighter, \
+                        QTextCharFormat
 from PyQt5.QtPrintSupport import QPrintDialog, QPrinter
 from PyQt5 import QtCore
 
@@ -45,6 +46,43 @@ from swat_em.analyse import _get_float
 
 MSG_TIME = 3000   # time in which the message is displayed in the statusbar
 
+
+class Report_Highlighter(QSyntaxHighlighter):
+    '''
+    Syntax highlighting for report
+    '''
+    def __init__(self, parent=None):
+        super(Report_Highlighter, self).__init__(parent)
+        self.highlightingRules = []
+        
+        # headings
+        Format = QTextCharFormat()
+        Format.setForeground(QColor('#3536A9'))
+        Format.setFontWeight(QFont.Bold)
+        self.highlightingRules.append((QtCore.QRegExp("={2,}"), Format))     # minumum two '='
+        self.highlightingRules.append((QtCore.QRegExp("[A-Z]+\s"), Format))  # word in upper letters with following whitespace
+        self.highlightingRules.append((QtCore.QRegExp("([A-Z]+)$"), Format)) # last word in upper letters
+        # Variables
+        Format = QTextCharFormat()
+        Format.setFontItalic(True)
+        self.highlightingRules.append((QtCore.QRegExp("[A-Za-z0-9_-]+\:\s"), Format))
+        # numbers
+        Format = QTextCharFormat()
+        Format.setForeground(QColor('#008000'))
+        self.highlightingRules.append((QtCore.QRegExp("(^|\s|-)[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"), Format))
+        # comments in brackets
+        Format = QTextCharFormat()
+        Format.setForeground(QColor('#6C6C6C'))
+        self.highlightingRules.append((QtCore.QRegExp("\(([^)]+)\)"), Format))
+
+    def highlightBlock(self, text):
+        for pattern, format in self.highlightingRules:
+            expression = QtCore.QRegExp(pattern)
+            index = expression.indexIn(text)
+            while index >= 0:
+                length = expression.matchedLength()
+                self.setFormat(index, length, format)
+                index = expression.indexIn(text, index + length)
 
 
 class MainWindow(QMainWindow):
@@ -414,6 +452,7 @@ class MainWindow(QMainWindow):
             self.comboBox_star_harmonics.setCurrentIndex(idx) # restore ordinal number for the new winding
         self.update_plot_in_GUI()
         self.reportEdit.setText(self.data.get_text_report())
+        self.highlighter = Report_Highlighter(self.reportEdit)
         
         
     def update_plot_in_GUI(self, small_update = False):
@@ -660,3 +699,5 @@ if __name__ == '__main__':
     
     
     
+
+

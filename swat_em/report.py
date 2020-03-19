@@ -394,7 +394,7 @@ class TextReport:
         self._txt.append(self.data.get_notes())
         self._txt.append('\n')
         
-        self._txt.append('Machine data')
+        self._txt.append('MACHINE DATA')
         self._txt.append('============')
         self._txt.append('Number of slots        Q: {}'.format(self.data.get_num_slots()))
         self._txt.append('Number of pole pairs   p: {}'.format(self.data.get_num_polepairs()))
@@ -403,11 +403,11 @@ class TextReport:
         self._txt.append('\n')
         
         _, ls, _ = self.data.get_layers()
-        self._txt.append('Winding layout')
+        self._txt.append('WINDING LAYOUT')
         self._txt.append('==============')
-        self._txt.append('Layer 1: ' + ' | '.join([k for k in ls[0,:]]))
+        self._txt.append('Layer_1: ' + ' | '.join([k for k in ls[0,:]]))
         if self.data.get_num_layers() > 1:
-            self._txt.append('Layer 2: ' + ' | '.join([k for k in ls[1,:]]))
+            self._txt.append('Layer_2: ' + ' | '.join([k for k in ls[1,:]]))
         
         self._txt.append('\n')
         
