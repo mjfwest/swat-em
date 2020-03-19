@@ -1230,6 +1230,8 @@ def save_models_to_file(models, fname, file_format = 2):
     for data in models:
         N = {}
         N['machinedata'] = data.machinedata
+        if type(N['machinedata']['wstep']) == type(fractions.Fraction() ):
+            N['machinedata']['wstep'] = str(N['machinedata']['wstep'])
         N['title'] = data.title
         N['notes'] = data.notes
         M['models'].append(N)
@@ -1275,6 +1277,8 @@ def load_models_from_file(fname):
             data = datamodel()
             for key, value in m['machinedata'].items():
                 data.machinedata[key] = value
+            if type(data.get_windingstep()) == type(''):
+                data.set_windingstep(fractions.Fraction(data.get_windingstep()))
             data.set_title(m['title'])
             data.set_notes(m['notes'])
             data.analyse_wdg()
