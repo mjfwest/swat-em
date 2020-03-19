@@ -34,7 +34,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -614,6 +614,9 @@
               <height>24</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>New winding</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -653,7 +656,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>clone winding</string>
+             <string>Clone winding</string>
             </property>
             <property name="statusTip">
              <string/>
@@ -691,7 +694,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>add note for winding</string>
+             <string>Add note for winding</string>
             </property>
             <property name="text">
              <string/>
@@ -751,7 +754,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>delete winding</string>
+             <string>Delete winding</string>
             </property>
             <property name="text">
              <string/>
@@ -969,7 +972,7 @@
      <normaloff>icons/open.png</normaloff>icons/open.png</iconset>
    </property>
    <property name="text">
-    <string>load</string>
+    <string>Load file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
@@ -1001,7 +1004,7 @@
      <normaloff>icons/save.png</normaloff>icons/save.png</iconset>
    </property>
    <property name="text">
-    <string>save</string>
+    <string>Save</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -1013,12 +1016,12 @@
      <normaloff>icons/save_as.png</normaloff>icons/save_as.png</iconset>
    </property>
    <property name="text">
-    <string>save as</string>
+    <string>Save as</string>
    </property>
   </action>
   <action name="actionnew">
    <property name="text">
-    <string>new</string>
+    <string>New winding</string>
    </property>
   </action>
   <action name="actionExport_report">
@@ -1056,7 +1059,7 @@
      <normaloff>icons/html.png</normaloff>icons/html.png</iconset>
    </property>
    <property name="text">
-    <string>create HTML report in webbrowser</string>
+    <string>Create HTML report in webbrowser</string>
    </property>
   </action>
   <action name="actionShow_winding_layout">
@@ -1103,7 +1106,7 @@
      <normaloff>icons/undo.png</normaloff>icons/undo.png</iconset>
    </property>
    <property name="text">
-    <string>undo</string>
+    <string>Undo</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
@@ -1115,7 +1118,7 @@
      <normaloff>icons/redo.png</normaloff>icons/redo.png</iconset>
    </property>
    <property name="text">
-    <string>redo</string>
+    <string>Redo</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Z</string>
@@ -1157,7 +1160,7 @@
      <normaloff>icons/print.png</normaloff>icons/print.png</iconset>
    </property>
    <property name="text">
-    <string>print</string>
+    <string>Print</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
