@@ -69,7 +69,7 @@ class Report_Highlighter(QSyntaxHighlighter):
         # numbers
         Format = QTextCharFormat()
         Format.setForeground(QColor('#008000'))
-        self.highlightingRules.append((QtCore.QRegExp("(^|\s|-)[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"), Format))
+        self.highlightingRules.append((QtCore.QRegExp("(^|\s|-|/)[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"), Format))
         # comments in brackets
         Format = QTextCharFormat()
         Format.setForeground(QColor('#6C6C6C'))
@@ -294,7 +294,6 @@ class MainWindow(QMainWindow):
             self.project.delete_model_by_index(idx)
             self.statusbar.showMessage('winding deleted', MSG_TIME)
             self.update_project_list()
-            self.statusbar.showMessage('winding cloned', MSG_TIME)
     
     def projectlist_clone(self):
         self.save_undo_state()  # for undo
@@ -333,6 +332,8 @@ class MainWindow(QMainWindow):
             data.genwdg(Q = ret['Q'], P = ret['P'], m = ret['m'], w = ret['w'], 
                         layers = ret['layers'], empty_slots = ret['Qes'])
             if ret['overwrite']:
+                data.set_title(self.data.get_title()) # use existing title
+                data.set_notes(self.data.get_notes()) # use existings notes
                 self.data = data
                 self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
             else:
@@ -353,6 +354,8 @@ class MainWindow(QMainWindow):
                         layers = ret['layers'], empty_slots = ret['Qes'])
 
             if ret['overwrite']:
+                data.set_title(self.data.get_title()) # use existing title
+                data.set_notes(self.data.get_notes()) # use existings notes
                 self.data = data
                 self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
             else:
@@ -388,6 +391,8 @@ class MainWindow(QMainWindow):
             data.analyse_wdg()
             #  data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
             if ret['overwrite']:
+                data.set_title(self.data.get_title()) # use existing title
+                data.set_notes(self.data.get_notes()) # use existings notes
                 self.data = data 
                 self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
             else:
