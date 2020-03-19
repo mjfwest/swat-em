@@ -132,7 +132,6 @@ class MainWindow(QMainWindow):
         self.project_listWidget.itemChanged.connect(self.projectlist_rename)    # item renamed
 
 
-                        
         # context-menu on project models
         self.project_listWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
@@ -155,7 +154,6 @@ class MainWindow(QMainWindow):
                    icon=QIcon(os.path.join(__dir__, 'ui', 'icons', 'delete.png')))        
         self.project_listWidget.addAction(self.actionDelete)
         self.actionDelete.triggered.connect(self.projectlist_delete)
-
 
 
         # TODO
@@ -193,7 +191,6 @@ class MainWindow(QMainWindow):
         self.MMK_phase_edit.setValidator(QDoubleValidator(0, 360, 1))
         self.MMK_phase_edit.setText(str(0.000))
         
-        #  self.MMK_phase_slider.valueChanged.connect(self.update_plot_in_GUI)
         self.MMK_phase_slider.valueChanged.connect(self.update_MMK_phase_edit)
         self.MMK_phase_edit.textEdited.connect(self.update_MMK_phase_slider)
         self.MMK_phase_edit.textChanged.connect(lambda: self.update_plot_in_GUI(small_update = True))
@@ -206,7 +203,6 @@ class MainWindow(QMainWindow):
         self.reportEdit.setCurrentFont(QFont("DejaVu Sans Mono", 10))
         
         self.update_project_list()
-        #  self.update_data_in_GUI()     # not neccessary because of 'update_project_list()
         self.project.reset_undo_state()  # init-winding shouldn't undoable
         self.actionundo.setDisabled(True)
         self.actionredo.setDisabled(True)
@@ -254,7 +250,6 @@ class MainWindow(QMainWindow):
         self.actionredo.setDisabled(False)
         self.project.undo()
         self.update_project_list()
-        #  self.update_project()
         self.check_is_saved()
         
     def redo(self):
@@ -262,7 +257,6 @@ class MainWindow(QMainWindow):
         self.actionundo.setDisabled(False)
         self.project.redo()
         self.update_project_list()
-        #  self.update_project()
         self.check_is_saved()
     
     
@@ -394,7 +388,6 @@ class MainWindow(QMainWindow):
             data.set_machinedata(Q = ret['Q'], p = ret['P']//2, m = ret['m'])
             data.set_phases(ret['phases'], wstep = ret['w'], turns = ret['turns'])
             data.analyse_wdg()
-            #  data.set_valid(valid = wdglayout['valid'], error = wdglayout['error'])
             if ret['overwrite']:
                 data.set_title(self.data.get_title()) # use existing title
                 data.set_notes(self.data.get_notes()) # use existings notes
@@ -490,7 +483,6 @@ class MainWindow(QMainWindow):
             f = _get_float(self.MMK_phase_edit.text())
             f = 0.0 if f is None else f
             self.fig_mmk.plot(self.data, f, small_update = small_update)
-        #  print('duration for plot:', time.time()-t1)
 
 
     def printer(self):
@@ -503,7 +495,6 @@ class MainWindow(QMainWindow):
         if tab_name in ['tab_slot', 'tab_overhang', 'tab_star', 'tab_wf', 'tab_mmk']:
             with tempfile.TemporaryDirectory() as tmpdir:
                 if tab_name == 'tab_slot':
-                    #  ## self.data.plot_layout(os.path.join(tmpdir, 'fig.png'))
                     self.fig_slot.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
                 elif tab_name == 'tab_overhang':
                     self.fig_overhang.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
@@ -554,7 +545,6 @@ class MainWindow(QMainWindow):
         returns True if file is saved
         '''
         options = QFileDialog.Options()
-        #  options |= QFileDialog.DontUseNativeDialog
         filename, _ = QFileDialog.getSaveFileName(self,"Save winding file", "","Winding Files (*.wdg)", options=options)
         if filename:
             if not filename.endswith('.wdg'):
@@ -601,7 +591,6 @@ class MainWindow(QMainWindow):
         if self.project.get_save_state():
             event.accept() # let the window close
         else:
-            #  print('ask for saving')
             ok = QMessageBox.question(self, 'Exit program', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
             if ok == QMessageBox.Yes:
                 ret = self.save_to_file()
@@ -616,7 +605,6 @@ class MainWindow(QMainWindow):
                 
     def open_manual(self):
         doc = os.path.join(__dir__, 'doc', 'manual', 'manual.pdf')
-        #  subprocess.Popen(['open', doc], shell=True)
         if platform.system() == 'Darwin':       # macOS
             subprocess.call(('open', doc))
         elif platform.system() == 'Windows':    # Windows
@@ -627,7 +615,6 @@ class MainWindow(QMainWindow):
 
     def open_api_manual(self):
         doc = os.path.join(__dir__, 'doc', 'api', 'api_manual.pdf')
-        #  subprocess.Popen(['open', doc], shell=True)
         if platform.system() == 'Darwin':       # macOS
             subprocess.call(('open', doc))
         elif platform.system() == 'Windows':    # Windows
