@@ -447,7 +447,10 @@ class _overhang_plot:
 
         
         # plot coils
-        head = create_wdg_overhang(S, Q, num_layers, w = w, optimize_wdg_overhang = optimize_overhang)
+        try:  # TODO: Experimental
+            head = create_wdg_overhang(S, Q, num_layers, w = w, optimize_wdg_overhang = optimize_overhang)
+        except:
+            head = []
         i = 1
         for phase in head:
             x = []
