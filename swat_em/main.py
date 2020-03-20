@@ -5,9 +5,8 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog,\
                             QInputDialog, QMessageBox, QListWidgetItem,\
                             QMenu, QAction, QSplashScreen, QGraphicsScene
-from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon,QPixmap,\
-                        QFont, QPainter, QColor, QSyntaxHighlighter, \
-                        QTextCharFormat
+from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon, QPixmap,\
+                        QPainter
 from PyQt5.QtPrintSupport import QPrintDialog, QPrinter
 from PyQt5 import QtCore
 
@@ -47,44 +46,6 @@ from swat_em.analyse import _get_float
 MSG_TIME = 3000   # time in which the message is displayed in the statusbar
 
 
-class Report_Highlighter(QSyntaxHighlighter):
-    '''
-    Syntax highlighting for report
-    '''
-    def __init__(self, parent=None):
-        super(Report_Highlighter, self).__init__(parent)
-        self.highlightingRules = []
-        
-        # headings
-        Format = QTextCharFormat()
-        Format.setForeground(QColor('#3536A9'))
-        Format.setFontWeight(QFont.Bold)
-        self.highlightingRules.append((QtCore.QRegExp("={2,}"), Format))     # minumum two '='
-        self.highlightingRules.append((QtCore.QRegExp("[A-Z]+\s"), Format))  # word in upper letters with following whitespace
-        self.highlightingRules.append((QtCore.QRegExp("([A-Z]+)$"), Format)) # last word in upper letters
-        # Variables
-        Format = QTextCharFormat()
-        Format.setFontItalic(True)
-        self.highlightingRules.append((QtCore.QRegExp("[A-Za-z0-9_-]+\:\s"), Format))
-        # numbers
-        Format = QTextCharFormat()
-        Format.setForeground(QColor('#008000'))
-        self.highlightingRules.append((QtCore.QRegExp("(^|\s|-|/)[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"), Format))
-        # comments in brackets
-        Format = QTextCharFormat()
-        Format.setForeground(QColor('#6C6C6C'))
-        self.highlightingRules.append((QtCore.QRegExp("\(([^)]+)\)"), Format))
-
-    def highlightBlock(self, text):
-        for pattern, format in self.highlightingRules:
-            expression = QtCore.QRegExp(pattern)
-            index = expression.indexIn(text)
-            while index >= 0:
-                length = expression.matchedLength()
-                self.setFormat(index, length, format)
-                index = expression.indexIn(text, index + length)
-
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -109,6 +70,8 @@ class MainWindow(QMainWindow):
         self.save_report_Button.clicked.connect(self.export_to_txt)
         self.actionprint.triggered.connect(self.printer)
         self.actionFull_Screen.triggered.connect(self.toggle_fullscreen)
+        self.Button_search.clicked.connect(self.find_in_report)
+        self.lineEdit_find.returnPressed.connect(self.find_in_report)
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
@@ -126,7 +89,11 @@ class MainWindow(QMainWindow):
         self.actionSettings.triggered.connect(self.dialog_settings)
         self.actionundo.triggered.connect(self.undo)
         self.actionredo.triggered.connect(self.redo)
+        self.actionFind.triggered.connect(self.set_focus_to_find)
         
+        # Connect find in report 
+        self.lineEdit_find.textChanged.connect(self.find_in_report)
+
         # Connect project models
         self.project_listWidget.currentRowChanged.connect(self.update_project) 
         self.project_listWidget.itemChanged.connect(self.projectlist_rename)    # item renamed
@@ -200,7 +167,7 @@ class MainWindow(QMainWindow):
         self.fig_star = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
         self.fig_wf = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
         self.fig_mmk = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
-        self.reportEdit.setCurrentFont(QFont("DejaVu Sans Mono", 10))
+        self.report = plots._report(self.reportEdit)
         
         self.update_project_list()
         self.project.reset_undo_state()  # init-winding shouldn't undoable
@@ -455,7 +422,7 @@ class MainWindow(QMainWindow):
             self.comboBox_star_harmonics.setCurrentIndex(idx) # restore ordinal number for the new winding
         self.update_plot_in_GUI()
         self.reportEdit.setText(self.data.get_text_report())
-        self.highlighter = Report_Highlighter(self.reportEdit)
+        self.highlighter = plots._Report_Highlighter(self.reportEdit)
         
         
     def update_plot_in_GUI(self, small_update = False):
@@ -651,7 +618,17 @@ class MainWindow(QMainWindow):
             if not filename.endswith('.txt'):
                     filename += '.txt'
             self.data.export_text_report(filename)
-
+    
+    def set_focus_to_find(self):
+        self.plot_tabs.setCurrentWidget(self.tab_report)
+        self.lineEdit_find.setFocus()
+    
+    def find_in_report(self):
+        num_found = self.report.find(self.lineEdit_find.text())
+        if num_found == -1:
+            self.lineEdit_find.setStyleSheet('background-color: #FF0000')
+        else:
+            self.lineEdit_find.setStyleSheet('background-color: #FFFFFF')
 
 
 def main():

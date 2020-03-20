@@ -4,14 +4,20 @@ Provides functions for plotting
 ''' 
 
 from PyQt5.QtWidgets import QTableWidgetItem, QApplication
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QSyntaxHighlighter, QTextCursor,\
+                        QTextCharFormat, QColor
 from PyQt5 import QtCore
+
+
+
+
 from swat_em.config import get_phase_color, get_line_color, config
 from swat_em import analyse
 
 import numpy as np
 import time
 import os
+import re
 
 # WORKAROUND for pyqtgraph's printing system
 #  from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
@@ -887,3 +893,97 @@ class _mmk:
     #  def printing(self):
         #  exporter = pg.exporters.PrintExporter(self.l.ci)
         #  exporter.export()
+
+
+class _Report_Highlighter(QSyntaxHighlighter):
+    '''
+    Syntax highlighting for report
+    '''
+    def __init__(self, parent=None):
+        super(_Report_Highlighter, self).__init__(parent)
+        self.highlightingRules = []
+        
+        # headings
+        Format = QTextCharFormat()
+        Format.setForeground(QColor('#3536A9'))
+        Format.setFontWeight(QFont.Bold)
+        self.highlightingRules.append((QtCore.QRegExp("={2,}"), Format))     # minumum two '='
+        self.highlightingRules.append((QtCore.QRegExp("[A-Z]+\s"), Format))  # word in upper letters with following whitespace
+        self.highlightingRules.append((QtCore.QRegExp("([A-Z]+)$"), Format)) # last word in upper letters
+        # Variables
+        Format = QTextCharFormat()
+        Format.setFontItalic(True)
+        self.highlightingRules.append((QtCore.QRegExp("[A-Za-z0-9_-]+\:\s"), Format))
+        # numbers
+        Format = QTextCharFormat()
+        Format.setForeground(QColor('#008000'))
+        self.highlightingRules.append((QtCore.QRegExp("(^|\s|-|/)[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"), Format))
+        # comments in brackets
+        Format = QTextCharFormat()
+        Format.setForeground(QColor('#6C6C6C'))
+        self.highlightingRules.append((QtCore.QRegExp("\(([^)]+)\)"), Format))
+
+    def highlightBlock(self, text):
+        for pattern, format in self.highlightingRules:
+            expression = QtCore.QRegExp(pattern)
+            index = expression.indexIn(text)
+            while index >= 0:
+                length = expression.matchedLength()
+                self.setFormat(index, length, format)
+                index = expression.indexIn(text, index + length)
+
+
+class _report:
+    def __init__(self, reportEdit):
+        self.search = ''
+        self.search_idx = -1
+        self.reportEdit = reportEdit
+        self.reportEdit.setCurrentFont(QFont(config['report_txt']['font'],
+                                       config['report_txt']['fontsize']))
+        
+    def find(self, search):
+        '''
+        Finding and selection of strings in the report
+        '''
+        def reset_curser():
+            c = self.reportEdit.textCursor()
+            c.setPosition(0)
+            self.reportEdit.setTextCursor(c) 
+       
+        def select(start, end):
+            cursor = self.reportEdit.textCursor()
+            cursor.setPosition(start)
+            cursor.setPosition(end, QTextCursor.KeepAnchor)
+            self.reportEdit.setTextCursor(cursor) 
+        
+        if not search:
+            reset_curser()
+            return 0
+        
+        if search != self.search:
+            self.search = search
+            text = self.reportEdit.toPlainText()
+            self.found = []
+            
+            p = re.compile(search, flags=re.IGNORECASE)
+            for p in p.finditer(text):
+                self.found.append(p)
+            if self.found:
+                self.search_idx = -1
+            else:
+                self.search_idx = None
+                reset_curser()
+        
+        if self.found:
+            self.search_idx += 1
+            if self.search_idx > len(self.found)-1:
+                self.search_idx = 0
+            select(self.found[self.search_idx].start(), self.found[self.search_idx].end())
+            return len(self.found)
+        else:
+            return -1
+
+
+
+
+

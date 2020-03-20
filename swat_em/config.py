@@ -37,18 +37,22 @@ def get_init_config():
     config['num_MMF_points'] = 3601
     config['plot_MMF_harmonics'] = 0.15
     config['plt'] = {
-                     'lw': 2.0,
-                     'lw_thin': 1.0,
-                     'DPI': 90,
-                     'res': [800, 600],
-                     'phase_colors': ['#1b9e77','#d95f02','#7570b3',
-                     '#e7298a','#66a61e','#e6ab02','#a6761d'], # http://colorbrewer2.org/#type=qualitative&scheme=Dark2&n=7
-                     'line_colors': ['#377eb8','#e41a1c','#4daf4a',
-                     '#984ea3','#ff7f00','#a65628','#f781bf'] # http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
-                     }      
+                 'lw': 2.0,
+                 'lw_thin': 1.0,
+                 'DPI': 90,
+                 'res': [800, 600],
+                 'phase_colors': ['#1b9e77','#d95f02','#7570b3',
+                 '#e7298a','#66a61e','#e6ab02','#a6761d'], # http://colorbrewer2.org/#type=qualitative&scheme=Dark2&n=7
+                 'line_colors': ['#377eb8','#e41a1c','#4daf4a',
+                 '#984ea3','#ff7f00','#a65628','#f781bf'] # http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
+                 }      
     config['radial_force'] = {
-                              'num_modes': 3
-                              }
+                          'num_modes': 3
+                          }
+    config['report_txt'] = {
+                        'font': 'DejaVu Sans Mono',
+                        'fontsize': 10
+                       }
     return copy.deepcopy(config)
 
 
