@@ -259,7 +259,8 @@ class datamodel:
                ['Number of empty slots ', rep.italic('Qes: '),  str(self.get_num_empty_slots())],
                ['Number of poles ',    rep.italic('2p: '), str(2*self.get_num_polepairs())],
                ['Number of phases ',   rep.italic('m: '),  str(self.get_num_phases())],
-               ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])]]
+               ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])],
+               ['winding step ', rep.italic('ws: '),  str(self.get_windingstep())]]
         
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
