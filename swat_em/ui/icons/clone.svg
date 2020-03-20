@@ -15,7 +15,7 @@
    width="48"
    id="svg625"
    sodipodi:docname="clone.svg"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    inkscape:export-filename="/home/martin/Arbeitsdaten/Skripte/Python-Skripte/04_Programme_mit_GUI/SWAT-EM/swat_em/ui/icons/clone.png"
    inkscape:export-xdpi="128"
    inkscape:export-ydpi="128">
@@ -40,16 +40,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1093"
-     inkscape:window-height="786"
+     inkscape:window-width="1332"
+     inkscape:window-height="869"
      id="namedview627"
      showgrid="true"
      units="px"
-     inkscape:zoom="11.313708"
-     inkscape:cx="36.153782"
-     inkscape:cy="17.637865"
-     inkscape:window-x="259"
-     inkscape:window-y="59"
+     inkscape:zoom="2.828427"
+     inkscape:cx="26.558747"
+     inkscape:cy="58.151658"
+     inkscape:window-x="544"
+     inkscape:window-y="152"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg625">
     <inkscape:grid
@@ -64,22 +64,6 @@
        id="style2">
 *{stroke-linecap:butt;stroke-linejoin:round;}
   </style>
-    <marker
-       inkscape:stockid="Arrow1Send"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker1114"
-       style="overflow:visible"
-       inkscape:isstock="true"
-       inkscape:collect="always">
-      <path
-         inkscape:connector-curvature="0"
-         id="path866"
-         d="M 0,0 5,-5 -12.5,0 5,5 Z"
-         style="fill:#d95f02;fill-opacity:1;fill-rule:evenodd;stroke:#d95f02;stroke-width:1.00000003pt;stroke-opacity:1"
-         transform="matrix(-0.2,0,0,-0.2,-1.2,0)" />
-    </marker>
     <clipPath
        id="p71700fa865"
        style="stroke-linecap:butt;stroke-linejoin:round">
@@ -106,49 +90,20 @@
          style="stroke-linecap:butt;stroke-linejoin:round" />
     </clipPath>
   </defs>
-  <path
-     style="fill:none;fill-rule:evenodd;stroke:#5fa4d2;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="m 50,-16 h 8 v -10 h 10 v -11 h 15 v 11 h 10 v 10 h 2"
-     id="path836"
-     inkscape:connector-curvature="0"
-     inkscape:export-xdpi="96"
-     inkscape:export-ydpi="96" />
   <g
      id="g834" />
-  <path
-     inkscape:connector-curvature="0"
-     id="path30"
-     style="fill:none;stroke:#d95f02;stroke-width:27.28569412;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#marker1114)"
-     d="M 223.71429,207.74026 56.357688,304.36364"
-     clip-path="url(#p71700fa865)"
-     transform="matrix(0.10994772,0,0,0.10994772,63.803601,-10.464088)" />
-  <path
-     inkscape:export-ydpi="96"
-     inkscape:export-xdpi="96"
-     inkscape:connector-curvature="0"
-     id="path1040"
-     d="m 59,18 h 8 V 8 H 77 V -3 H 92 V 8 h 10 v 10 h 2"
-     style="fill:none;fill-rule:evenodd;stroke:#1b9e77;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-  <path
-     sodipodi:nodetypes="ccccc"
-     style="fill:none;fill-rule:evenodd;stroke:#5fa4d2;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 85,48 H 70 V 32 h 15 v 16"
-     id="path843"
-     inkscape:connector-curvature="0"
-     inkscape:export-xdpi="96"
-     inkscape:export-ydpi="96" />
   <rect
-     style="opacity:1;fill:none;fill-opacity:1;stroke:#5fa4d2;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#5fa4d2;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
      id="rect847"
      width="23"
      height="27"
-     x="21"
-     y="4" />
+     x="17"
+     y="5" />
   <rect
      y="17"
      x="6"
      height="27"
      width="23"
      id="rect841"
-     style="opacity:1;fill:none;fill-opacity:1;stroke:#5fa4d2;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#5fa4d2;stroke-width:3;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
 </svg>
