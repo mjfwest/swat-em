@@ -1,5 +1,6 @@
-Reference
-=========
+#############
+API Reference
+#############
 
 .. automodule:: swat_em
    :members:

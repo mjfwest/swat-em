@@ -16,8 +16,8 @@ help:
 
 
 install: 
-	mkdir -p ../../swat_em/doc/api
-	cp build/latex/SWAT-EM.pdf ../../swat_em/doc/api/api_manual.pdf
+	mkdir -p ../swat_em/doc
+	cp build/latex/SWAT-EM.pdf ../swat_em/doc/SWAT-EM_manual.pdf
 .PHONY: install
 
 

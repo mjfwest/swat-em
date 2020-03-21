@@ -1,12 +1,11 @@
-.. SWAT-EM documentation master file, created by
-   sphinx-quickstart on Tue Sep 24 17:27:57 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to SWAT-EM's API documentation!
+Welcome to SWAT-EM's documentation!
 =======================================
 
-This documentation is for scripting "SWAT-EM".
+.. figure:: fig/splash.png
+    :width: 500
+    :alt: Alternative text
+    :figclass: align-center
+
 SWAT-EM is a software for designing and analyzing winding systems for electrical
 machines. Currently supported are rotating field windings (permanent-magnet motors,
 induction motors, synchronout reluctance motors) with any number of phases. This can
@@ -27,22 +26,25 @@ Analyzing features
 - Plot of the winding factor
 - Max. possible number of parallel circuit connection of coils
 
+There are two ways how to use SWAT-EM:
 
+- Working with the graphical user interface (GUI)
+- Working with python-API
 
 Table of Contents
 -----------------
 .. toctree::
     :maxdepth: 2
     :glob:
-    
+
     install
-    basics
-    results
-    plots
-    fileio
+    theory
+
+    gui
+    api
+
     reference
-   
-   
+
 
 
 
@@ -52,3 +54,5 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+

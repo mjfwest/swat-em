@@ -19,7 +19,7 @@
 import os
 import sys
 __dir__ = os.path.abspath(__file__)
-sys.path.insert(0, os.path.abspath(os.path.join(__dir__, '..', '..', '..', '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(__dir__, '..', '..', '..')))
 import swat_em
 import sphinx_rtd_theme
 
@@ -33,7 +33,7 @@ import sphinx_rtd_theme
 # Add any Sphinx extension module names here, as strings. They can be
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.coverage',
-              'sphinx.ext.viewcode', 'sphinx.ext.mathjax'] #, 'sphinx.ext.mathjax'
+              'sphinx.ext.viewcode', 'sphinx.ext.mathjax', 'sphinxcontrib.bibtex'] #, 'sphinx.ext.mathjax'
 
 # ACHTUNG: Nachfolgendes selbst hinzugefügtes erweitertes Menü
 # scheint noch nicht zu funktionieren
@@ -164,7 +164,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'SWAT-EM.tex', u'SWAT-EM API Documentation',
+    (master_doc, 'SWAT-EM.tex', u'SWAT-EM Documentation',
      u'Martin Baun', 'manual'),
 ]
 
@@ -186,7 +186,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'SWAT-EM', u'SWAT-EM API Documentation',
-     author, 'SWAT-EM', 'One line description of project.',
+     author, 'SWAT-EM', 'Specific Winding Analyse Tool for Electrical Machines',
      'Miscellaneous'),
 ]
 
