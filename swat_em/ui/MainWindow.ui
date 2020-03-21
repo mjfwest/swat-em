@@ -927,7 +927,6 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionScripting_Manual"/>
     <addaction name="actionHelp"/>
     <addaction name="actionProgram_Info"/>
    </widget>
@@ -1213,11 +1212,6 @@
    </property>
    <property name="text">
     <string>Export text report</string>
-   </property>
-  </action>
-  <action name="actionScripting_Manual">
-   <property name="text">
-    <string>Scripting Manual</string>
    </property>
   </action>
   <action name="actionFull_Screen">
