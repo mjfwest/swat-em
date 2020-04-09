@@ -383,6 +383,12 @@ class _slot_plot:
         exporter.export(fname)
     
     
+    def cp2clipboard(self):
+        img = self.widget.grab()
+        QApplication.clipboard().setImage(img.toImage())
+
+    
+    
     #  def printing(self):
         #  exporter = pg.exporters.PrintExporter(self.fig.plotItem)
         #  exporter.export()
@@ -537,6 +543,11 @@ class _overhang_plot:
         exporter.export(fname)
 
 
+    def cp2clipboard(self):
+        img = self.fig.grab()
+        QApplication.clipboard().setImage(img.toImage())
+
+
 class _slot_star:
 
     def __init__(self, layout, widget, data, table):
@@ -671,6 +682,11 @@ class _slot_star:
         #  exporter.export()
 
 
+    def cp2clipboard(self):
+        img = self.fig.grab()
+        QApplication.clipboard().setImage(img.toImage())
+
+
 class _windingfactor:
     def __init__(self, layout, widget, data, table):
         self.layout = layout
@@ -768,6 +784,11 @@ class _windingfactor:
     #  def printing(self):
         #  exporter = pg.exporters.PrintExporter(self.fig.plotItem)
         #  exporter.export()
+
+
+    def cp2clipboard(self):
+        img = self.fig.grab()
+        QApplication.clipboard().setImage(img.toImage())
 
 
 class _mmk:
@@ -895,6 +916,11 @@ class _mmk:
         #  exporter.export()
 
 
+    def cp2clipboard(self):
+        img = self.l.grab()
+        QApplication.clipboard().setImage(img.toImage())
+
+
 class _Report_Highlighter(QSyntaxHighlighter):
     '''
     Syntax highlighting for report
@@ -938,8 +964,9 @@ class _report:
         self.search = ''
         self.search_idx = -1
         self.reportEdit = reportEdit
-        self.reportEdit.setCurrentFont(QFont(config['report_txt']['font'],
-                                       config['report_txt']['fontsize']))
+        font = QFont(config['report_txt']['font'], config['report_txt']['fontsize'])
+        font.setStyleHint(QFont.TypeWriter)
+        self.reportEdit.setCurrentFont(font)
         
     def find(self, search):
         '''
@@ -982,6 +1009,10 @@ class _report:
             return len(self.found)
         else:
             return -1
+
+
+    def cp2clipboard(self):
+        QApplication.clipboard().setText(self.reportEdit.toPlainText())
 
 
 

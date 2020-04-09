@@ -162,11 +162,22 @@ class MainWindow(QMainWindow):
         self.MMK_phase_edit.textChanged.connect(lambda: self.update_plot_in_GUI(small_update = True))
         
         self.fig_slot = plots._slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
+        self.Button_cp2clipboard_image_layout.clicked.connect(self.fig_slot.cp2clipboard)
+        
         self.fig_overhang = plots._overhang_plot(self.mplvl_overhang, self.mplwidget_overhang, self.data)
+        self.Button_cp2clipboard_image_overhang.clicked.connect(self.fig_overhang.cp2clipboard)
+        
         self.fig_star = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
+        self.Button_cp2clipboard_image_star.clicked.connect(self.fig_star.cp2clipboard)
+        
         self.fig_wf = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
+        self.Button_cp2clipboard_image_wf.clicked.connect(self.fig_wf.cp2clipboard)
+        
         self.fig_mmk = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
+        self.Button_cp2clipboard_image_mmk.clicked.connect(self.fig_mmk.cp2clipboard)
+        
         self.report = plots._report(self.reportEdit)
+        self.Button_cp2clipboard_image_report.clicked.connect(self.report.cp2clipboard)
         
         self.update_project_list()
         self.project.reset_undo_state()  # init-winding shouldn't undoable

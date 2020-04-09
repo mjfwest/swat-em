@@ -50,7 +50,7 @@ def get_init_config():
                           'num_modes': 3
                           }
     config['report_txt'] = {
-                        'font': 'DejaVu Sans Mono',
+                        'font': 'Monospace',
                         'fontsize': 10
                        }
     return copy.deepcopy(config)
