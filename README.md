@@ -43,4 +43,4 @@ you can use the desktop icon to start.
 
 Documentation
 -------------
-Find the docs for the api on [https://swat-em.readthedocs.io/en/latest/index.html#](https://swat-em.readthedocs.io/en/latest/index.html#)
+Find the docs on [https://swat-em.readthedocs.io/en/latest/index.html#](https://swat-em.readthedocs.io/en/latest/index.html#)
