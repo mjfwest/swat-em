@@ -178,6 +178,7 @@ class MainWindow(QMainWindow):
         
         self.report = plots._report(self.reportEdit)
         self.Button_cp2clipboard_image_report.clicked.connect(self.report.cp2clipboard)
+        self.highlighter = plots._Report_Highlighter(self.reportEdit)
         
         self.update_project_list()
         self.project.reset_undo_state()  # init-winding shouldn't undoable
@@ -432,7 +433,6 @@ class MainWindow(QMainWindow):
             self.comboBox_star_harmonics.setCurrentIndex(idx) # restore ordinal number for the new winding
         self.update_plot_in_GUI()
         self.reportEdit.setText(self.data.get_text_report())
-        self.highlighter = plots._Report_Highlighter(self.reportEdit)
         
         
     def update_plot_in_GUI(self, small_update = False):
@@ -499,7 +499,8 @@ class MainWindow(QMainWindow):
                 dlg.addEnabledOption(QPrintDialog.PrintSelection)
             if dialog.exec_() == QPrintDialog.Accepted:
                 self.reportEdit.print_(printer)
-        
+        else:
+            print('printing not supported for the current content')
         del dialog
         
 
