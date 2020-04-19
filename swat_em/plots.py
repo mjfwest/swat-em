@@ -372,7 +372,7 @@ class _slot_plot:
             self.app.exec_()
                 
     def save(self, fname, res):
-        if self.show:
+        if self.layout == None:
             self.app.processEvents()
         if os.path.splitext(fname)[-1].upper() == '.SVG':
             exporter = pg.exporters.SVGExporter(self.fig.plotItem)
@@ -532,7 +532,7 @@ class _overhang_plot:
                 
                 
     def save(self, fname, res):
-        if self.show:
+        if self.layout == None:
             self.app.processEvents()
         if os.path.splitext(fname)[-1].upper() == '.SVG':
             exporter = pg.exporters.SVGExporter(self.fig.plotItem)
@@ -666,7 +666,7 @@ class _slot_star:
 
 
     def save(self, fname, res):
-        if self.show:
+        if self.layout == None:
             self.app.processEvents()
         if os.path.splitext(fname)[-1].upper() == '.SVG':
             exporter = pg.exporters.SVGExporter(self.fig.plotItem)
@@ -770,7 +770,7 @@ class _windingfactor:
                 self.table.horizontalHeaderItem(k).setFont(afont)
 
     def save(self, fname, res):
-        if self.show:
+        if self.layout == None:
             self.app.processEvents()
         if os.path.splitext(fname)[-1].upper() == '.SVG':
             exporter = pg.exporters.SVGExporter(self.fig.plotItem)
@@ -899,7 +899,7 @@ class _mmk:
                 self.table.resizeColumnToContents(k1)
 
     def save(self, fname, res):
-        if self.show:
+        if self.layout == None:
             self.app.processEvents()
         
         if os.path.splitext(fname)[-1].upper() == '.SVG':
