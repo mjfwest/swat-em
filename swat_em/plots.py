@@ -228,6 +228,13 @@ def gen_slot_filling(Q, bz, hz):
     return x, y, y_neg
 
 
+def _pg_clear_legend(leg):
+    '''
+    clear the legend of a pyqtgraph legend
+    '''
+    for i in leg.items[:]:
+        leg.removeItem(i[1].text)
+
 
 class _slot_plot:
     sh = 0.8  # slot height
@@ -420,7 +427,7 @@ class _overhang_plot:
         #  self.fig.setAspectLocked(lock=True, ratio=1)
         self.fig.getAxis('bottom').hide()
         self.fig.getAxis('left').hide()
-       
+        self.leg = self.fig.addLegend(offset=(-10, 10))
     
     def plot(self, data = None, show = False, optimize_overhang = False):
         self.show = show
@@ -433,12 +440,7 @@ class _overhang_plot:
         num_layers = self.data.get_num_layers()
         
         self.fig.clear()
-        try:
-            self.leg.scene().removeItem(self.leg)
-        except Exception as e:
-            #  print(e)
-            pass
-        self.leg = self.fig.addLegend(offset=(-10, 10))
+        _pg_clear_legend(self.leg)
         
         self.fig.disableAutoRange()# disable because of porformance 
                                    # (a lot of elements are plottet)
@@ -576,11 +578,8 @@ class _slot_star:
             harmonic_idx = 0
 
         self.fig.clear()
-        try:
-            self.leg.scene().removeItem(self.leg)
-        except Exception as e:
-            print(e)
-        self.leg = self.fig.addLegend(offset=(-10, 10))
+        _pg_clear_legend(self.leg)
+        
         self.fig.disableAutoRange()# disable because of porformance 
                                    # (a lot of elements are plottet)
         
@@ -712,11 +711,7 @@ class _windingfactor:
         self.data = data
         self.show = show
         self.fig.clear()
-        try:
-            self.leg.scene().removeItem(self.leg)
-        except Exception as e:
-            print(e)
-        self.leg = self.fig.addLegend(offset=(-10, 10))
+        _pg_clear_legend(self.leg)
         
         if mechanical:
             nu = np.array(self.data.results['nu_mech'])
@@ -849,11 +844,8 @@ class _mmk:
         self.fig1.clear()
         self.fig1.disableAutoRange()# disable because of porformance 
                                     # (a lot of elements are plottet)
-        try:
-            self.leg1.scene().removeItem(self.leg1)
-        except Exception as e:
-            print(e)
-        self.leg1 = self.fig1.addLegend(offset=(-10, 10))
+        _pg_clear_legend(self.leg1)
+        
         pen = pg.mkPen(color=get_line_color(0), width = config['plt']['lw'])  
         curve = pg.PlotCurveItem(phi, MMK, pen=pen)
         self.fig1.addItem(curve)
