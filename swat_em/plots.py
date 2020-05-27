@@ -933,21 +933,21 @@ class _Report_Highlighter(QSyntaxHighlighter):
         Format = QTextCharFormat()
         Format.setForeground(QColor('#3536A9'))
         Format.setFontWeight(QFont.Bold)
-        self.highlightingRules.append((QtCore.QRegExp("={2,}"), Format))     # minumum two '='
-        self.highlightingRules.append((QtCore.QRegExp("[A-Z]+\s"), Format))  # word in upper letters with following whitespace
-        self.highlightingRules.append((QtCore.QRegExp("([A-Z]+)$"), Format)) # last word in upper letters
+        self.highlightingRules.append((QtCore.QRegExp(r"={2,}"), Format))     # minumum two '='
+        self.highlightingRules.append((QtCore.QRegExp(r"[A-Z]+\s"), Format))  # word in upper letters with following whitespace
+        self.highlightingRules.append((QtCore.QRegExp(r"([A-Z]+)$"), Format)) # last word in upper letters
         # Variables
         Format = QTextCharFormat()
         Format.setFontItalic(True)
-        self.highlightingRules.append((QtCore.QRegExp("[A-Za-z0-9_-]+\:\s"), Format))
+        self.highlightingRules.append((QtCore.QRegExp(r"[A-Za-z0-9_-]+\:\s"), Format))
         # numbers
         Format = QTextCharFormat()
         Format.setForeground(QColor('#008000'))
-        self.highlightingRules.append((QtCore.QRegExp("(^|\s|-|/)[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"), Format))
+        self.highlightingRules.append((QtCore.QRegExp(r"(^|\s|-|/)[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"), Format))
         # comments in brackets
         Format = QTextCharFormat()
         Format.setForeground(QColor('#6C6C6C'))
-        self.highlightingRules.append((QtCore.QRegExp("\(([^)]+)\)"), Format))
+        self.highlightingRules.append((QtCore.QRegExp(r"\(([^)]+)\)"), Format))
 
     def highlightBlock(self, text):
         for pattern, format in self.highlightingRules:
