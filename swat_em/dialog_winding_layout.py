@@ -84,7 +84,9 @@ class layout(QDialog):
                               ret['layers']
                               )
             if make_update:
+                self.data.set_phases(self.read_layout())
                 self.update_table(layers=ret['layers'])
+                self.update_table_turns()
             
                 
     def update_radio_turns(self):
@@ -160,6 +162,15 @@ class layout(QDialog):
                         table.setItem(kl, cs-1, item)
                     else:
                         table.setItem(kl, abs(cs)-1, item)
+        
+        # test if there are cells without a value (occures if Q is changed)
+        for k1 in range(self.data.get_num_layers()):
+            for k2 in range(self.data.get_num_slots()):
+                item = table.item(k1, k2)
+                if item == None:
+                    item = QTableWidgetItem('0')
+                    table.setItem(k1, k2, item)
+        
         for k1 in range(self.data.get_num_slots()):
             table.resizeColumnToContents(k1)
 
@@ -401,7 +412,7 @@ class machinedata(QDialog):
             if Q < self.data.get_num_slots():
                 buttonReply = QMessageBox.question(self, 'Warning',
                  '''The defined number of slots is lower than the number of slots in the actual winding. \
-Is it ok to loose some these informations of the actual winding layout?''', 
+Is it ok to loose some informations of the actual winding layout?''', 
                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if buttonReply != QMessageBox.Yes:
                     return None
@@ -409,7 +420,7 @@ Is it ok to loose some these informations of the actual winding layout?''',
             if layers < self.data.get_num_layers():
                 buttonReply = QMessageBox.question(self, 'Warning',
                  '''The defined number of layers is lower than the number of layers in the actual winding. \
-Is it ok to loose some these informations of the actual winding layout?''', 
+Is it ok to loose some informations of the actual winding layout?''', 
                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if buttonReply != QMessageBox.Yes:
                     return None
