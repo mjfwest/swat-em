@@ -606,9 +606,33 @@ class datamodel:
         return np.array(self.results['nu_el']), np.array(self.results['kw_el'])
 
 
-    def get_windingfactor_mech(self):
+    def get_windingfactor_el_by_nu(self, nu):
         '''
         Returns the windings factors with respect to the electrical
+        ordinal numbers for the given ordinal number
+        
+        Parameters
+        ----------
+        nu: integer
+            ordinal number 
+               
+        Returns
+        -------
+        kw: 1D numpy array
+            windings factors, (one column for each phase)
+        '''
+        kw = analyse.calc_kw_by_nu(
+                        self.get_num_slots(),
+                        self.get_phases(),
+                        self.get_turns(),
+                        self.get_num_polepairs(),
+                        nu)
+        return kw
+
+
+    def get_windingfactor_mech(self):
+        '''
+        Returns the windings factors with respect to the mechanicl
         ordinal numbers
         
         Returns
@@ -619,6 +643,29 @@ class datamodel:
             windings factors, (one column for each phase)
         '''
         return np.array(self.results['nu_mech']), np.array(self.results['kw_mech'])
+
+
+    def get_windingfactor_mech_by_nu(self, nu):
+        '''
+        Returns the windings factors with respect to the mechanical
+        ordinal numbers for the given ordinal number
+        
+        Parameters
+        ----------
+        nu: integer
+            ordinal number 
+               
+        Returns
+        -------
+        kw: 1D numpy array
+            windings factors, (one column for each phase)
+        '''
+        kw = analyse.calc_kw_by_nu(self.get_num_slots(),
+                        self.get_phases(),
+                        self.get_turns(),
+                        1,
+                        nu)
+        return kw
 
 
     def get_fundamental_windingfactor(self):

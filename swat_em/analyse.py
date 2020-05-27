@@ -307,6 +307,79 @@ def calc_kw(Q, S, turns, p, N_nu, config):
     return nu, Ei, wf, phase
     
 
+
+
+
+
+
+
+
+
+
+def calc_kw_by_nu(Q, S, turns, p, nu):
+    '''
+    Calculates the windingfactor for the given harmonic number
+
+    Parameters
+    ----------
+    Q :      integer
+             number of slots
+    S :      list of lists
+             winding layout
+    turns :  number or list of lists (shape of 'S')
+             number of turns. If turns is a list of lists, for each
+             coil side a specific number of turns is used
+    p :      integer
+             number of pole pairs
+    nu:      integer
+             harmonic number
+             
+    Returns
+    -------
+    return nu: list
+               harmonic numbers with relevant winding factor
+    return Ei: list of lists of lists
+               voltage vectors for every phase and every slot
+               Ei[nu][phase][slot]
+    return wf: list of lists
+               winding factor for every phase. The sign defines the
+               direction of the flux wave
+               wf[nu][phase]
+    '''
+    wf = [] # winding factor
+    Ei = [] # slot voltage vectors
+    
+    S2 = _flatten(S)
+    if hasattr(turns, '__iter__'):
+        turns = _flatten(turns)
+    for k in range(len(S2)):
+        idx = np.argsort(np.abs(S2[k]))
+        S2[k] = np.array(S2[k])[idx]
+        if hasattr(turns, '__iter__'):
+            turns[k] =  np.array(turns[k])[idx]
+    
+
+
+    a, b = calc_star(Q, S2, turns, p, nu)
+    wf.append(b)
+    Ei.append(a)
+
+
+    phase, sequence = calc_phaseangle_starvoltage(Ei)
+    for k in range(len(sequence)):
+        wf[k] = [sequence[k] * s for s in wf[k]]
+    
+    return wf[0]
+
+
+
+
+
+
+
+
+
+
 def calc_star(Q, S, turns, p, nu):
     '''
     Calculates the slot voltage vectors for the given winding layout 
