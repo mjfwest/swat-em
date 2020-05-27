@@ -220,7 +220,7 @@ class HtmlReport:
             _report.append(line)
         
         
-        with open(self.filename, 'w') as f:
+        with open(self.filename, 'w', encoding = 'utf-8') as f:
             f.write('\n'.join(_report))
         return self.filename
         

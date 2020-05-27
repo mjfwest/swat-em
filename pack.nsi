@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "SWAT-EM"
-!define PRODUCT_VERSION "0.2.1"
+!define PRODUCT_VERSION "0.5.1"
 !define PRODUCT_PUBLISHER "Martin Baun"
 !define PRODUCT_WEB_SITE "https://www.gitlab.com/martinbaun/swat-em"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\swat-em.exe"
@@ -15,7 +15,7 @@
 ; MUI Settings
 !define MUI_ABORTWARNING
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
-!define MUI_UNICON "swat-em\swat_em\ui\icons\app_icon.ico"
+!define MUI_UNICON "swat_em\ui\icons\app_icon.ico"
 
 ; Language Selection Dialog Settings
 !define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
@@ -26,7 +26,7 @@
 !insertmacro MUI_PAGE_WELCOME
 ; License page
 !define MUI_LICENSEPAGE_CHECKBOX
-!insertmacro MUI_PAGE_LICENSE "swat-em\LICENSE"
+!insertmacro MUI_PAGE_LICENSE "LICENSE"
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
