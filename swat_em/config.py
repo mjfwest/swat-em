@@ -32,7 +32,7 @@ def get_init_config():
     config = {}
     config['N_nu_el'] = 19
     config['N_nu_mech'] = 19
-    config['max_nu_MMK'] = 19
+    config['threshold_MMF_harmonics'] = 0.01
     config['kw_min'] = 0.01
     config['num_MMF_points'] = 3601
     config['plot_MMF_harmonics'] = 0.15
@@ -46,6 +46,10 @@ def get_init_config():
                  'line_colors': ['#377eb8','#e41a1c','#4daf4a',
                  '#984ea3','#ff7f00','#a65628','#f781bf'] # http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
                  }      
+    config['report'] = {
+                 
+                 }
+                 
     config['radial_force'] = {
                           'num_modes': 3
                           }

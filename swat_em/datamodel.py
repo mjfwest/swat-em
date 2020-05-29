@@ -350,6 +350,40 @@ class datamodel:
         w = w / 2 / self.get_num_phases()
         return w
 
+
+    def get_MMF_harmonics(self, threshold = False):
+        '''
+        Returns the harmonics of the MMF curve 
+        
+        Parameters
+        ----------
+        threshold: float
+                   Relative threshold for cutting off small amplit>udes
+                   0 < threshold <= 1.0
+               
+        Returns
+        -------
+        nu: 1D numpy array
+            ordinal number (mechanical)
+        Cnu: 1D numpy array
+             amplitude corresponding to nu
+        phase: 1D numpy array
+               phaseangle of the harmonic corresponding to nu in
+               range between -pi and +pi
+        '''
+        if 'MMK' not in self.results.keys():
+            self._calc_MMK()
+        nu = np.array(self.results['MMK']['nu'])
+        Cnu = np.abs(self.results['MMK']['HA'])
+        phase = np.angle(self.results['MMK']['HA'])
+        if threshold:
+            idx = Cnu > np.max(Cnu)*threshold
+            nu = nu[idx]
+            Cnu = Cnu[idx]
+            phase = phase[idx]
+        return nu, Cnu, phase
+
+
     
     def get_double_linked_leakage(self):
         '''
@@ -363,10 +397,10 @@ class datamodel:
         sigma_d: float
                  coefficient of the double linkead leakage flux
         '''
-        if 'MMK' not in self.results.keys():
-            self._calc_MMK()
-        Cnu = np.abs(analyse.DFT(self.results['MMK']['MMK'][:-1]))[1:]
-        nu = np.arange(1, len(Cnu)+1)
+        nu, Cnu, _ = self.get_MMF_harmonics()
+        if nu[0] == 0:
+            nu = nu[1:]
+            Cnu = Cnu[1:]
         p = self.get_num_polepairs()
         I = 1                            # current for MMK
         w = self.get_num_series_turns()
@@ -865,8 +899,9 @@ class datamodel:
                                    self.get_phases(),
                                    self.get_turns(),
                                    N = config['num_MMF_points'])
-        nu = list(range(config['max_nu_MMK']+1))
-        HA = analyse.DFT(MMK[:-1])[:config['max_nu_MMK']+1]
+        HA = analyse.DFT(MMK[:-1])
+        nu = list(range(len(HA)))
+        
         self.results['MMK'] = {}
         self.results['MMK']['MMK'] = MMK
         self.results['MMK']['phi'] = phi

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>330</width>
-    <height>422</height>
+    <width>373</width>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -103,7 +103,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_threshold_mmf">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_threshold_MMF_plot">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -276,12 +276,12 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Max. Number of MMF harmonics</string>
+           <string>Threshold for amplitudes of MMF harmonics</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinBox_nu_MMK">
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_threshold_MMK">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -290,15 +290,21 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>50</width>
+            <width>60</width>
             <height>16777215</height>
            </size>
           </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
           <property name="minimum">
-           <number>1</number>
+           <double>0.010000000000000</double>
           </property>
           <property name="maximum">
-           <number>999</number>
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
           </property>
          </widget>
         </item>
@@ -326,12 +332,12 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>50</width>
+            <width>60</width>
             <height>16777215</height>
            </size>
           </property>
           <property name="decimals">
-           <number>2</number>
+           <number>3</number>
           </property>
           <property name="minimum">
            <double>0.010000000000000</double>
@@ -409,7 +415,7 @@
  <tabstops>
   <tabstop>spinBox_nu_el</tabstop>
   <tabstop>spinBox_nu_mech</tabstop>
-  <tabstop>spinBox_nu_MMK</tabstop>
+  <tabstop>doubleSpinBox_threshold_MMK</tabstop>
   <tabstop>doubleSpinBox_threshold_wf</tabstop>
   <tabstop>doubleSpinBox_lw</tabstop>
   <tabstop>doubleSpinBox_lw_thin</tabstop>
