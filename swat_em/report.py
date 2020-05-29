@@ -68,7 +68,7 @@ def num2str(number, maxlen=8):
 
     Parameters
     ----------
-    number : scalar, array_like, string
+    number : scalar, string
              Number to convert
     maxlen : integer
              Max. length to convert
@@ -78,6 +78,8 @@ def num2str(number, maxlen=8):
     return : string / list of strings / ndarray of strings
              string with the number           
     """
+    if number > 0:
+        maxlen -= 1
     numstring = str(number)
     ematch = re.search('[eE].+', numstring)
     if ematch:
@@ -88,7 +90,7 @@ def num2str(number, maxlen=8):
     else:
         numstring = numstring[:maxlen]
     if number >= 0.0:
-        numstring = ' ' + numstring[:-1]
+        numstring = ' ' + numstring
     return numstring
 
 
@@ -413,8 +415,8 @@ class TextReport:
         
         
         bc, txt = self.data.get_basic_characteristics()
-        self._txt.append('ANALYSIS')
-        self._txt.append('========')
+        self._txt.append('WINDING FACTOR')
+        self._txt.append('==============')
         self._txt.append('Periodic base winding                  t: {}'.format(bc['t']))
         a_ = [str(i) for i in analyse.Divisors(bc['a'])]
         self._txt.append('Possible parallel winding connections  a: {}'.format(', '.join(a_)))
@@ -440,6 +442,24 @@ class TextReport:
         for knu in range(len(nu)):
             kw_ = [num2str(k, 8) for k in kw[knu]]
             self._txt.append( str(nu[knu])+'\t'+ '\t'.join(kw_) )
+        self._txt.append('\n')
+        
+        
+        self._txt.append('MAGNETO MOTIVE FORCE / MMF')
+        self._txt.append('==========================')
+        
+        threshold = config['threshold_MMF_harmonics']
+        nu, Cnu, phase = self.data.get_MMF_harmonics(threshold = threshold)
+        Cnu_rel = 100 / np.max(Cnu) * Cnu
+        
+        self._txt.append('Harmonic content of the MMF (airgap field caused by the winding)')
+        self._txt.append('Harmonics lower than {}% of the max. amplitude are not shown'.format(threshold*100))
+        self._txt.append('nu_mech\tA^\tArel in %\tphase in °')
+        
+        for knu in range(len(nu)):
+            self._txt.append( str(nu[knu])+'\t'+ num2str(Cnu[knu]) +\
+            '\t'+str(round(Cnu_rel[knu],1)) + '\t'+str(round(phase[knu]/np.pi*180,1)))
+        
         self._txt.append('\n')
         
         
