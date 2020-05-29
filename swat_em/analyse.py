@@ -593,3 +593,219 @@ def Divisors(n):
     return divisors
 
 
+class create_wdg_overhang:
+    def __init__(self, S, Q, num_layers):
+        '''
+        Generate the winding overhang (connection of the coil sides).
+
+        Parameters
+        ----------
+        S :                     list of lists
+                                winding layout
+        Q :                     integer
+                                number of slots
+        num_layers :            integer
+                                number winding layers
+        '''
+        self.S = S
+        self.Q = Q
+        self.num_layers = num_layers
+
+
+    def diff_and_direct(self, start, end):
+        '''
+        Returns the distance between two coil sides and the direction
+        of the coil.
+
+        Parameters
+        ----------
+        start : integer
+                Coil side 1
+        end   : integer
+                Coil side 2 which is connected to coil side 1
+                 
+        Returns
+        -------
+        diff : integer 
+               distance between S1 and S2 in slot count
+        direct : integer
+                 Direction of the coil 
+                 +1 means coil from left to right
+                 -1 means coil from right to left
+        '''
+        Q = self.Q
+        if end > start:
+            if abs(end - start) > Q/2:
+                diff = start - end + Q
+                direct = -1
+            else:
+                diff = end - start
+                direct = 1
+        else:
+            if abs(end - start) > Q/2:   # overflow
+                diff = end + Q - start
+                direct = 1
+            else:
+                diff = start - end
+                direct = -1
+        # prefer positive direction when possible (2p=2)
+        if diff == Q/2 and direct == -1:
+            direct = 1
+        return diff, direct
+
+        
+    def get_pos_neg_coil_sides(self, S, S2 = None):
+        '''
+        Returns the the position of the positive and negative
+        coil sides from list. The coil sides are extracted from 'S'. 
+        If 'S2' is given, than the positive coil sides are extracted
+        from 'S' and the negative ones from 'S2'
+
+        Parameters
+        ----------
+        S : list
+            Coil sides
+        S2 : list
+             Coil sides
+                 
+        Returns
+        -------
+        Sp : list 
+             Position of the positive coil sides
+        Sn : list 
+             Position of the negatuve coil sides
+        '''
+        if S2 is None:
+            Sp = S[S>0]
+            Sn = np.abs(S[S<0])
+        else:
+            Sp = S[S>0]
+            Sn = np.abs(S2[S2<0])
+        return Sp, Sn
+
+
+    def get_dist_in_slots(self, S1, S2):
+        '''
+        Returns the distance of the coilsides between S1 and S2.
+
+        Parameters
+        ----------
+        S1 : integer
+             Coil side
+        S2 : Array
+             Coil sides
+                 
+        Returns
+        -------
+        return : array 
+                 distance between S1 and S2 in slot count
+        '''
+        dist_slots = []
+        direct = []
+        for k in range(len(S2)):
+            a, b = self.diff_and_direct(S1, S2[k])
+            dist_slots.append(a)
+            direct.append(b)
+        return dist_slots, direct
+       
+
+
+    def get_overhang(self, wstep = None):
+        '''
+        Returns the winding overhang (connection of the coil sides).
+
+        Parameters
+        ----------
+        wstep : integer or list of integers
+                Winding step(s) to apply. If not given the winding
+                overhang gets minimized with different winding steps.
+                 
+        Returns
+        -------
+        return : list 
+                 Winding connections for all phases, len = num_phases,
+                 format: [[(from_slot, to_slot, stepwidth, direction), ()], [(), ()], ...]
+                 from_slot: slot with positive coil side of the coil
+                 to_slot:   slot with negative coil side of the coil
+                 stepwidth: distance between from_slot to to_slot
+                 direction: winding direction (1: from left to right, -1: from right to left)
+        '''
+        self.wstep = wstep
+        if wstep is not None:
+            if hasattr(self.wstep, '__iter__'):
+                self.wstep = list(self.wstep)
+            else:
+                self.wstep = list([self.wstep])
+            self.wstep.sort()
+        
+        def get_connection(Sp, Sn):
+            '''
+            Returns the connection of coils from positive coil sides 'Sp'
+            and negative coil sides 'Sn'
+            '''
+            if len(Sp) != len(Sn):
+                raise Exception('Number of positive and negative coils sides must be equal')
+
+            con = []
+            for kp in range(len(Sp)):
+                dist_slots, direct = self.get_dist_in_slots(Sp[kp], Sn)
+                dist_min = np.argsort(dist_slots)  # idx
+                
+                idx = -1
+                if wstep is None:
+                    idx = dist_min[0]
+                    
+                    # prefer positive direction
+                    if direct[idx] < 0:
+                        for i in range(1, len(dist_min)):
+                            if dist_min[i] == dist_min[0] and direct[i] > 0:
+                                idx = i
+                                break
+                else:
+                    # shortest step
+                    for i in dist_min:
+                        if dist_slots[i] in self.wstep:
+                            idx = i
+                            break
+                    
+                    # is there a step available in positive direction?
+                    # this is not applicable for tooth coil windin
+                    if self.num_layers == 1 and self.wstep != [1]:
+                        dist_min2 = []
+                        for i in dist_min:
+                            if dist_slots[i] in self.wstep:
+                                dist_min2.append(i)
+                        for i in dist_min2:
+                            if direct[i] > 0:
+                                idx = i
+                                break
+                
+                if idx == -1:
+                    idx = dist_min[0]  # fallback
+                    print('fallback')
+                
+                start, end = Sp[kp], Sn[idx]
+                diff, direct = self.diff_and_direct(start, end)
+                con.append([ start, end, diff, direct ])
+                Sn = np.delete(Sn, idx)
+            return con
+
+        head = []
+        if self.num_layers == 1:
+            for km in range(len(self.S)):
+                S1 = np.array(self.S[km][0])
+                Sp, Sn = self.get_pos_neg_coil_sides(S1)
+                head.append(get_connection(Sp, Sn))
+        elif self.num_layers == 2:
+            for km in range(len(self.S)):
+                S1 = np.array(self.S[km][0])
+                S2 = np.array(self.S[km][1])
+                Sp, Sn = self.get_pos_neg_coil_sides(S1, S2)
+                head.append(get_connection(Sp, Sn))
+                Sp, Sn = self.get_pos_neg_coil_sides(S2, S1)
+                head[-1] += get_connection(Sp, Sn)
+        else:
+            raise Exception('Number of layers >2 not implemented yet')
+            
+        return head
+

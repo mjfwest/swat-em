@@ -245,7 +245,10 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
                 phases, w = overlapping_fractional_slot_slayer(Q, P, m)
                 #  w = Q/P
 
-            
+    if Q % P != 0 and w != 1:
+        w = [Q//P, Q//P+1]
+        
+    
     ret = {'phases': phases, 'wstep': w, 'valid': valid, 'error': error, 'info': '', 'Qes': 0}
     return ret
 
@@ -390,6 +393,9 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
             valid = False
         error += x
         
+
+    if Q % P != 0 and w != 1:
+        w = [Q//P, Q//P+1]
 
     ret = {'phases': S, 'wstep': w, 'valid': valid, 'error': error, 'info': info, 'Qes': n_es}
     return ret

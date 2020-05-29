@@ -33,82 +33,6 @@ pg.setConfigOptions(antialias=True)
 
 
 
-def create_wdg_overhang(S, Q, num_layers, w = None, optimize_wdg_overhang = False):
-    '''
-    Generate the winding overhang (connection of the coil sides).
-
-    Parameters
-    ----------
-    S :                     list of lists
-                            winding layout
-    Q :                     integer
-                            number of slots
-    num_layers :            integer
-                            number winding layers
-    w :                     integer or list of integers
-                            winding step(s)
-                 
-    optimize_wdg_overhang : Boolean
-                            number of phases
-             
-    Returns
-    -------
-    return : list 
-             Winding connections for all phases, len = num_phases,
-             format: [[(from_slot, to_slot, stepwidth, direction), ()], [(), ()], ...]
-             from_slot: slot with positive coil side of the coil
-             to_slot:   slot with negative coil side of the coil
-             stepwidth: distance between from_slot to to_slot
-             direction: winding direction (1: from left to right, -1: from right to left)
-    '''
-    if w is not None:
-        if not hasattr(w, '__iter__'):
-            w = [int(w)]     # int() because w could be Fractional.fraction()
- 
-        
-    head = []
-    for ph_ in S:
-        head.append([])
-
-        ph = analyse._flatten([ph_])[0]
-        pos = []
-        neg = []
-        for p in ph:
-            if p>0:
-                pos.append(p)
-            else:
-                neg.append(-p)
-        if len(pos) != len(neg):
-            raise Exception('Number of positive and negative coils sides must be equal')
-
-        for kpos in range(len(pos)):
-            
-            diff = []
-            direct_ = []
-            for kneg in range(len(neg)):
-                diff1 = abs(pos[kpos] - neg[kneg])
-                diff2 = abs( abs(pos[kpos] - neg[kneg]) -Q )
-                diff_tmp = diff1 if diff1<diff2 else diff2
-                diff.append(diff_tmp)
-            
-            if w is None or optimize_wdg_overhang:
-                index_min = min(range(len(diff)), key=diff.__getitem__)
-            else:
-                for w_ in w:
-                    if w_ in diff:
-                        index_min = diff.index(w_)
-                        break
-            if neg[index_min] - pos[kpos] == diff[index_min]: # forward, no overflow
-                direct = 1
-            elif neg[index_min] - pos[kpos] + Q == diff[index_min]: # forward, no overflow
-                direct = 1
-            else:
-                direct = -1
-
-            head[-1].append((pos[kpos], neg.pop(index_min), diff[index_min], direct))
-    return head
-
-
 def gen_coil_lines(w, h1 = 0.75, h2 = 1.5, db1 = 0.1, Np1 = 21):
     '''
     Create lines of a coil for plotting.
@@ -460,11 +384,12 @@ class _overhang_plot:
         self.fig.addItem(fill)
 
         
-        # plot coils
-        try:  # TODO: Experimental
-            head = create_wdg_overhang(S, Q, num_layers, w = w, optimize_wdg_overhang = optimize_overhang)
-        except:
-            head = []
+        ovh = analyse.create_wdg_overhang(S, Q, num_layers)
+        if optimize_overhang:
+            head = ovh.get_overhang(wstep = None)
+        else:
+            head = ovh.get_overhang(wstep = w)
+        
         i = 1
         for phase in head:
             x = []
@@ -827,19 +752,15 @@ class _mmk:
         self.show = show
         plot_MMK_greater_than = config['plot_MMF_harmonics']
 
-        #  MMK =  self.data.results['MMK']['MMK']
-        #  phi = np.array(self.data.results['MMK']['phi'])
-        #  theta = self.data.results['MMK']['theta'] 
         phi, MMK, theta = analyse.calc_MMK(self.data.get_num_slots(),
                                    self.data.get_num_phases(),
                                    self.data.get_phases(),
                                    self.data.get_turns(),
                                    angle = phase)          
         phi = np.array(phi)
-        nu = np.array(self.data.results['MMK']['nu'])
-        HA = analyse.DFT(MMK[:-1])[:len(nu)]
-        A = np.abs(HA)
-        phase = np.angle(HA)
+        threshold = config['threshold_MMF_harmonics']
+        nu, A, phase = self.data.get_MMF_harmonics(threshold = threshold)
+
 
         self.fig1.clear()
         self.fig1.disableAutoRange()# disable because of porformance 
@@ -852,10 +773,10 @@ class _mmk:
        
         
         # Plotte Oberschwingungen
-        i = 1
+        i = 0
         for n, a, p in zip(nu, A, phase):
             if 1/max(A)*a > plot_MMK_greater_than:
-                pen = pg.mkPen(color=get_line_color(i), width = config['plt']['lw_thin']) 
+                pen = pg.mkPen(color=get_line_color(i+1), width = config['plt']['lw_thin']) 
                 curve = pg.PlotCurveItem(phi, a*np.cos(n*phi/phi[-1]*2*np.pi + p), name='<div>&nu;={}</div>'.format(n), pen=pen)
                 self.fig1.addItem(curve)
                 i += 1
@@ -875,18 +796,16 @@ class _mmk:
 
         if self.table is not None:
             # update table:
-            self.table.setRowCount(len(A)-1)
+            self.table.setRowCount(len(A))
             self.table.setColumnCount(3)
             self.table.setHorizontalHeaderLabels(['nu', 'Amp', '[%]'])
-            
-            for k1 in range(1, len(A)):
-                self.table.setItem(k1-1, 0, QTableWidgetItem(str(nu[k1])))
-                a = A[k1]
-                a_rel = 100.0/max(A)*a
-                self.table.setItem(k1-1, 1, QTableWidgetItem(str(round(a, 3))))
-                self.table.setItem(k1-1, 2, QTableWidgetItem(str(round(a_rel, 1))))
+            Arel = 100/np.max(A)*A
+            for k1 in range(len(A)):
+                self.table.setItem(k1, 0, QTableWidgetItem(str(nu[k1])))
+                self.table.setItem(k1, 1, QTableWidgetItem(str(round(A[k1], 3))))
+                self.table.setItem(k1, 2, QTableWidgetItem(str(round(Arel[k1], 1))))
                 for i in range(3): # set all cells as not editable
-                    self.table.item(k1-1, i).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+                    self.table.item(k1, i).setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             for k1 in range(3):
                 self.table.resizeColumnToContents(k1)
 
