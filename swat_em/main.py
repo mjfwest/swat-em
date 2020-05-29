@@ -543,7 +543,7 @@ class MainWindow(QMainWindow):
         '''
         if not filename:
             if not self.project.get_save_state():
-                ok = QMessageBox.question(self, 'Exit program', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+                ok = QMessageBox.question(self, 'Load *.wdg file', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
                 if ok == QMessageBox.Yes:
                     ret = self.save_to_file()
                     if not ret: # user has not saved
