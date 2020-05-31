@@ -729,6 +729,7 @@ class create_wdg_overhang:
                  to_slot:   slot with negative coil side of the coil
                  stepwidth: distance between from_slot to to_slot
                  direction: winding direction (1: from left to right, -1: from right to left)
+                 layer: tuple of the layer of 'from_slot' and 'to_slot' 
         '''
         self.wstep = wstep
         if wstep is not None:
@@ -738,7 +739,7 @@ class create_wdg_overhang:
                 self.wstep = list([self.wstep])
             self.wstep.sort()
         
-        def get_connection(Sp, Sn):
+        def get_connection(Sp, Sn, layer):
             '''
             Returns the connection of coils from positive coil sides 'Sp'
             and negative coil sides 'Sn'
@@ -782,11 +783,11 @@ class create_wdg_overhang:
                 
                 if idx == -1:
                     idx = dist_min[0]  # fallback
-                    print('fallback')
+                    #  print('fallback')
                 
                 start, end = Sp[kp], Sn[idx]
                 diff, direct = self.diff_and_direct(start, end)
-                con.append([ start, end, diff, direct ])
+                con.append([ start, end, diff, direct, layer ])
                 Sn = np.delete(Sn, idx)
             return con
 
@@ -795,15 +796,15 @@ class create_wdg_overhang:
             for km in range(len(self.S)):
                 S1 = np.array(self.S[km][0])
                 Sp, Sn = self.get_pos_neg_coil_sides(S1)
-                head.append(get_connection(Sp, Sn))
+                head.append(get_connection(Sp, Sn, layer = (0, 0)))
         elif self.num_layers == 2:
             for km in range(len(self.S)):
                 S1 = np.array(self.S[km][0])
                 S2 = np.array(self.S[km][1])
                 Sp, Sn = self.get_pos_neg_coil_sides(S1, S2)
-                head.append(get_connection(Sp, Sn))
+                head.append(get_connection(Sp, Sn, layer = (0, 1)))
                 Sp, Sn = self.get_pos_neg_coil_sides(S2, S1)
-                head[-1] += get_connection(Sp, Sn)
+                head[-1] += get_connection(Sp, Sn, layer = (1, 0))
         else:
             raise Exception('Number of layers >2 not implemented yet')
             

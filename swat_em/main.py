@@ -59,7 +59,21 @@ class MainWindow(QMainWindow):
 
         self.DIALOG_GenWinding = dialog_genwdg.GenWinding2()
         self.DIALOG_GenWindingCombinations = dialog_genwdg.GenWindingCombinations()
-
+        
+        # open/close tabs
+        self.plot_tabs_actions = {
+                'tab_slot': self.actionLayout,
+                'tab_layout_polar': self.actionLayout_polar,
+                'tab_overhang': self.actionOverhang,
+                'tab_star': self.actionSlot_voltage_phasors,
+                'tab_wf': self.actionWinding_factor,
+                'tab_mmk': self.actionMagneto_motive_force,
+                'tab_report': self.actionReport
+                }
+        for key, value in self.plot_tabs_actions.items():
+            value.triggered.connect(self.plot_tabs_update_from_menu)
+        self.plot_tabs_init()
+        
         # Connect the buttons
         self.Button_exit.clicked.connect(self.close)
         
@@ -72,6 +86,7 @@ class MainWindow(QMainWindow):
         self.actionFull_Screen.triggered.connect(self.toggle_fullscreen)
         self.Button_search.clicked.connect(self.find_in_report)
         self.lineEdit_find.returnPressed.connect(self.find_in_report)
+        self.plot_tabs.tabCloseRequested.connect(self.plot_tabs_remove)
         
         # Connect menu
         self.actionExit.triggered.connect(self.close)
@@ -135,6 +150,7 @@ class MainWindow(QMainWindow):
         self.comboBox_star_harmonics.currentIndexChanged.connect(self.update_plot_in_GUI)
         self.checkBoxForceX.toggled.connect(self.update_plot_in_GUI)
         self.checkBox_opt_wdg_overhang.toggled.connect(self.update_plot_in_GUI)
+        self.checkBox_opt_wdg_overhang_layout_polar.toggled.connect(self.update_plot_in_GUI)
         
 
         #  initial windings  -----------------------------------
@@ -161,20 +177,24 @@ class MainWindow(QMainWindow):
         self.MMK_phase_edit.textEdited.connect(self.update_MMK_phase_slider)
         self.MMK_phase_edit.textChanged.connect(lambda: self.update_plot_in_GUI(small_update = True))
         
-        self.fig_slot = plots._slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
-        self.Button_cp2clipboard_image_layout.clicked.connect(self.fig_slot.cp2clipboard)
+        self.fig = {}
+        self.fig['tab_slot'] = plots._slot_plot(self.mplvl_slot, self.mplwidget_slot, self.data)
+        self.Button_cp2clipboard_image_layout.clicked.connect(self.fig['tab_slot'].cp2clipboard)
         
-        self.fig_overhang = plots._overhang_plot(self.mplvl_overhang, self.mplwidget_overhang, self.data)
-        self.Button_cp2clipboard_image_overhang.clicked.connect(self.fig_overhang.cp2clipboard)
+        self.fig['tab_layout_polar'] = plots._polar_layout_plot(self.mplvl_layout_polar, self.mplwidget_layout_polar, self.data)
+        self.Button_cp2clipboard_image_layout_polar.clicked.connect(self.fig['tab_layout_polar'].cp2clipboard)
         
-        self.fig_star = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
-        self.Button_cp2clipboard_image_star.clicked.connect(self.fig_star.cp2clipboard)
+        self.fig['tab_overhang'] = plots._overhang_plot(self.mplvl_overhang, self.mplwidget_overhang, self.data)
+        self.Button_cp2clipboard_image_overhang.clicked.connect(self.fig['tab_overhang'].cp2clipboard)
         
-        self.fig_wf = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
-        self.Button_cp2clipboard_image_wf.clicked.connect(self.fig_wf.cp2clipboard)
+        self.fig['tab_star'] = plots._slot_star(self.mplvl_star, self.mplwidget_star, self.data, self.tableWidget_star)
+        self.Button_cp2clipboard_image_star.clicked.connect(self.fig['tab_star'].cp2clipboard)
         
-        self.fig_mmk = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
-        self.Button_cp2clipboard_image_mmk.clicked.connect(self.fig_mmk.cp2clipboard)
+        self.fig['tab_wf'] = plots._windingfactor(self.mplvl_wf, self.mplwidget_wf, self.data, self.tableWidget_wf)
+        self.Button_cp2clipboard_image_wf.clicked.connect(self.fig['tab_wf'].cp2clipboard)
+        
+        self.fig['tab_mmk'] = plots._mmk(self.mplvl_mmk, self.mplwidget_mmk, self.data, self.tableWidget_mmk)
+        self.Button_cp2clipboard_image_mmk.clicked.connect(self.fig['tab_mmk'].cp2clipboard)
         
         self.report = plots._report(self.reportEdit)
         self.Button_cp2clipboard_image_report.clicked.connect(self.report.cp2clipboard)
@@ -442,24 +462,29 @@ class MainWindow(QMainWindow):
         all axes etc. --> speed up, for MMK-phase slider for example
         '''
         # Update Figures
-        tab_name = self.plot_tabs.currentWidget().objectName()
-        if tab_name == 'tab_slot':
-            self.fig_slot.plot_slots(self.data.get_num_slots())
-            self.fig_slot.plot(self.data)
-        if tab_name == 'tab_overhang':
-            self.fig_overhang.plot(self.data, optimize_overhang = self.checkBox_opt_wdg_overhang.isChecked())
-        if tab_name == 'tab_star': 
-            self.fig_star.plot(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
-            ForceX = self.checkBoxForceX.isChecked())
-        if tab_name == 'tab_wf':
-            if self.radioButton_electrical.isChecked():
-                self.fig_wf.plot(self.data, mechanical=False)
-            elif self.radioButton_mechanical.isChecked():
-                self.fig_wf.plot(self.data, mechanical=True)
-        if tab_name == 'tab_mmk':
-            f = _get_float(self.MMK_phase_edit.text())
-            f = 0.0 if f is None else f
-            self.fig_mmk.plot(self.data, f, small_update = small_update)
+        if self.plot_tabs.currentWidget(): # if all tabs are closed
+            tab_name = self.plot_tabs.currentWidget().objectName()
+            if tab_name == 'tab_slot':
+                self.fig[tab_name].plot_slots(self.data.get_num_slots())
+                self.fig[tab_name].plot(self.data)
+            if tab_name == 'tab_layout_polar':
+                self.fig[tab_name].plot(self.data, 
+                                        optimize_overhang = self.checkBox_opt_wdg_overhang_layout_polar.isChecked(),
+                                        draw_poles = config['plt']['draw_poles'])
+            if tab_name == 'tab_overhang':
+                self.fig[tab_name].plot(self.data, optimize_overhang = self.checkBox_opt_wdg_overhang.isChecked())
+            if tab_name == 'tab_star': 
+                self.fig[tab_name].plot(self.data, harmonic_idx = self.comboBox_star_harmonics.currentIndex(),
+                ForceX = self.checkBoxForceX.isChecked())
+            if tab_name == 'tab_wf':
+                if self.radioButton_electrical.isChecked():
+                    self.fig[tab_name].plot(self.data, mechanical=False)
+                elif self.radioButton_mechanical.isChecked():
+                    self.fig[tab_name].plot(self.data, mechanical=True)
+            if tab_name == 'tab_mmk':
+                f = _get_float(self.MMK_phase_edit.text())
+                f = 0.0 if f is None else f
+                self.fig[tab_name].plot(self.data, f, small_update = small_update)
 
 
     def printer(self):
@@ -469,19 +494,9 @@ class MainWindow(QMainWindow):
         
         # get actual view
         tab_name = self.plot_tabs.currentWidget().objectName()
-        if tab_name in ['tab_slot', 'tab_overhang', 'tab_star', 'tab_wf', 'tab_mmk']:
+        if tab_name in ['tab_slot', 'tab_layout_polar', 'tab_overhang', 'tab_star', 'tab_wf', 'tab_mmk']:
             with tempfile.TemporaryDirectory() as tmpdir:
-                if tab_name == 'tab_slot':
-                    self.fig_slot.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif tab_name == 'tab_overhang':
-                    self.fig_overhang.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif tab_name == 'tab_star':
-                    self.fig_star.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif tab_name == 'tab_wf':
-                    self.fig_wf.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-                elif tab_name == 'tab_mmk':
-                    self.fig_mmk.save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
-
+                self.fig[tab_name].save(os.path.join(tmpdir, 'fig.png'), config['plt']['res'])
                 pixmap = QPixmap(os.path.join(tmpdir, 'fig.png'))
                 if dialog.exec_() == QPrintDialog.Accepted:
                     painter = QPainter(printer)
@@ -502,7 +517,89 @@ class MainWindow(QMainWindow):
         else:
             print('printing not supported for the current content')
         del dialog
+  
+    
+    def plot_tabs_init(self):
+        self.plot_tabs_store()
+        for k in range(self.plot_tabs.count()):
+            self.plot_tabs_remove(0)
         
+        pt = config['view']['plot_tabs']
+        for p in pt:
+            self.plot_tabs_add(p, update_menu = True)
+        #  self.plot_tabs.setTabVisible(0, False)
+        self.plot_tabs.setCurrentIndex(0)
+        
+  
+    def plot_tabs_store(self):
+        self.plot_tabs_store = {}
+        for k in range(self.plot_tabs.count()):
+            tab = self.plot_tabs.widget(k)
+            self.plot_tabs_store[tab.objectName()] = {}
+            self.plot_tabs_store[tab.objectName()]['widget'] = self.plot_tabs.widget(k)
+            self.plot_tabs_store[tab.objectName()]['icon'] = self.plot_tabs.tabIcon(k)
+            self.plot_tabs_store[tab.objectName()]['label'] = self.plot_tabs.tabText(k)
+
+
+    def plot_tabs_update_menu(self, key, flag):
+        self.setUpdatesEnabled(False)  # block signals
+        self.plot_tabs_actions[key].setChecked(flag)
+        self.setUpdatesEnabled(True)  # unblock signals
+        
+
+    def plot_tabs_add(self, key, update_menu = False):
+        self.plot_tabs.addTab(self.plot_tabs_store[key]['widget'], 
+                              self.plot_tabs_store[key]['label'])
+        idx = self.plot_tabs.count()
+        self.plot_tabs.setTabIcon(idx-1, self.plot_tabs_store[key]['icon'])
+        if update_menu:
+            self.plot_tabs_update_menu(key, True)
+        self.plot_tabs.setCurrentIndex(self.plot_tabs.count()-1)
+    
+    
+    def plot_tabs_remove(self, idx, update_menu = True):
+        '''
+        Remove tabs by index
+        '''
+        key = self.plot_tabs.widget(idx).objectName()
+        self.plot_tabs.removeTab(idx)
+
+        #  print('remove', key, idx)
+        if update_menu:
+            self.plot_tabs_update_menu(key, False)
+
+
+    def plot_tabs_update_from_menu(self):
+        '''
+        remove/add tabs depended on the menu
+        '''
+        checked = []  # checks from menu
+        for key, value in self.plot_tabs_actions.items():
+            if value.isChecked():
+                checked.append(key)
+        
+        checked2 = []  # active tabs
+        for k in range(self.plot_tabs.count()):
+            checked2.append(self.plot_tabs.widget(k).objectName())
+        
+        # activate tabs to sync with menu
+        for c in checked:
+            if c not in checked2:
+                self.plot_tabs_add(c)
+
+        # deactivate tabs to sync with menu
+        for i, c in enumerate(checked2):
+            if c not in checked:
+                self.plot_tabs_remove(i)
+
+
+    def plot_tabs_save_config(self):
+        checked = []
+        for k in range(self.plot_tabs.count()):
+            checked.append(self.plot_tabs.widget(k).objectName())
+        config['view']['plot_tabs'] = checked
+        save_config(config)
+
 
     def save_to_file(self):
         '''
@@ -561,22 +658,32 @@ class MainWindow(QMainWindow):
             self.update_data_in_GUI()
         self.check_is_saved()
         
+        
+    def tasks_on_exit(self):
+        '''
+        Do some taske when the main window is closed
+        '''
+        self.plot_tabs_save_config()
+        
     
     def closeEvent(self, event):
         # Exit programm
         
         # Ask for saving
         if self.project.get_save_state():
+            self.tasks_on_exit()
             event.accept() # let the window close
         else:
             ok = QMessageBox.question(self, 'Exit program', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
             if ok == QMessageBox.Yes:
                 ret = self.save_to_file()
                 if ret:  # user has saved
+                    self.tasks_on_exit()
                     event.accept() # let the window close
                 else:    # user has not saved
                     event.ignore()
             elif ok == QMessageBox.No:
+                self.tasks_on_exit()
                 event.accept() # close the window
             else:
                 event.ignore() # let the window open

@@ -945,6 +945,8 @@ class datamodel:
              example: res = [800, 600]
         show: Bool
               If true the window pops up for interactive usage
+        optimize_overhang: Bool
+              If true swat-em tries to identify shorter winding overhangs
         '''
         if res == None:
             res = config['plt']['res']
@@ -1031,6 +1033,35 @@ class datamodel:
         plt.plot(self, phase = phase, show = show)
         plt.save(fname = filename, res = res)
         
+
+    def plot_polar_layout(self, filename, res = None, 
+                          optimize_overhang = False, 
+                          draw_poles = False, show = False):
+        '''
+        Generates a figure of the winding layout
+        
+        Parameters
+        -------
+        filename: string
+                  file-name with extension to save the figure
+        res: list 
+             Resolution for the figure in pixes for x and y direction
+             example: res = [800, 600]
+        optimize_overhang: Bool
+              If true swat-em tries to identify shorter winding overhangs
+        draw_poles: Bool
+              If true the poles of the rotor are drawn
+        show: Bool
+              If true the window pops up for interactive usage
+        '''
+        if res == None:
+            res = config['plt']['res']
+        plt = plots._polar_layout_plot(None, None, self)
+        plt.plot(self, show = show, 
+                 optimize_overhang = optimize_overhang,
+                 draw_poles = draw_poles)
+        plt.save(fname = filename, res = res)
+
 
     def save_to_file(self, fname):
         '''

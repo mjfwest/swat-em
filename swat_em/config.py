@@ -44,7 +44,11 @@ def get_init_config():
                  'phase_colors': ['#1b9e77','#d95f02','#7570b3',
                  '#e7298a','#66a61e','#e6ab02','#a6761d'], # http://colorbrewer2.org/#type=qualitative&scheme=Dark2&n=7
                  'line_colors': ['#377eb8','#e41a1c','#4daf4a',
-                 '#984ea3','#ff7f00','#a65628','#f781bf'] # http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
+                 '#984ea3','#ff7f00','#a65628','#f781bf'], # http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
+                 'magnet_colors': ['#FFA7A7', '#9EB0FF'],
+                 'magnet_linewidth': 5,
+                 'magnet_alpha_m': 0.85,
+                 'draw_poles': True
                  }      
     config['report'] = {
                  
@@ -57,6 +61,11 @@ def get_init_config():
                         'font': 'Monospace',
                         'fontsize': 10
                        }
+    config['view'] = {
+                    'plot_tabs': ['tab_slot', 'tab_layout_polar',
+                                  'tab_overhang', 'tab_star', 'tab_wf',
+                                  'tab_mmk', 'tab_report']
+                  }
     return copy.deepcopy(config)
 
 

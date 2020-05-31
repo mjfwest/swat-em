@@ -309,6 +309,9 @@
       <property name="tabPosition">
        <enum>QTabWidget::South</enum>
       </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -317,6 +320,18 @@
         <width>24</width>
         <height>24</height>
        </size>
+      </property>
+      <property name="documentMode">
+       <bool>false</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+      <property name="movable">
+       <bool>true</bool>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>false</bool>
       </property>
       <widget class="QWidget" name="tab_slot">
        <property name="sizePolicy">
@@ -405,6 +420,97 @@
            </widget>
           </item>
          </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_layout_polar">
+       <attribute name="icon">
+        <iconset>
+         <normaloff>icons/layout_polar.png</normaloff>icons/layout_polar.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string>Layout polar</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QCheckBox" name="checkBox_opt_wdg_overhang_layout_polar">
+            <property name="text">
+             <string>Optimize winding overhang (experimental)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QToolButton" name="Button_cp2clipboard_image_layout_polar">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Copy image to clipboard</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/clipboard.png</normaloff>icons/clipboard.png</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <widget class="QWidget" name="mplwidget_layout_polar" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <layout class="QVBoxLayout" name="mplvl_layout_polar">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1186,6 +1292,14 @@
      <string>View</string>
     </property>
     <addaction name="actionFull_Screen"/>
+    <addaction name="separator"/>
+    <addaction name="actionLayout"/>
+    <addaction name="actionLayout_polar"/>
+    <addaction name="actionOverhang"/>
+    <addaction name="actionSlot_voltage_phasors"/>
+    <addaction name="actionWinding_factor"/>
+    <addaction name="actionMagneto_motive_force"/>
+    <addaction name="actionReport"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuedit"/>
@@ -1464,6 +1578,62 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionLayout">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Layout</string>
+   </property>
+  </action>
+  <action name="actionLayout_polar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Layout (polar)</string>
+   </property>
+  </action>
+  <action name="actionOverhang">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Overhang</string>
+   </property>
+  </action>
+  <action name="actionSlot_voltage_phasors">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Slot voltage phasors</string>
+   </property>
+  </action>
+  <action name="actionWinding_factor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Winding factor</string>
+   </property>
+  </action>
+  <action name="actionMagneto_motive_force">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Magneto motive force (MMF)</string>
+   </property>
+  </action>
+  <action name="actionReport">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Report</string>
    </property>
   </action>
  </widget>

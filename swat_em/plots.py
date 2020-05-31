@@ -325,6 +325,142 @@ class _slot_plot:
         #  exporter.export()
 
 
+class _polar_layout_plot:
+    def __init__(self, layout, widget, data):
+        self.layout = layout
+        self.widget = widget
+        self.data = data
+        self.ra = 1.3         # outer radius of the plot (because autoscale fails)
+        self.r_slottext = 1.2 # radius slot number
+        self.r_cs = [1, 0.9]  # radius coil sides (first and second layer)
+        self.r_magnets = 0.75 # radius of the magnets
+
+        if self.layout is None:
+            self.app = pg.mkQApp()
+            self.fig = pg.PlotWidget() #title='xyz'
+        else:
+            self.fig = pg.PlotWidget()
+            self.layout.addWidget(self.fig)
+        self.fig.setAspectLocked(lock=True, ratio=1)
+        self.fig.getAxis('bottom').hide()
+        self.fig.getAxis('left').hide()
+        self.leg = self.fig.addLegend(offset=(-10, 10))
+    
+    def plot(self, data = None, show = False, optimize_overhang = False, draw_poles = False):
+        self.show = show
+        if data is not None:
+            self.data = data
+        
+        S = self.data.get_phases()
+        Q = self.data.get_num_slots()
+        P = self.data.get_num_polepairs() * 2
+        w = self.data.get_windingstep()
+        num_layers = self.data.get_num_layers()
+        
+        self.fig.clear()
+        _pg_clear_legend(self.leg)
+        
+        self.fig.disableAutoRange()# disable because of porformance 
+                                   # (a lot of elements are plottet)
+
+        ovh = analyse.create_wdg_overhang(S, Q, num_layers)
+        if optimize_overhang:
+            head = ovh.get_overhang(wstep = None)
+        else:
+            head = ovh.get_overhang(wstep = w)
+        
+        
+        def get_pos(num, r=1):
+            '''
+            returns position (x, y) of the coil side for the given
+            slot number
+            '''
+            alpha = 2*np.pi/Q*num
+            vec = r*np.exp(1j*alpha)
+            return vec.real, vec.imag
+        
+        # plot slot number
+        for k in range(Q):
+            text = pg.TextItem(anchor=(0.5,0.5))
+            text.setPlainText(str(k+1))
+            text.setPos(*get_pos(k, r=self.r_slottext))
+            text.setColor('k')
+            if Q > 60:
+                text.setScale(1/(Q/60))
+            self.fig.addItem(text, ignoreBounds=True) # ignore because autoRange have problems with it
+        
+        # plot coil side with winding direction
+        for km in range(len(S)):
+            for kl in range(len(S[km])):
+                layer = S[km][kl]
+                for cs in layer:
+                    text = pg.TextItem(anchor=(0.5,0.5))
+                    if cs > 0:
+                        text.setHtml('&otimes;')
+                    else:
+                        text.setHtml('&#8857;')  # oint
+                    text.setPos(*get_pos(abs(cs)-1, r = self.r_cs[kl]))
+                    text.setColor(get_phase_color(km))
+                    if Q <= 60:
+                        text.setScale(2)
+                    else:
+                        text.setScale(2/(Q/60))
+                    self.fig.addItem(text, ignoreBounds=True) # ignore because autoRange have problems with it
+        
+        # plot connections (winding overhang)
+        for km in range(len(head)):
+            x, y = [], []
+            for line in head[km]:
+                cs1_layer = line[4][0]
+                cs2_layer = line[4][1]
+                x1, y1 = get_pos(line[0]-1, r = self.r_cs[cs1_layer])
+                x2, y2 = get_pos(line[1]-1, r = self.r_cs[cs2_layer])
+                x += [x1, x2, np.nan]
+                y += [y1, y2, np.nan]
+            pen = pg.mkPen(get_phase_color(km), width = 1.5)  
+            curve = pg.PlotCurveItem(x, y, pen=pen, name='Phase '+str(km+1), connect = 'finite')
+            self.fig.addItem(curve)
+        
+        # draw poles
+        if draw_poles:
+            alpha_m = config['plt']['magnet_alpha_m']
+            magnet_colors = config['plt']['magnet_colors']
+            magnet_linewidth = config['plt']['magnet_linewidth']
+            alpha = np.linspace(0, 2*np.pi/P*alpha_m, 100)
+            alpha -= np.max(alpha/2)  # middle of the pole on alpha = 0°
+            for kp in range(P):
+                vec = self.r_magnets * np.exp(1j*(alpha+kp*2*np.pi/P))
+                if kp%2 == 0:
+                    pen = pg.mkPen(magnet_colors[0], width = magnet_linewidth)
+                else:
+                    pen = pg.mkPen(magnet_colors[1], width = magnet_linewidth)
+                curve = pg.PlotCurveItem(vec.real, vec.imag, pen=pen)
+                self.fig.addItem(curve)
+
+        #  self.fig.autoRange()  # fails -> manual range
+        self.fig.setXRange(-self.ra, self.ra)
+        self.fig.setYRange(-self.ra, self.ra)
+        if self.show:
+            self.fig.show()
+            self.app.exec_()
+                
+    def save(self, fname, res):
+        if self.layout == None:
+            self.app.processEvents()
+        if os.path.splitext(fname)[-1].upper() == '.SVG':
+            exporter = pg.exporters.SVGExporter(self.fig.plotItem)
+        else:
+            exporter = pg.exporters.ImageExporter(self.fig.plotItem)
+            exporter.params.param('width').setValue(int(res[0]), blockSignal=exporter.widthChanged)
+            exporter.params.param('height').setValue(int(res[1]), blockSignal=exporter.heightChanged)
+        exporter.export(fname)
+
+
+    def cp2clipboard(self):
+        img = self.fig.grab()
+        QApplication.clipboard().setImage(img.toImage())
+
+
 class _overhang_plot:
     bz = 0.5  # tooth width
     hz = 0.5  # slot height

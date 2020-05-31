@@ -63,6 +63,7 @@ class Settings(QDialog):
         
         self.doubleSpinBox_lw.setValue(self.config['plt']['lw'])
         self.doubleSpinBox_lw_thin.setValue(self.config['plt']['lw_thin'])
+        self.checkBox_draw_poles.setChecked(self.config['plt']['draw_poles'])
 
     def read_from_gui(self):
         '''
@@ -81,6 +82,7 @@ class Settings(QDialog):
         
         self.config['plt']['lw'] = self.doubleSpinBox_lw.value()
         self.config['plt']['lw_thin'] = self.doubleSpinBox_lw_thin.value()
+        self.config['plt']['draw_poles'] = self.checkBox_draw_poles.isChecked()
         
         
 
