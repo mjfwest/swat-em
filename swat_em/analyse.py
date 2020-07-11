@@ -234,10 +234,13 @@ def calc_phaseangle_starvoltage(Ei):
 
     sequence = []
     for p in phaseangle:
-        if p[1] > p[0]:
-            sequence.append(1)
+        if len(p) > 1:
+            if p[1] > p[0]:
+                sequence.append(1)
+            else:
+                sequence.append(-1)
         else:
-            sequence.append(-1)
+            sequence.append(0)
     #  if sequence[0] < 0:  # related to the fundamental
         #  sequence = [-k for k in sequence]
 
@@ -302,19 +305,10 @@ def calc_kw(Q, S, turns, p, N_nu, config):
 
     phase, sequence = calc_phaseangle_starvoltage(Ei)
     for k in range(len(sequence)):
-        wf[k] = [sequence[k] * s for s in wf[k]]
+        wf[k] = [sequence[k]*s if sequence[k]!=0 else s for s in wf[k]]
     
     return nu, Ei, wf, phase
     
-
-
-
-
-
-
-
-
-
 
 def calc_kw_by_nu(Q, S, turns, p, nu):
     '''
@@ -348,7 +342,9 @@ def calc_kw_by_nu(Q, S, turns, p, nu):
     '''
     wf = [] # winding factor
     Ei = [] # slot voltage vectors
-    
+    if not test_phases(S):
+        return None
+        
     S2 = _flatten(S)
     if hasattr(turns, '__iter__'):
         turns = _flatten(turns)
@@ -358,27 +354,30 @@ def calc_kw_by_nu(Q, S, turns, p, nu):
         if hasattr(turns, '__iter__'):
             turns[k] =  np.array(turns[k])[idx]
     
-
-
     a, b = calc_star(Q, S2, turns, p, nu)
     wf.append(b)
     Ei.append(a)
 
-
     phase, sequence = calc_phaseangle_starvoltage(Ei)
     for k in range(len(sequence)):
-        wf[k] = [sequence[k] * s for s in wf[k]]
+        wf[k] = [sequence[k]*s if sequence[k]!=0 else s for s in wf[k]]
     
     return wf[0]
 
 
 
-
-
-
-
-
-
+def test_phases(S):
+    '''
+    Test if there is data in phases
+    '''
+    if S is None:
+        return None
+    valid = True
+    for km in range(len(S)):
+        if len(S[km][0]) == 0 and len(S[km][0]) == 0:
+            valid = False
+    return valid
+    
 
 def calc_star(Q, S, turns, p, nu):
     '''
