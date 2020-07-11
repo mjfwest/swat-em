@@ -31,18 +31,34 @@ def genwdg(Q, P, m, w, layers, empty_slots = 0):
     w :      integer
              winding step (1 for tooth coils)
     layers : integer
-             number of coil sides per slot      
+             number of coil sides per slot
+    empty_slots : integer
+                    Defines the number of empty slots ("dead coil winding")
+                    -1: Choose number of empty slots automatically (the smallest
+                      possible number is choosen)
+                    0: No empty slots
+                    >0: Manual defined number of empty slots
+
              
     Returns
     -------
     return : list
              winding layout (right and left layers) for every phase
     """  
-    if empty_slots <= 0:
+    if empty_slots == 0:
         ret = winding_from_star_of_slot(Q, P, m, w, layers)
         if not ret['valid'] and empty_slots != 0:
             ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
+        if not ret['valid']:
+            ret = None
     else:
+        
+        #  if layers == 1 and Q % (2*m) != 0:
+            #  ret = None
+        #  elif layers == 2 and Q % (m) != 0:
+            #  ret = None
+        #  else:
+            #  ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
         ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
     return ret
 
