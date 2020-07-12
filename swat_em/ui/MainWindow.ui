@@ -1285,7 +1285,6 @@
     <addaction name="actionShow_winding_layout"/>
     <addaction name="actionGenerate_winding"/>
     <addaction name="actionGenerate_winding_combinations"/>
-    <addaction name="actionCombination_sniffer"/>
     <addaction name="actionImport_from_file"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -1332,6 +1331,7 @@
    <addaction name="actionShow_winding_layout"/>
    <addaction name="actionGenerate_winding"/>
    <addaction name="actionGenerate_winding_combinations"/>
+   <addaction name="actionCombination_sniffer"/>
    <addaction name="actionImport_from_file"/>
    <addaction name="separator"/>
    <addaction name="actionprint_report"/>
@@ -1675,6 +1675,10 @@
    </property>
   </action>
   <action name="actionCombination_sniffer">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/scatter.png</normaloff>icons/scatter.png</iconset>
+   </property>
    <property name="text">
     <string>Combination sniffer</string>
    </property>
