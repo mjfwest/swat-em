@@ -29,15 +29,6 @@ A SWAT-EM project, that can be saved as \*.wdg file can contain several differen
 New winding
     Opens a dialog with all existing winding generator (see section :ref:`winding generators<sec:winding_generators>`). One can choose any of these generators to create a winding layout.
 
-Manual winding layout
-    Define the position of all coil sides by hand. (Not very comfortable but full control)
-
-Auto winding layout
-    Generates the winding automatically by number of slots, poles, ... (easy to use, almost every symmetric winding is possible)
-
-Winding table
-    Shows table slot/pole combinations (a good overview of possible combinations)
-
 Notes
     If there a many windings in the project it might be a good idea to add some notes to the different layouts.
 
@@ -62,6 +53,9 @@ The text field (2) in figure (:ref:`fig:mainwindow`) shows a summary of actual w
 :math:`Q`
     Number of stator slots
 
+:math:`Qes`
+    Number of empty slots
+
 :math:`2p`
     Number of poles
 
@@ -70,6 +64,12 @@ The text field (2) in figure (:ref:`fig:mainwindow`) shows a summary of actual w
 
 :math:`q`
     Number of slots per pole per phase :math:`q=\frac{Q}{2pm}`
+
+:math:`layer`
+    Number of winding layers
+
+:math:`cs`
+    Coil span (in slots)
 
 :math:`kw1`
     Fundamental winding factor (for separate for each phase)
@@ -85,6 +85,9 @@ The text field (2) in figure (:ref:`fig:mainwindow`) shows a summary of actual w
 
 :math:`a`
     Number of possible parallel winding circuit. (In most cases a is equal to t)
+
+:math:`r`
+    Radial force modes excited by the winding.
 
 :math:`symmetric`
     True, if all phases are identically and shifted by a constant angle
@@ -102,6 +105,35 @@ Winding layout
 --------------
 
 The winding layout plot shows sketched slots and coil sides. The number and color defines the number of phase the coil side belongs to. The sign (+ or -) defines the winding direction (+ means that the wire goes into the plain and - out of the plain)
+
+Winding layout polar
+--------------------
+
+While the standard layout plot uses cartesian coordinates, the polar plot shows a radial arrangement of the winding. Advantageously one get an impression of the coil connection and if there are overlapping phases.
+
+.. _fig:mainwindow_layout_polar:
+
+.. figure:: fig/mainwindow_layout_polar.png
+    :width: 800
+    :alt: Alternative text
+    :figclass: align-center
+
+    Polar layout plot
+
+Winding Overhang
+----------------
+
+The winding overhang plot is similar to the polar layout plot. The coil connection are shown in a linear arrangement. Also the size of the end windings can be estimated from this plot
+
+.. _fig:mainwindow_overhang:
+
+.. figure:: fig/mainwindow_overhang.png
+    :width: 800
+    :alt: Alternative text
+    :figclass: align-center
+
+    Overhang plot
+
 
 Slot voltage phasors
 --------------------
