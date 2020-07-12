@@ -35,8 +35,9 @@ from swat_em import dialog_about
 from swat_em import dialog_notes
 from swat_em import dialog_winding_layout
 from swat_em import dialog_import_winding
+from swat_em import dialog_combination_sniffer
 from swat_em import dialog_settings
-from swat_em.config import config, save_config
+from swat_em.config import config, save_config, get_config
 from swat_em import datamodel, project
 from swat_em import wdggenerator
 from swat_em import plots
@@ -59,6 +60,7 @@ class MainWindow(QMainWindow):
 
         self.DIALOG_GenWinding = dialog_genwdg.GenWinding2()
         self.DIALOG_GenWindingCombinations = dialog_genwdg.GenWindingCombinations()
+        self.DIALOG_CombSniffer = dialog_combination_sniffer.CombSniffer()
         
         # open/close tabs
         self.plot_tabs_actions = {
@@ -73,6 +75,7 @@ class MainWindow(QMainWindow):
         for key, value in self.plot_tabs_actions.items():
             value.triggered.connect(self.plot_tabs_update_from_menu)
         self.plot_tabs_init()
+        self.actionShow_all_plots.triggered.connect(self.plot_tabs_show_all)
         
         # Connect the buttons
         self.Button_exit.clicked.connect(self.close)
@@ -93,6 +96,7 @@ class MainWindow(QMainWindow):
         self.actionNew_winding.triggered.connect(self.dialog_new_winding)
         self.actionGenerate_winding.triggered.connect(self.dialog_GenWinding)
         self.actionGenerate_winding_combinations.triggered.connect(self.dialog_GenWindingCombinations)
+        self.actionCombination_sniffer.triggered.connect(self.dialog_CombSniffer)
         self.actionImport_from_file.triggered.connect(self.dialog_ImportWinding)
         self.actionAdd_Notes.triggered.connect(self.dialog_get_notes)
         
@@ -360,6 +364,29 @@ class MainWindow(QMainWindow):
                 self.update_project_list(switch_to_new = True)
             self.update_data_in_GUI()
 
+
+    def dialog_CombSniffer(self):
+        '''
+        calls the dialog to generate a winding based on a big table of available windings
+        '''
+        ret = self.DIALOG_CombSniffer.run()
+        if ret:
+            self.save_undo_state()
+            data = datamodel()
+            data.genwdg(Q = ret['Q'], P = ret['P'], m = ret['m'], w = ret['w'], 
+                        layers = ret['layers'], empty_slots = ret['Qes'])
+
+            if ret['overwrite']:
+                data.set_title(self.data.get_title()) # use existing title
+                data.set_notes(self.data.get_notes()) # use existings notes
+                self.data = data
+                self.project.replace_model_by_index(data, self.project_listWidget.currentRow())
+            else:
+                self.project.add_model(data)
+                self.update_project_list(switch_to_new = True)
+            self.update_data_in_GUI()
+
+
     def dialog_ImportWinding(self):
         '''Import windings from file to workspace'''
         DIALOG_ImportWinding = dialog_import_winding.import_winding()
@@ -466,7 +493,8 @@ class MainWindow(QMainWindow):
             tab_name = self.plot_tabs.currentWidget().objectName()
             if tab_name == 'tab_slot':
                 self.fig[tab_name].plot_slots(self.data.get_num_slots())
-                self.fig[tab_name].plot(self.data)
+                self.fig[tab_name].plot(self.data,
+                                        draw_poles = config['plt']['draw_poles'])
             if tab_name == 'tab_layout_polar':
                 self.fig[tab_name].plot(self.data, 
                                         optimize_overhang = self.checkBox_opt_wdg_overhang_layout_polar.isChecked(),
@@ -569,6 +597,17 @@ class MainWindow(QMainWindow):
             self.plot_tabs_update_menu(key, False)
 
 
+    def plot_tabs_remove_by_name(self, key, update_menu = True):
+        '''
+        Remove tabs by name
+        '''
+        for k in range(self.plot_tabs.count()):
+            widget = self.plot_tabs.widget(k)
+            if widget is not None:
+                if widget.objectName() == key:
+                    self.plot_tabs_remove(k, update_menu = update_menu)
+
+
     def plot_tabs_update_from_menu(self):
         '''
         remove/add tabs depended on the menu
@@ -588,9 +627,18 @@ class MainWindow(QMainWindow):
                 self.plot_tabs_add(c)
 
         # deactivate tabs to sync with menu
-        for i, c in enumerate(checked2):
+        for c in checked2:
             if c not in checked:
-                self.plot_tabs_remove(i)
+                self.plot_tabs_remove_by_name(c)
+
+
+    def plot_tabs_show_all(self):
+        for k in range(self.plot_tabs.count()):
+            self.plot_tabs_remove(0)
+        default_config = get_config(default = True)
+        for tab in default_config['view']['plot_tabs']:
+            self.plot_tabs_add(tab, update_menu = True)
+        self.plot_tabs.setCurrentIndex(0)
 
 
     def plot_tabs_save_config(self):

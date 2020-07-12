@@ -46,7 +46,7 @@ def get_init_config():
                  'line_colors': ['#377eb8','#e41a1c','#4daf4a',
                  '#984ea3','#ff7f00','#a65628','#f781bf'], # http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
                  'magnet_colors': ['#FFA7A7', '#9EB0FF'],
-                 'magnet_linewidth': 5,
+                 'magnet_linewidth': 2,
                  'magnet_alpha_m': 0.85,
                  'draw_poles': True
                  }      

@@ -287,7 +287,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>350</height>
+        <height>380</height>
        </size>
       </property>
       <property name="maximumSize">
@@ -1285,6 +1285,7 @@
     <addaction name="actionShow_winding_layout"/>
     <addaction name="actionGenerate_winding"/>
     <addaction name="actionGenerate_winding_combinations"/>
+    <addaction name="actionCombination_sniffer"/>
     <addaction name="actionImport_from_file"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -1293,6 +1294,7 @@
     </property>
     <addaction name="actionFull_Screen"/>
     <addaction name="separator"/>
+    <addaction name="actionShow_all_plots"/>
     <addaction name="actionLayout"/>
     <addaction name="actionLayout_polar"/>
     <addaction name="actionOverhang"/>
@@ -1459,7 +1461,7 @@
      <normaloff>icons/table.png</normaloff>icons/table.png</iconset>
    </property>
    <property name="text">
-    <string>Layout by table</string>
+    <string>Table (Q, 2p)</string>
    </property>
   </action>
   <action name="actionAdditional_factors">
@@ -1584,6 +1586,13 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/slot.png</normaloff>icons/slot.png</iconset>
+   </property>
    <property name="text">
     <string>Layout</string>
    </property>
@@ -1591,6 +1600,10 @@
   <action name="actionLayout_polar">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/layout_polar.png</normaloff>icons/layout_polar.png</iconset>
    </property>
    <property name="text">
     <string>Layout (polar)</string>
@@ -1600,6 +1613,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/coil.png</normaloff>icons/coil.png</iconset>
+   </property>
    <property name="text">
     <string>Overhang</string>
    </property>
@@ -1607,6 +1624,10 @@
   <action name="actionSlot_voltage_phasors">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/star.png</normaloff>icons/star.png</iconset>
    </property>
    <property name="text">
     <string>Slot voltage phasors</string>
@@ -1616,6 +1637,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/windingfactor.png</normaloff>icons/windingfactor.png</iconset>
+   </property>
    <property name="text">
     <string>Winding factor</string>
    </property>
@@ -1623,6 +1648,10 @@
   <action name="actionMagneto_motive_force">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/MMK.png</normaloff>icons/MMK.png</iconset>
    </property>
    <property name="text">
     <string>Magneto motive force (MMF)</string>
@@ -1632,8 +1661,22 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/report.png</normaloff>icons/report.png</iconset>
+   </property>
    <property name="text">
     <string>Report</string>
+   </property>
+  </action>
+  <action name="actionShow_all_plots">
+   <property name="text">
+    <string>Show all plots</string>
+   </property>
+  </action>
+  <action name="actionCombination_sniffer">
+   <property name="text">
+    <string>Combination sniffer</string>
    </property>
   </action>
  </widget>
