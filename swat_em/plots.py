@@ -927,8 +927,19 @@ class _mmk:
                                    angle = phase)          
         phi = np.array(phi)
         threshold = config['threshold_MMF_harmonics']
-        nu, A, phase = self.data.get_MMF_harmonics(threshold = threshold)
+        #  nu, A, phase = self.data.get_MMF_harmonics(threshold = threshold)
 
+        HA = analyse.DFT(MMK[:-1])
+        A = np.abs(HA)
+        phase = np.angle(HA)
+        nu = np.arange(len(HA))
+
+        idx = A > np.max(A)*threshold
+        nu = nu[idx]
+        A = A[idx]
+        phase = phase[idx]
+        
+        
 
         self.fig1.clear()
         self.fig1.disableAutoRange()# disable because of porformance 
@@ -948,15 +959,17 @@ class _mmk:
                 curve = pg.PlotCurveItem(phi, a*np.cos(n*phi/phi[-1]*2*np.pi + p), name='<div>&nu;={}</div>'.format(n), pen=pen)
                 self.fig1.addItem(curve)
                 i += 1
+
         self.fig1.autoRange()
         self.fig1.setLimits(xMin = min(phi), xMax = max(phi))
-
+        
         self.fig2.clear()
         pen = pg.mkPen(width = 0., color=get_line_color(0))  
         bar = pg.BarGraphItem(x=range(len(theta)), height=theta, width = 0.5, 
                 brush=get_line_color(0), pen=pen) # , name='Phase '+str(k+1)
         self.fig2.addItem(bar)
         self.fig2.setXRange(min(phi), max(phi))
+        
         if show:
             self.l.show()
             self.app.exec_()
