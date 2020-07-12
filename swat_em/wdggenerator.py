@@ -51,14 +51,14 @@ def genwdg(Q, P, m, w, layers, empty_slots = 0):
             ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
         if not ret['valid']:
             ret = None
+    elif empty_slots == -1:
+        if layers == 1 and Q % (2*m) == 0:
+            ret = winding_from_star_of_slot(Q, P, m, w, layers)
+        elif layers == 2 and Q % (m) == 0:
+            ret = winding_from_star_of_slot(Q, P, m, w, layers)
+        else:
+            ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
     else:
-        
-        #  if layers == 1 and Q % (2*m) != 0:
-            #  ret = None
-        #  elif layers == 2 and Q % (m) != 0:
-            #  ret = None
-        #  else:
-            #  ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
         ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
     return ret
 

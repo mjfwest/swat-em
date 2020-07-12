@@ -288,6 +288,22 @@ def test7():
     assert kw7 == np.round(data.results['kw_el'][idx][2], 4) # phase W
 
 
+def test_8():
+    print('test empty slots detection')
+    Q = 12
+    P = 8
+    m = 3
+    w = 1
+    layers = 2
+    
+    wdg1 = datamodel()
+    wdg1.genwdg(Q=Q, P=P, m=m, w=w, layers=layers, empty_slots = 0)
+    
+    wdg2 = datamodel()
+    wdg2.genwdg(Q=Q, P=P, m=m, w=w, layers=layers, empty_slots = -1) # test for right detection
+    assert wdg1.get_fundamental_windingfactor() == wdg2.get_fundamental_windingfactor()
+
+
 def test_combinations_table():
     '''
     Test a big table of different slot/pole combinations. The winding
@@ -438,14 +454,15 @@ def test8():
 
 
 if __name__ == '__main__':
-    #  test1()
-    #  test2()
-    #  test3()
-    #  test4()
-    #  test5()
-    #  test6()
-    #  test7()
-    #  test_combinations_table()
+    test1()
+    test2()
+    test3()
+    test4()
+    test5()
+    test6()
+    test7()
+    test_8()
+    test_combinations_table()
     test_single_phase()
 
 
