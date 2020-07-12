@@ -21,7 +21,7 @@ def get_int_from_str(txt):
     '''
     try:
         number = int(txt)
-        if number is not 0:
+        if number != 0:
             return number
     except:
         return None
