@@ -259,7 +259,7 @@ class _slot_plot:
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
         P = self.data.get_num_polepairs() * 2
-        self.devide = 'v' if self.data.get_windingstep() == 1 else 'h'
+        self.devide = 'v' if self.data.get_coilspan() == 1 else 'h'
 
         def add_text(slot, phase, pos, wdir):
             dx = slot
@@ -386,7 +386,7 @@ class _polar_layout_plot:
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
         P = self.data.get_num_polepairs() * 2
-        w = self.data.get_windingstep()
+        cs = self.data.get_coilspan()
         num_layers = self.data.get_num_layers()
         
         self.fig.clear()
@@ -397,9 +397,9 @@ class _polar_layout_plot:
 
         ovh = analyse.create_wdg_overhang(S, Q, num_layers)
         if optimize_overhang:
-            head = ovh.get_overhang(wstep = None)
+            head = ovh.get_overhang(coilspan = None)
         else:
-            head = ovh.get_overhang(wstep = w)
+            head = ovh.get_overhang(coilspan = cs)
         
         
         def get_pos(num, r=1):
@@ -528,7 +528,7 @@ class _overhang_plot:
         
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
-        w = self.data.get_windingstep()
+        w = self.data.get_coilspan()
         num_layers = self.data.get_num_layers()
         
         self.fig.clear()
@@ -554,9 +554,9 @@ class _overhang_plot:
         
         ovh = analyse.create_wdg_overhang(S, Q, num_layers)
         if optimize_overhang:
-            head = ovh.get_overhang(wstep = None)
+            head = ovh.get_overhang(coilspan = None)
         else:
-            head = ovh.get_overhang(wstep = w)
+            head = ovh.get_overhang(coilspan = w)
         
         i = 1
         for phase in head:

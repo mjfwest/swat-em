@@ -11,20 +11,20 @@ from swat_em import datamodel
 
 wdg = datamodel()
 
-#  wdg.genwdg(Q=12, P=10, m=3, w=1, layers=2) # passt
-#  wdg.genwdg(Q=12, P=10, m=3, w=1, layers=1) # passt
+#  wdg.genwdg(Q=12, P=10, m=3, cs=1, layers=2) # passt
+#  wdg.genwdg(Q=12, P=10, m=3, cs=1, layers=1) # passt
 
 
-#  wdg.genwdg(Q=6, P=2, m=3, w=-1, layers=1)
-#  wdg.genwdg(Q=12, P=2, m=3, w=-1, layers=1)
-#  wdg.genwdg(Q=12, P=2, m=3, w=6, layers=2)
-#  wdg.genwdg(Q=12, P=2, m=3, w=5, layers=2)
+#  wdg.genwdg(Q=6, P=2, m=3, cs=-1, layers=1)
+#  wdg.genwdg(Q=12, P=2, m=3, cs=-1, layers=1)
+#  wdg.genwdg(Q=12, P=2, m=3, cs=6, layers=2)
+#  wdg.genwdg(Q=12, P=2, m=3, cs=5, layers=2)
 
-#  wdg.genwdg(Q=12, P=4, m=3, w=-1, layers=1)
+#  wdg.genwdg(Q=12, P=4, m=3, cs=-1, layers=1)
 
-#  wdg.genwdg(Q=9, P=2, m=3, w=-1, layers=2)
+#  wdg.genwdg(Q=9, P=2, m=3, cs=-1, layers=2)
 
-wdg.genwdg(Q=18, P=4, m=3, w=-1, layers=1)  # fractional slot
+wdg.genwdg(Q=18, P=4, m=3, cs=-1, layers=1)  # fractional slot
 
 #  plot_overhang(self, filename, res = None, show = False, optimize_overhang = False)
 wdg.plot_overhang('overhang.png')

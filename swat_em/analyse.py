@@ -709,15 +709,15 @@ class create_wdg_overhang:
        
 
 
-    def get_overhang(self, wstep = None):
+    def get_overhang(self, coilspan = None):
         '''
         Returns the winding overhang (connection of the coil sides).
 
         Parameters
         ----------
-        wstep : integer or list of integers
-                Winding step(s) to apply. If not given the winding
-                overhang gets minimized with different winding steps.
+        coilspan : integer or list of integers
+                   Winding step(s) to apply. If not given the winding
+                   overhang gets minimized with different winding steps.
                  
         Returns
         -------
@@ -730,13 +730,13 @@ class create_wdg_overhang:
                  direction: winding direction (1: from left to right, -1: from right to left)
                  layer: tuple of the layer of 'from_slot' and 'to_slot' 
         '''
-        self.wstep = wstep
-        if wstep is not None:
-            if hasattr(self.wstep, '__iter__'):
-                self.wstep = list(self.wstep)
+        self.cs = coilspan
+        if self.cs is not None:
+            if hasattr(self.cs, '__iter__'):
+                self.cs = list(self.cs)
             else:
-                self.wstep = list([self.wstep])
-            self.wstep.sort()
+                self.cs = list([self.cs])
+            self.cs.sort()
         
         def get_connection(Sp, Sn, layer):
             '''
@@ -752,7 +752,7 @@ class create_wdg_overhang:
                 dist_min = np.argsort(dist_slots)  # idx
                 
                 idx = -1
-                if wstep is None:
+                if self.cs is None:
                     idx = dist_min[0]
                     
                     # prefer positive direction
@@ -764,16 +764,16 @@ class create_wdg_overhang:
                 else:
                     # shortest step
                     for i in dist_min:
-                        if dist_slots[i] in self.wstep:
+                        if dist_slots[i] in self.cs:
                             idx = i
                             break
                     
                     # is there a step available in positive direction?
                     # this is not applicable for tooth coil windin
-                    if self.num_layers == 1 and self.wstep != [1]:
+                    if self.num_layers == 1 and self.cs != [1]:
                         dist_min2 = []
                         for i in dist_min:
-                            if dist_slots[i] in self.wstep:
+                            if dist_slots[i] in self.cs:
                                 dist_min2.append(i)
                         for i in dist_min2:
                             if direct[i] > 0:

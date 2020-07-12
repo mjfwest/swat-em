@@ -16,7 +16,7 @@ def test1():
     Q = 18
     p = 8
     m = 3
-    wstep = 1
+    cs = 1
     layers = 2
     #  U = [[1, -2, 3, 10, -11, 12], [-2, 3, -4, -11, 12, -13]]
     #  V = [[4, -5, 6, 13, -14, 15], [-5, 6, -7, -14, 15, -16]]
@@ -27,7 +27,7 @@ def test1():
     kw1 = 0.9452		
     kw5 = -0.1398		
     kw7 = -0.0607
-    ret = genwdg(Q, 2*p, m, wstep, layers)
+    ret = genwdg(Q, 2*p, m, cs, layers)
     wdglayout = ret['phases']
     #  print(wdglayout)
     assert [U, V, W] == wdglayout
@@ -61,7 +61,7 @@ def test2():
     Q = 18
     p = 8
     m = 3
-    wstep = 1
+    cs = 1
     layers = 1
     #  U = [[1,-2,3,-4,-11,12]]
     #  V = [[-5,6,13,-14,15,-16]]
@@ -73,7 +73,7 @@ def test2():
     kw1 = 0.9452		
     kw5 = -0.1398		
     kw7 = -0.0607
-    ret = genwdg(Q, 2*p, m, wstep, layers) # 12/10
+    ret = genwdg(Q, 2*p, m, cs, layers) # 12/10
     wdglayout = ret['phases']
     
     #  print(wdglayout)
@@ -104,7 +104,7 @@ def test3():
     Q = 12
     p = 4
     m = 3
-    wstep = 1
+    cs = 1
     layers = 1
     U = [[1,-2,7,-8],[]]
     V = [[5,-6,11,-12],[]]
@@ -112,7 +112,7 @@ def test3():
     kw1 = 0.866
     kw5 = -0.866
     kw7 = 0.866
-    ret = genwdg(Q, 2*p, m, wstep, layers) # 12/10
+    ret = genwdg(Q, 2*p, m, cs, layers) # 12/10
     wdglayout = ret['phases']
     #  print(wdglayout)
     assert [U, V, W] == wdglayout
@@ -141,7 +141,7 @@ def test4():
     Q = 12
     p = 5
     m = 3
-    wstep = 1
+    cs = 1
     layers = 1
     U = [[1,-2,-7,8],[]]
     V = [[-3,4,9,-10],[]]
@@ -149,7 +149,7 @@ def test4():
     kw1 = 0.9659		
     kw5 = -0.2588
     kw7 = 0.2588
-    ret = genwdg(Q, 2*p, m, wstep, layers) # 12/10
+    ret = genwdg(Q, 2*p, m, cs, layers) # 12/10
     wdglayout = ret['phases']
     #  print(wdglayout)
     assert [U, V, W] == wdglayout
@@ -178,7 +178,7 @@ def test5():
     Q = 24
     p = 11
     m = 3
-    wstep = 1
+    cs = 1
     layers = 1
     U = [[1, -2, -11, 12, -13, 14, 23, -24],[]]
     V = [[-3, 4, -5, 6, 15, -16, 17, -18],[]]
@@ -186,7 +186,7 @@ def test5():
     kw1 = 0.9577	
     kw5 = -0.2053
     kw7 = -0.1576
-    ret = genwdg(Q, 2*p, m, wstep, layers) # 12/10
+    ret = genwdg(Q, 2*p, m, cs, layers) # 12/10
     wdglayout = ret['phases']
     #  print(wdglayout)
     assert [U, V, W] == wdglayout
@@ -215,7 +215,7 @@ def test6():
     Q = 24
     p = 2
     m = 3
-    wstep = -1
+    cs = -1
     layers = 1
     U = [[1, 2, -7, -8, 13, 14, -19, -20],[]]
     V = [[5, 6, -11, -12, 17, 18, -23, -24],[]]
@@ -223,8 +223,8 @@ def test6():
     kw1 = 0.9659	
     kw5 = -0.2588
     kw7 = 0.2588
-    #  wdglayout = genwdg(Q, 2*p, m, wstep, layers) # 12/10
-    ret = genwdg(Q, 2*p, m, wstep, layers)
+    #  wdglayout = genwdg(Q, 2*p, m, cs, layers) # 12/10
+    ret = genwdg(Q, 2*p, m, cs, layers)
     wdglayout = ret['phases']
     #  print(wdglayout)
     #  pdb.set_trace()
@@ -254,7 +254,7 @@ def test7():
     Q = 24
     p = 2
     m = 3
-    wstep = 5
+    cs = 5
     layers = 2
     U = [[1, 2, -7, -8, 13, 14, -19, -20], [-6, -7, 12, 13, -18, -19, 24, 1]]
     V = [[5, 6, -11, -12, 17, 18, -23, -24], [-10, -11, 16, 17, -22, -23, 4, 5]]
@@ -262,9 +262,9 @@ def test7():
     kw1 = 0.9330	
     kw5 = -0.0670
     kw7 = 0.0670
-    ret = genwdg(Q, 2*p, m, wstep, layers) # 12/10
+    ret = genwdg(Q, 2*p, m, cs, layers) # 12/10
     wdglayout = ret['phases']
-    #  wdglayout = overlapping_fractional_slot_dlayer(Q, 2*p, m, wstep)
+    #  wdglayout = overlapping_fractional_slot_dlayer(Q, 2*p, m, cs)
     #  print(wdglayout)
     #  pdb.set_trace()
     assert [U, V, W] == wdglayout
@@ -293,14 +293,14 @@ def test_8():
     Q = 12
     P = 8
     m = 3
-    w = 1
+    cs = 1
     layers = 2
     
     wdg1 = datamodel()
-    wdg1.genwdg(Q=Q, P=P, m=m, w=w, layers=layers, empty_slots = 0)
+    wdg1.genwdg(Q=Q, P=P, m=m, cs=cs, layers=layers, empty_slots = 0)
     
     wdg2 = datamodel()
-    wdg2.genwdg(Q=Q, P=P, m=m, w=w, layers=layers, empty_slots = -1) # test for right detection
+    wdg2.genwdg(Q=Q, P=P, m=m, cs=cs, layers=layers, empty_slots = -1) # test for right detection
     assert wdg1.get_fundamental_windingfactor() == wdg2.get_fundamental_windingfactor()
 
 
@@ -394,7 +394,7 @@ def test_combinations_table():
         for P, wf in poles.items():
             if (slot,P) not in exclude:
                 wdg = datamodel()
-                wdg.genwdg(Q = slot, P = P, m = 3, layers = 2, w = 1)
+                wdg.genwdg(Q = slot, P = P, m = 3, layers = 2, cs = 1)
                 wf2 = wdg.get_fundamental_windingfactor()[0]
                 wf2 = np.round(np.abs(wf2), 3)
                 if not np.allclose(wf, wf2, atol = 0.001):
@@ -405,7 +405,7 @@ def test_combinations_table():
 def test_single_phase():
     print('Test single phase winding')
     wdg = datamodel()
-    wdg.genwdg(Q = 4, P = 4, m = 1, layers = 2, w = 1)
+    wdg.genwdg(Q = 4, P = 4, m = 1, layers = 2, cs = 1)
     assert wdg.get_fundamental_windingfactor()[0] == 1.0
 
 
@@ -419,7 +419,7 @@ def test8():
     Q = 33
     p = 2
     m = 3
-    #  wstep = 1
+    #  cs = 1
     layers = 1
     U = [[1, 2, 3, -9, -10, -11, 17, 18, 19, -26, -27], []]
     V = [[6, 7, 8, -15, -16, 23, 24, 25, -31, -32, -33], []]

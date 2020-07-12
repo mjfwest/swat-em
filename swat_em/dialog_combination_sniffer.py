@@ -37,7 +37,7 @@ class CombSniffer(QDialog):
         # Set up the user interface from Designer.
         uic.loadUi(os.path.join(__dir__, 'ui', 'CombSniffer.ui'), self)
         
-        self.plot_keys = ['idx', 'Q', 'P', 'm', 'q', 'w', 'sigma_d', 'kw1',
+        self.plot_keys = ['idx', 'Q', 'P', 'm', 'q', 'cs', 'sigma_d', 'kw1',
                           'a', 't', 'r1', 'lcmQP']
         
         for k in self.plot_keys:
@@ -121,7 +121,7 @@ class CombSniffer(QDialog):
 
         Qlist = []
         Plist = []
-        wlist = []
+        cslist = []
         layerslist = []
         for Q_ in Qrange:
             for P_ in Prange:
@@ -132,24 +132,24 @@ class CombSniffer(QDialog):
                             for w_ in range(1, int(w)+1):
                                 Qlist.append(Q_)
                                 Plist.append(P_)
-                                wlist.append(w_)
+                                cslist.append(w_)
                                 layerslist.append(l_)
                         else:
                             Qlist.append(Q_)
                             Plist.append(P_)
-                            wlist.append(-1)
+                            cslist.append(-1)
                             layerslist.append(l_)
                     else:
                         Qlist.append(Q_)
                         Plist.append(P_)
-                        wlist.append(-1)
+                        cslist.append(-1)
                         layerslist.append(l_)
         
         num_combinations = len(Qlist)
         #  print('Num combinations:', num_combinations)
         #  print('Qlist', Qlist)
         #  print('Plist', Plist)
-        #  print('wlist', wlist)
+        #  print('cslist', cslist)
         #  print('layerslist', layerslist)
         
         self.progressBar.setValue(0)
@@ -158,11 +158,11 @@ class CombSniffer(QDialog):
         for k in range(num_combinations):
             wdg = datamodel()
             wdg.genwdg(Qlist[k], Plist[k], m = m, layers = layerslist[k],
-                       w = wlist[k], empty_slots = es, analyse = False)
+                       cs = cslist[k], empty_slots = es, analyse = False)
             kw1 = wdg.get_fundamental_windingfactor()
             #  print('Q', Qlist[k])
             #  print('P', Plist[k])
-            #  print('w', wlist[k])
+            #  print('w', cslist[k])
             #  print('layers', layerslist[k])
             #  print('kw1', kw1)
             
@@ -181,13 +181,13 @@ class CombSniffer(QDialog):
         self.data['P'] = [2*wdg.get_num_polepairs() for wdg in self.wdg_list]
         self.data['m'] = [wdg.get_num_phases() for wdg in self.wdg_list]
         self.data['q'] = [bc['q'] for bc in self.bc_list]
-        self.data['w'] = []
+        self.data['cs'] = []
         for wdg in self.wdg_list:
-            w = wdg.get_windingstep()
-            if type(w) == type([]):
-                self.data['w'].append(np.mean(w))
+            cs = wdg.get_coilspan()
+            if type(cs) == type([]):
+                self.data['cs'].append(np.mean(cs))
             else:
-                self.data['w'].append(w)
+                self.data['cs'].append(cs)
         
         self.data['kw1'] = [bc['kw1'][0] for bc in self.bc_list]
         self.data['sigma_d'] = [bc['sigma_d'] for bc in self.bc_list]
@@ -439,13 +439,13 @@ class CombSniffer(QDialog):
                 else:
                     overwrite = False
                 wdg = self.wdg_list[self.scatter_marker_index]
-                w = self.data['w'][self.scatter_marker_index]
-                if int(w) != w:
-                    w = -1
+                cs = self.data['cs'][self.scatter_marker_index]
+                if int(cs) != cs:
+                    cs = -1
                 ret = {'Q': wdg.get_num_slots(), 
                        'P': 2*wdg.get_num_polepairs(), 
                        'm': wdg.get_num_phases(), 
-                       'w': w,
+                       'coilspan': cs,
                        'layers': wdg.get_num_layers(), 
                        'overwrite': overwrite,
                        'Qes': wdg.get_num_empty_slots()}

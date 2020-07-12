@@ -30,6 +30,7 @@ class NewWinding(QDialog):
         self.Button_EditWindingLayout.clicked.connect(lambda: self.ret(generator = 0))
         self.Button_GenerateAutomatically.clicked.connect(lambda: self.ret(generator = 1))
         self.Button_FindByTable.clicked.connect(lambda: self.ret(generator = 2))
+        self.Button_winding_sniffer.clicked.connect(lambda: self.ret(generator = 3))
     
     def run(self):
         ok = self.exec_()
@@ -91,7 +92,7 @@ class GenWinding2(QDialog):
         self.Q = self.spinBox_Q.value()
         self.P = self.spinBox_P.value()
         self.m = self.spinBox_m.value()
-        self.w = self.spinBox_w.value()
+        self.cs = self.spinBox_w.value()
         Qes = self.spinBox_empty_slots.value()
         
         if self.radioButton_slayer.isChecked():
@@ -101,8 +102,8 @@ class GenWinding2(QDialog):
 
         self.data = datamodel()
         self.data.set_machinedata(Q = self.Q, m = self.m, p = self.P/2)
-        ret = wdggenerator.genwdg(self.Q, self.P, self.m, self.w, self.layers, Qes)
-        self.data.set_phases(S = ret['phases'], wstep = ret['wstep'])
+        ret = wdggenerator.genwdg(self.Q, self.P, self.m, self.cs, self.layers, Qes)
+        self.data.set_phases(S = ret['phases'], cs = ret['coilspan'])
         self.data.set_valid(ret['valid'], ret['error'], ret['info'])
         self.data.set_num_empty_slots(ret['Qes'])
         bc, bc_str = self.data.get_basic_characteristics()
@@ -135,7 +136,7 @@ class GenWinding2(QDialog):
                 overwrite = True
             else:
                 overwrite = False
-            ret = {'Q': self.Q, 'P': self.P, 'm': self.m, 'w': self.w, 
+            ret = {'Q': self.Q, 'P': self.P, 'm': self.m, 'coilspan': self.cs, 
             'layers': self.layers, 'overwrite': overwrite,
             'Qes': self.data.get_num_empty_slots()}
             return ret
@@ -189,9 +190,9 @@ class GenWindingCombinations(QDialog):
         self.P2 = self.spinBox_P2.value()
         self.m = self.spinBox_m.value()
         if self.checkBox_toothcoil.isChecked():
-            wstep = 1
+            coilspan = 1
         else:
-            wstep = -1
+            coilspan = -1
         if self.checkBox_empty_slots.isChecked():
             empty_slots = -1
         else:
@@ -215,8 +216,8 @@ class GenWindingCombinations(QDialog):
             for iP, kP in enumerate(self.Plist):
                 d = datamodel()
                 d.set_machinedata(Q = kQ, m = self.m, p = kP/2)
-                ret = wdggenerator.genwdg(kQ, kP, self.m, wstep, self.layers, empty_slots)
-                d.set_phases(S = ret['phases'], wstep = ret['wstep'])
+                ret = wdggenerator.genwdg(kQ, kP, self.m, coilspan, self.layers, empty_slots)
+                d.set_phases(S = ret['phases'], cs = ret['coilspan'])
                 d.set_valid(ret['valid'], ret['error'], ret['info'])
                 d.set_num_empty_slots(ret['Qes'])
                 bc, bc_str = d.get_basic_characteristics()
@@ -270,7 +271,7 @@ class GenWindingCombinations(QDialog):
                         self.table.setItem(iQ, iP, QTableWidgetItem(txt))
                         q = bc['q']
 
-                        if self.data[iQ][iP].get_windingstep() == 1: 
+                        if self.data[iQ][iP].get_coilspan() == 1: 
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#ADD8E6'))
                         elif q.denominator == 1:
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#E6C3AD'))
@@ -338,7 +339,7 @@ class GenWindingCombinations(QDialog):
                 ret['Q'] = self.data[row][column].get_num_slots()
                 ret['P'] = 2*self.data[row][column].get_num_polepairs()
                 ret['m'] = self.data[row][column].get_num_phases()
-                ret['w'] = self.data[row][column].get_windingstep()
+                ret['coilspan'] = self.data[row][column].get_coilspan()
                 ret['layers'] = self.layers
                 ret['Qes'] = self.data[row][column].get_num_empty_slots()
                 ret['overwrite'] = overwrite

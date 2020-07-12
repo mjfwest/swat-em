@@ -26,7 +26,7 @@ class datamodel:
     connect with this class.
     ''' 
     file_format = 1
-    machinedata_keys = ['Q', 'p', 'm', 'phases', 'wstep', 'Qes']
+    machinedata_keys = ['Q', 'p', 'm', 'phases', 'coilspan', 'Qes']
     results_keys = ['q', 'nu_el', 'Ei_el', 'kw_el', 'phaseangle_el', 
                     'nu_mech', 'Ei_mech', 'kw_mech', 'phaseangle_mech',
                     'valid', 'error']
@@ -46,8 +46,7 @@ class datamodel:
             txt.append('Number of slots:  {}'.format(self.get_num_slots()))        
             txt.append('Number of poles:  {}'.format(2*self.get_num_polepairs()))
             txt.append('Number of phases: {}'.format(self.get_num_phases()))
-            txt.append('Number of layers: {}'.format(self.get_num_layers()))
-            txt.append('Winding step    : {}'.format(self.get_windingstep()))
+            txt.append('coil span       : {}'.format(self.get_coilspan()))
             
             txt.append('Number of slots per pole per phase: {}'.format(self.get_q()))
             wf = [str(round(k, 3)) for k in self.get_fundamental_windingfactor()]
@@ -55,6 +54,10 @@ class datamodel:
         else:
             txt.append('-- NOW WINDING DEFINED IN THIS MODEL --')
         return '\n'.join(txt)
+    
+    
+    def __repr__(self):
+        return self.__str__()
     
     
     def reset_data(self):
@@ -154,7 +157,7 @@ class datamodel:
             self.set_num_empty_slots(int(Qes))
         
         
-    def set_phases(self, S, turns = 1, wstep = None):
+    def set_phases(self, S, turns = 1, cs = None):
         '''
         setting the winding layout
         
@@ -168,8 +171,8 @@ class datamodel:
             S = [[[1, -4], [-3, 6]], [[3, -6], [-5, 2]], [[-2, 5], [4, -1]]]
             Hint: [[[first layer], [second layer]], ... ]
                      
-        wstep : integer
-                winding step (slots as unit)
+        cs : integer
+             coil span (slots as unit)
         ''' 
         if not hasattr(S[0][0], '__iter__'):
             for k in range(len(S)):
@@ -183,8 +186,8 @@ class datamodel:
         self.set_turns(turns)
         self.set_machinedata(m = len(S))
         self.machinedata['phasenames'] = [string.ascii_uppercase[k] for k in range(len(S))]
-        if wstep:
-            self.set_windingstep(wstep)
+        if cs:
+            self.set_coilspan(cs)
         
 
     def set_valid(self, valid, error, info = ''):
@@ -193,41 +196,41 @@ class datamodel:
         self.generator_info['info'] = info
     
     
-    def genwdg(self, Q, P, m, layers, w = -1, turns = 1, 
+    def genwdg(self, Q, P, m, layers, cs = -1, turns = 1, 
                empty_slots = 0, analyse = True):
         '''
         Generates a winding layout and stores it in the datamodel
 
         Parameters
         ----------
-        Q :      integer
-                 number of slots
-        P :      integer
-                 number of poles
-        m :      integer
-                 number of phases
-        w :      integer
-                 winding step (1 for tooth coils)
-        layers : integer
-                 number of coil sides per slot    
-        turns  : integer
-                 number of turns per coil
-        analyse : Bool
-                  If False the generated winding doesn't get analysed
+        Q :           integer
+                      number of slots
+        P :           integer
+                      number of poles
+        m :           integer
+                      number of phases
+        cs :          integer
+                      coil span (1 for tooth coils)
+        layers :      integer
+                      number of coil sides per slot    
+        turns  :      integer
+                      number of turns per coil
+        analyse :     Bool
+                      If False the generated winding doesn't get analysed
         empty_slots : integer
-                    Defines the number of empty slots ("dead coil winding")
-                    -1: Choose number of empty slots automatically (the smallest
+                      Defines the number of empty slots ("dead coil winding")
+                      -1: Choose number of empty slots automatically (the smallest
                       possible number is choosen)
-                    0: No empty slots
-                    >0: Manual defined number of empty slots
+                      0: No empty slots
+                      >0: Manual defined number of empty slots
         '''
         
-        wdglayout = wdggenerator.genwdg(Q, P, m, w, layers, empty_slots)
+        wdglayout = wdggenerator.genwdg(Q, P, m, cs, layers, empty_slots)
         if wdglayout is None:
             return
         self.set_machinedata(Q, int(P/2), m, wdglayout['Qes'])
         
-        self.set_phases(S = wdglayout['phases'], turns = turns, wstep = wdglayout['wstep'])
+        self.set_phases(S = wdglayout['phases'], turns = turns, cs = wdglayout['coilspan'])
         self.set_valid(valid = wdglayout['valid'], error = wdglayout['error'], info = wdglayout['info'])
         if analyse:
             self.analyse_wdg()
@@ -269,7 +272,8 @@ class datamodel:
                ['Number of poles ',    rep.italic('2p: '), str(2*self.get_num_polepairs())],
                ['Number of phases ',   rep.italic('m: '),  str(self.get_num_phases())],
                ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])],
-               ['winding step ', rep.italic('ws: '),  str(self.get_windingstep())]]
+               ['Number of layers ', rep.italic('layer: '),  str(self.get_num_layers())],
+               ['coil span  ', rep.italic('cs: '),  str(self.get_coilspan())]]
         
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
@@ -521,28 +525,28 @@ class datamodel:
         self.machinedata['m'] = m
     
     
-    def get_windingstep(self):
+    def get_coilspan(self):
         '''
-        Returns the winding step 
+        Returns the coil span
 
         Returns
         -------
-        w: integer
-           winding step
+        cs: integer
+            coil span
         '''
-        return self.machinedata['wstep']
+        return self.machinedata['coilspan']
     
     
-    def set_windingstep(self, w):
+    def set_coilspan(self, w):
         '''
-        Sets the winding step w
+        Sets the coil span cs
 
         Parameters
         ----------
-        w : integer
-            winding step
+        cs : integer
+             coil span
         '''
-        self.machinedata['wstep'] = w
+        self.machinedata['coilspan'] = w
     
     
     def set_num_empty_slots(self, Qes):
@@ -1361,8 +1365,8 @@ def save_models_to_file(models, fname, file_format = 2):
     for data in models:
         N = {}
         N['machinedata'] = data.machinedata
-        if type(N['machinedata']['wstep']) == type(fractions.Fraction() ):
-            N['machinedata']['wstep'] = str(N['machinedata']['wstep'])
+        if type(N['machinedata']['coilspan']) == type(fractions.Fraction() ):
+            N['machinedata']['coilspan'] = str(N['machinedata']['coilspan'])
         N['title'] = data.title
         N['notes'] = data.notes
         M['models'].append(N)
@@ -1408,8 +1412,8 @@ def load_models_from_file(fname):
             data = datamodel()
             for key, value in m['machinedata'].items():
                 data.machinedata[key] = value
-            if type(data.get_windingstep()) == type(''):
-                data.set_windingstep(fractions.Fraction(data.get_windingstep()))
+            if type(data.get_coilspan()) == type(''):
+                data.set_coilspan(fractions.Fraction(data.get_coilspan()))
             data.set_title(m['title'])
             data.set_notes(m['notes'])
             data.analyse_wdg()

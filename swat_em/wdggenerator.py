@@ -16,7 +16,7 @@ def is_even(val):
     return True if abs(val) % 2 == 0 else False
 
 
-def genwdg(Q, P, m, w, layers, empty_slots = 0):
+def genwdg(Q, P, m, cs, layers, empty_slots = 0):
     """
     Generates a winding layout.
 
@@ -28,8 +28,8 @@ def genwdg(Q, P, m, w, layers, empty_slots = 0):
              number of poles
     m :      integer
              number of phases
-    w :      integer
-             winding step (1 for tooth coils)
+    cs :     integer
+             coil span (1 for tooth coils)
     layers : integer
              number of coil sides per slot
     empty_slots : integer
@@ -46,20 +46,20 @@ def genwdg(Q, P, m, w, layers, empty_slots = 0):
              winding layout (right and left layers) for every phase
     """  
     if empty_slots == 0:
-        ret = winding_from_star_of_slot(Q, P, m, w, layers)
+        ret = winding_from_star_of_slot(Q, P, m, cs, layers)
         if not ret['valid'] and empty_slots != 0:
-            ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
+            ret = winding_from_general_equation(Q, P, m, cs, layers, empty_slots)
         if not ret['valid']:
             ret = None
     elif empty_slots == -1:
         if layers == 1 and Q % (2*m) == 0:
-            ret = winding_from_star_of_slot(Q, P, m, w, layers)
+            ret = winding_from_star_of_slot(Q, P, m, cs, layers)
         elif layers == 2 and Q % (m) == 0:
-            ret = winding_from_star_of_slot(Q, P, m, w, layers)
+            ret = winding_from_star_of_slot(Q, P, m, cs, layers)
         else:
-            ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
+            ret = winding_from_general_equation(Q, P, m, cs, layers, empty_slots)
     else:
-        ret = winding_from_general_equation(Q, P, m, w, layers, empty_slots)
+        ret = winding_from_general_equation(Q, P, m, cs, layers, empty_slots)
     return ret
 
 
@@ -152,7 +152,7 @@ def overlapping_fractional_slot_slayer(Q, P, m):
 
 
 
-def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
+def winding_from_star_of_slot(Q, P, m, cs=-1, layers=2):
     '''
     Based on:
     N. Bianchi and M. Dai Pre, "Use of the star of slots in designing fractional-slot single-layer synchronous motors," in IEE Proceedings - Electric Power Applications, vol. 153, no. 3, pp. 459-466, 1 May 2006.
@@ -160,13 +160,13 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
     keywords: {synchronous motors;machine windings;torque;losses;fault tolerance;harmonics;coils;fractional-slot winding;single-layer synchronous motor;end-winding loss reduction;torque ripple;mutual coupling reduction;fault-tolerant application;one side coil;slot star;graphical representation;analytical formulation;harmonic content},
     URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1629527&isnumber=34185
     '''
-    if hasattr(w, '__iter__'):
-        w = -1   # fractional slot has list of w's
+    if hasattr(cs, '__iter__'):
+        cs = -1   # fractional slot has list of cs's
     
-    if w == -1:
-        w = Q // P
-        if w <= 0:
-            w = 1
+    if cs == -1:
+        cs = Q // P
+        if cs <= 0:
+            cs = 1
 
     p = P//2
     
@@ -224,13 +224,13 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
             # print(i+1, p, r1, r2)
             if p > r1[0] and p <= r1[1]:       # phasor is in positive sector
                 phases[km][0].append(i+1)     # slot belongs to the phase
-                c = i+1+w
+                c = i+1+cs
                 while c > Q:
                     c -= Q
                 phases[km][1].append(-c)       # add the second layer
             if p > r2[0] and p <= r2[1]:       # phasor is in negative sector
                 phases[km][0].append(-i-1)            
-                c = i+1+w
+                c = i+1+cs
                 while c > Q:
                     c -= Q
                 phases[km][1].append(c)
@@ -241,7 +241,7 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
     # because there are special cases, where the single layer winding have
     # to be generated from the double layer winding!
     if layers == 1:    # only 
-        if not is_even(w):
+        if not is_even(cs):
             for km in range(m):
                 a = phases[km]
                 a2 = [[], []]
@@ -251,25 +251,25 @@ def winding_from_star_of_slot(Q, P, m, w=-1, layers=2):
                         a2[0].append(a[1][k])   # from second layer to first layer
                 phases[km] = a2
         else:
-            # use fallback function for w = even!
+            # use fallback function for cs = even!
             q = fractions.Fraction(Q/(m*P)).limit_denominator(100)
             if q.denominator == 1:
                 for km in range(m):
                     phases[km][1] = []
             else:
                 #  print('single layer winding not suitable', Q, P)
-                phases, w = overlapping_fractional_slot_slayer(Q, P, m)
-                #  w = Q/P
+                phases, cs = overlapping_fractional_slot_slayer(Q, P, m)
+                #  cs = Q/P
 
-    if Q % P != 0 and w != 1:
-        w = [Q//P, Q//P+1]
+    if Q % P != 0 and cs != 1:
+        cs = [Q//P, Q//P+1]
         
     
-    ret = {'phases': phases, 'wstep': w, 'valid': valid, 'error': error, 'info': '', 'Qes': 0}
+    ret = {'phases': phases, 'coilspan': cs, 'valid': valid, 'error': error, 'info': '', 'Qes': 0}
     return ret
 
 
-def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
+def winding_from_general_equation(Q, P, m, cs=-1, layers=2, n_es = 0):
     '''
     Based on:
     Caruso, Massimo & Di Tommaso, Antonino & Marignetti, Fabrizio & Miceli, Rosario & Galluzzo, Giuseppe. (2018). A General Mathematical Formulation for Winding Layout Arrangement of Electrical Machines. Energies. 11. 446. 10.3390/en11020446. 
@@ -278,16 +278,16 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
     info = ''
     valid = True
     S = [[[]]*m]
-    if layers == 1 and w == 1:
+    if layers == 1 and cs == 1:
         info += 'Coil pitch w = 1 could not be applied'
     
     N = Q
     p = P // 2
     n_lay = layers
-    if layers == 2 and w == -1:
-        w = Q // P
-        if w <= 0:
-            w = 1
+    if layers == 2 and cs == -1:
+        cs = Q // P
+        if cs <= 0:
+            cs = 1
     
     if m != 1 and Q % m != 0:
         valid = False
@@ -393,7 +393,7 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
             for k in range(len(S)):
                 for s in S[k][0]:
                     sign = 1 if s > 0 else -1
-                    s = abs(s) + w
+                    s = abs(s) + cs
                     while s > N:
                         s -= N
                     while s < 1:
@@ -401,7 +401,7 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
                     S[k][1].append(sign*(-1)*s)
         
         if n_lay == 1:
-            w = fractions.Fraction(N / (2*p))
+            cs = fractions.Fraction(N / (2*p))
     
     if valid:
         v, x = analyse.check_number_of_coilsides(S)
@@ -410,8 +410,8 @@ def winding_from_general_equation(Q, P, m, w=-1, layers=2, n_es = 0):
         error += x
         
 
-    if Q % P != 0 and w != 1:
-        w = [Q//P, Q//P+1]
+    if Q % P != 0 and cs != 1:
+        cs = [Q//P, Q//P+1]
 
-    ret = {'phases': S, 'wstep': w, 'valid': valid, 'error': error, 'info': info, 'Qes': n_es}
+    ret = {'phases': S, 'coilspan': cs, 'valid': valid, 'error': error, 'info': info, 'Qes': n_es}
     return ret
