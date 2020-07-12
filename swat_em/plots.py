@@ -170,6 +170,7 @@ class _slot_plot:
         self.widget = widget
         self.data = data
         self.Q = 0
+        self.Qxmax = 12 # max. num of slots to plot in x-axis
         self.slot = {}
         self.devide = 'h'  # slot devide h (horizontal) or v (vertical
 
@@ -190,6 +191,7 @@ class _slot_plot:
         sh = self.sh  # slot height
         sw = self.sw  # slot width
         so = self.so  # slot opening
+        self.dy = 1.7 # next row
 
         self.fig.clear()
         self.fig.disableAutoRange()    # disable because of porformance 
@@ -214,9 +216,9 @@ class _slot_plot:
         dx = 0
         dy = 0
         for k in range(Q):
-            if i_slots >= 12:
+            if i_slots >= self.Qxmax:
                 dx = 0
-                dy += -1.5
+                dy += -self.dy
                 i_slots = 0
                 xp.append([])
                 yp.append([])
@@ -234,36 +236,37 @@ class _slot_plot:
         dy = 0
         dx = 0
         for k in range(Q):
-            if i_slots >= 12:
+            if i_slots >= self.Qxmax:
                 dx = 0
-                dy += -1.5
+                dy += -self.dy
                 i_slots = 0
 
             txt = pg.TextItem(str(k+1), anchor=(0.5,0.5))
-            txt.setPos(0.5+dx, -0.3+dy)
+            txt.setPos(0.5+dx, -0.2+dy)
             txt.setColor('k')
             self.fig.addItem(txt, ignoreBounds=True) # ignore because autoRange have problems with it
                 
             dx += 1
             i_slots += 1
-        #  self.fig.autoRange()
-        self.fig.setXRange(0, 12)
+        
+        self.fig.setXRange(0, self.Qxmax)
         self.fig.autoRange()
         
                         
-    def plot(self, data, show = False):
+    def plot(self, data, show = False, draw_poles = False):
         self.data = data
         self.show = show
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
+        P = self.data.get_num_polepairs() * 2
         self.devide = 'v' if self.data.get_windingstep() == 1 else 'h'
 
         def add_text(slot, phase, pos, wdir):
             dx = slot
             dy = self.sh / 2
-            while dx > 12:
-                dx -= 12
-                dy -= 1.5
+            while dx > self.Qxmax:
+                dx -= self.Qxmax
+                dy -= self.dy
             dx = dx -1 + 0.5
 
             if self.devide == 'h':
@@ -297,6 +300,35 @@ class _slot_plot:
                 for cs in layer:
                     add_text(abs(cs), m+1, pos, cs)
                 pos += 1
+        
+        # draw poles
+        if draw_poles:
+            alpha_m = config['plt']['magnet_alpha_m']
+            magnet_colors = config['plt']['magnet_colors']
+            magnet_linewidth = config['plt']['magnet_linewidth']
+            x = np.linspace(0, Q/P*alpha_m, 50)
+            x += (1-alpha_m)*Q/P/2
+            for kpole in [0, 1]:  # positive and negative Pole
+                x1 = np.array([])
+                for kp in range(P//2):
+                    x1 = np.append(x1, x+2*Q/P*kp + kpole*Q/P)
+                    x1 = np.append(x1, np.nan)
+                y1 = 1.1*np.ones(len(x1))
+                while np.nanmax(x1) > self.Qxmax:
+                    idx = x1 > self.Qxmax
+                    x1[idx] = x1[idx] - self.Qxmax
+                    y1[idx] = y1[idx] - self.dy
+                    idx2 = np.where(idx==True)[0][0]
+                    x1[idx2] = np.nan
+                
+                pen = pg.mkPen(magnet_colors[kpole], width = magnet_linewidth)
+                curve = pg.PlotCurveItem(x1, y1, pen=pen, connect = 'finite')
+                self.fig.addItem(curve)
+
+
+        
+        
+        
         self.fig.autoRange()
         if self.show:
             self.fig.show()
