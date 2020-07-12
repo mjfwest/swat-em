@@ -41,16 +41,19 @@ class datamodel:
         txt.append('WINDING DATAMODEL')
         txt.append('=================')
         txt.append('')
-        txt.append('Title: ' + self.get_title())
-        txt.append('Number of slots:  {}'.format(self.get_num_slots()))        
-        txt.append('Number of poles:  {}'.format(2*self.get_num_polepairs()))
-        txt.append('Number of phases: {}'.format(self.get_num_phases()))
-        txt.append('Number of layers: {}'.format(self.get_num_layers()))
-        txt.append('Winding step    : {}'.format(self.get_windingstep()))
-        
-        txt.append('Number of slots per pole per phase: {}'.format(self.get_q()))
-        wf = [str(round(k, 3)) for k in self.get_fundamental_windingfactor()]
-        txt.append('Fundamental winding factor: {}'.format(', '.join(wf)))
+        if self.results['kw_el'] != None:
+            txt.append('Title: ' + self.get_title())
+            txt.append('Number of slots:  {}'.format(self.get_num_slots()))        
+            txt.append('Number of poles:  {}'.format(2*self.get_num_polepairs()))
+            txt.append('Number of phases: {}'.format(self.get_num_phases()))
+            txt.append('Number of layers: {}'.format(self.get_num_layers()))
+            txt.append('Winding step    : {}'.format(self.get_windingstep()))
+            
+            txt.append('Number of slots per pole per phase: {}'.format(self.get_q()))
+            wf = [str(round(k, 3)) for k in self.get_fundamental_windingfactor()]
+            txt.append('Fundamental winding factor: {}'.format(', '.join(wf)))
+        else:
+            txt.append('-- NOW WINDING DEFINED IN THIS MODEL --')
         return '\n'.join(txt)
     
     
@@ -190,7 +193,8 @@ class datamodel:
         self.generator_info['info'] = info
     
     
-    def genwdg(self, Q, P, m, layers, w = -1, turns = 1, empty_slots = 0):
+    def genwdg(self, Q, P, m, layers, w = -1, turns = 1, 
+               empty_slots = 0, analyse = True):
         '''
         Generates a winding layout and stores it in the datamodel
 
@@ -208,20 +212,25 @@ class datamodel:
                  number of coil sides per slot    
         turns  : integer
                  number of turns per coil
+        analyse : Bool
+                  If False the generated winding doesn't get analysed
         empty_slots : integer
-        Defines the number of empty slots ("dead coil winding")
-        -1: Choose number of empty slots automatically (the smallest
-          possible number is choosen)
-        0: No empty slots
-        >0: Manual defined number of empty slots
+                    Defines the number of empty slots ("dead coil winding")
+                    -1: Choose number of empty slots automatically (the smallest
+                      possible number is choosen)
+                    0: No empty slots
+                    >0: Manual defined number of empty slots
         '''
         
         wdglayout = wdggenerator.genwdg(Q, P, m, w, layers, empty_slots)
+        if wdglayout is None:
+            return
         self.set_machinedata(Q, int(P/2), m, wdglayout['Qes'])
         
         self.set_phases(S = wdglayout['phases'], turns = turns, wstep = wdglayout['wstep'])
         self.set_valid(valid = wdglayout['valid'], error = wdglayout['error'], info = wdglayout['info'])
-        self.analyse_wdg()
+        if analyse:
+            self.analyse_wdg()
 
 
     def get_num_layers(self):
@@ -545,7 +554,7 @@ class datamodel:
         else:
             return 0
     
-    def get_phases(self):
+    def get_phases(self, flatten = False):
         '''
         Returns the definition of the winding layout. For every phase
         there is a sublist which contains the slot number which are 
@@ -561,7 +570,10 @@ class datamodel:
         phases: list of lists
                 winding layout
         '''
-        return self.machinedata['phases']
+        if flatten:
+            return analyse._flatten(self.machinedata['phases'])
+        else:
+            return self.machinedata['phases']
         
         
     def get_layers(self):
@@ -711,7 +723,12 @@ class datamodel:
         kw: list
             windings factors, (one entry for each phase)
         '''
-        return self.results['kw_el'][0]
+        wf = self.get_windingfactor_el_by_nu(1)
+        if wf is None:
+            return None
+        else:
+            return [abs(kw) for kw in wf]
+        #  return self.results['kw_el'][0]
 
 
     def get_turns(self):
