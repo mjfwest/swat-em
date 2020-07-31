@@ -12,28 +12,28 @@ from swat_em.datamodel import datamodel
 def test_num_basic_winding():
     # 2-layer
     data = datamodel()
-    data.genwdg(Q = 12, P = 8, m = 3, layers = 2, cs = 1)
+    data.genwdg(Q = 12, P = 8, m = 3, layers = 2, coil_span = 1)
     bc, _ = data.get_basic_characteristics()
     t = data.calc_num_basic_windings_t()
     assert bc['t'] == t
 
     data = datamodel()
-    data.genwdg(Q = 12, P = 10, m = 3, layers = 2, cs = 1)
+    data.genwdg(Q = 12, P = 10, m = 3, layers = 2, coil_span = 1)
     bc, _ = data.get_basic_characteristics()
     t = data.calc_num_basic_windings_t()
     assert bc['t'] == t
 
-    data.genwdg(Q = 18, P = 6, m = 3, layers = 2, cs = -1)
+    data.genwdg(Q = 18, P = 6, m = 3, layers = 2, coil_span = -1)
     bc, _ = data.get_basic_characteristics()
     t = data.calc_num_basic_windings_t()
     assert bc['t'] == t
 
-    data.genwdg(Q = 18, P = 12, m = 3, layers = 2, cs = -1)
+    data.genwdg(Q = 18, P = 12, m = 3, layers = 2, coil_span = -1)
     bc, _ = data.get_basic_characteristics()
     t = data.calc_num_basic_windings_t()
     assert bc['t'] == t
 
-    data.genwdg(Q = 30, P = 4, m = 3, layers = 2, cs = 1)
+    data.genwdg(Q = 30, P = 4, m = 3, layers = 2, coil_span = 1)
     bc, _ = data.get_basic_characteristics()
     t = data.calc_num_basic_windings_t()
     assert bc['t'] == t
@@ -41,7 +41,7 @@ def test_num_basic_winding():
 
     # 1-layer
     data = datamodel()
-    data.genwdg(Q = 12, P = 10, m = 3, layers = 1, cs = 1)
+    data.genwdg(Q = 12, P = 10, m = 3, layers = 1, coil_span = 1)
     bc, _ = data.get_basic_characteristics()
     t = data.calc_num_basic_windings_t()
     assert bc['t'] == t
@@ -49,7 +49,7 @@ def test_num_basic_winding():
 
     # this winding-layout may not be correct 
     #  data = datamodel()
-    #  data.genwdg(Q = 30, P = 8, m = 3, layers = 1, cs = -1)
+    #  data.genwdg(Q = 30, P = 8, m = 3, layers = 1, coil_span = -1)
     #  bc, _ = data.get_basic_characteristics()
     #  t = data.calc_num_basic_windings_t()
     #  assert bc['t'] == t

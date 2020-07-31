@@ -297,10 +297,10 @@ def test_8():
     layers = 2
     
     wdg1 = datamodel()
-    wdg1.genwdg(Q=Q, P=P, m=m, cs=cs, layers=layers, empty_slots = 0)
+    wdg1.genwdg(Q=Q, P=P, m=m, coil_span=cs, layers=layers, empty_slots = 0)
     
     wdg2 = datamodel()
-    wdg2.genwdg(Q=Q, P=P, m=m, cs=cs, layers=layers, empty_slots = -1) # test for right detection
+    wdg2.genwdg(Q=Q, P=P, m=m, coil_span=cs, layers=layers, empty_slots = -1) # test for right detection
     assert wdg1.get_fundamental_windingfactor() == wdg2.get_fundamental_windingfactor()
 
 
@@ -394,7 +394,7 @@ def test_combinations_table():
         for P, wf in poles.items():
             if (slot,P) not in exclude:
                 wdg = datamodel()
-                wdg.genwdg(Q = slot, P = P, m = 3, layers = 2, cs = 1)
+                wdg.genwdg(Q = slot, P = P, m = 3, layers = 2, coil_span = 1)
                 wf2 = wdg.get_fundamental_windingfactor()[0]
                 wf2 = np.round(np.abs(wf2), 3)
                 if not np.allclose(wf, wf2, atol = 0.001):
@@ -405,7 +405,7 @@ def test_combinations_table():
 def test_single_phase():
     print('Test single phase winding')
     wdg = datamodel()
-    wdg.genwdg(Q = 4, P = 4, m = 1, layers = 2, cs = 1)
+    wdg.genwdg(Q = 4, P = 4, m = 1, layers = 2, coil_span = 1)
     assert wdg.get_fundamental_windingfactor()[0] == 1.0
 
 

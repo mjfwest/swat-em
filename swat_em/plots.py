@@ -259,7 +259,7 @@ class _slot_plot:
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
         P = self.data.get_num_polepairs() * 2
-        self.devide = 'v' if self.data.get_coilspan() == 1 else 'h'
+        self.devide = 'v' if self.data.get_coil_span() == 1 else 'h'
 
         def add_text(slot, phase, pos, wdir):
             dx = slot
@@ -386,7 +386,7 @@ class _polar_layout_plot:
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
         P = self.data.get_num_polepairs() * 2
-        cs = self.data.get_coilspan()
+        cs = self.data.get_coil_span()
         num_layers = self.data.get_num_layers()
         
         self.fig.clear()
@@ -528,7 +528,7 @@ class _overhang_plot:
         
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
-        w = self.data.get_coilspan()
+        w = self.data.get_coil_span()
         num_layers = self.data.get_num_layers()
         
         self.fig.clear()

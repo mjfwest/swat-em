@@ -18,7 +18,7 @@ config['num_MMF_points'] = 3601
 def test1():
     print('tooth coil winding 12/10')
     wdg = datamodel()
-    wdg.genwdg(Q=12, P=10, m=3, cs=1, layers=2)
+    wdg.genwdg(Q=12, P=10, m=3, coil_span=1, layers=2)
     sigma_d = wdg.get_double_linked_leakage()
     #  print('sigma_d:', sigma_d)
     np.testing.assert_allclose(sigma_d, 0.968, rtol=1e-3, atol=0)
@@ -27,7 +27,7 @@ def test1():
 def test2():
     print('tooth coil winding 12/14')
     wdg = datamodel()
-    wdg.genwdg(Q=12, P=14, m=3, cs=1, layers=2)
+    wdg.genwdg(Q=12, P=14, m=3, coil_span=1, layers=2)
     sigma_d = wdg.get_double_linked_leakage()
     #  print('sigma_d:', sigma_d)
     np.testing.assert_allclose(sigma_d, 2.8579, rtol=1e-3, atol=0)
@@ -36,7 +36,7 @@ def test2():
 def test3():
     print('single layer winding with constant number of turns')
     wdg = datamodel()
-    wdg.genwdg(Q=6, P=2, m=3, cs=-1, layers=1)
+    wdg.genwdg(Q=6, P=2, m=3, coil_span=-1, layers=1)
     sigma_d = wdg.get_double_linked_leakage()
     #  print('sigma_d:', sigma_d)
     np.testing.assert_allclose(sigma_d, 0.09662, rtol=1e-3, atol=0)

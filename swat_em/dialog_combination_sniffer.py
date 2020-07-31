@@ -158,7 +158,7 @@ class CombSniffer(QDialog):
         for k in range(num_combinations):
             wdg = datamodel()
             wdg.genwdg(Qlist[k], Plist[k], m = m, layers = layerslist[k],
-                       cs = cslist[k], empty_slots = es, analyse = False)
+                       coil_span = cslist[k], empty_slots = es, analyse = False)
             kw1 = wdg.get_fundamental_windingfactor()
             #  print('Q', Qlist[k])
             #  print('P', Plist[k])
@@ -183,7 +183,7 @@ class CombSniffer(QDialog):
         self.data['q'] = [bc['q'] for bc in self.bc_list]
         self.data['cs'] = []
         for wdg in self.wdg_list:
-            cs = wdg.get_coilspan()
+            cs = wdg.get_coil_span()
             if type(cs) == type([]):
                 self.data['cs'].append(np.mean(cs))
             else:

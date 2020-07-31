@@ -11,7 +11,7 @@ from swat_em.datamodel import datamodel
 
 def test_radial_force_modes1():
     data = datamodel()
-    data.genwdg(Q = 9, P = 6, m = 3, layers = 2, cs = 1)
+    data.genwdg(Q = 9, P = 6, m = 3, layers = 2, coil_span = 1)
     print('Q:', data.get_num_slots(), '2p:', 2*data.get_num_polepairs())
     modes = data.get_radial_force_modes(num_modes = 4)
     print('radial force modes:', modes)
@@ -20,7 +20,7 @@ def test_radial_force_modes1():
 
 def test_radial_force_modes2():
     data = datamodel()
-    data.genwdg(Q = 9, P = 8, m = 3, layers = 2, cs = 1)
+    data.genwdg(Q = 9, P = 8, m = 3, layers = 2, coil_span = 1)
     print('Q:', data.get_num_slots(), '2p:', 2*data.get_num_polepairs())
     modes = data.get_radial_force_modes(num_modes = 4)
     print('radial force modes:', modes)
@@ -29,7 +29,7 @@ def test_radial_force_modes2():
 
 def test_radial_force_modes3():
     data = datamodel()
-    data.genwdg(Q = 12, P = 10, m = 3, layers = 2, cs = 1)
+    data.genwdg(Q = 12, P = 10, m = 3, layers = 2, coil_span = 1)
     print('Q:', data.get_num_slots(), '2p:', 2*data.get_num_polepairs())
     modes = data.get_radial_force_modes(num_modes = 4)
     print('radial force modes:', modes)
@@ -38,7 +38,7 @@ def test_radial_force_modes3():
 
 def test_radial_force_modes4():
     data = datamodel()
-    data.genwdg(Q = 24, P = 22, m = 3, layers = 2, cs = 1)
+    data.genwdg(Q = 24, P = 22, m = 3, layers = 2, coil_span = 1)
     print('Q:', data.get_num_slots(), '2p:', 2*data.get_num_polepairs())
     modes = data.get_radial_force_modes(num_modes = 4)
     print('radial force modes:', modes)

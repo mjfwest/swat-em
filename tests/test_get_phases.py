@@ -11,7 +11,7 @@ import numpy as np
 
 def test_get_layers():
     data = datamodel()
-    data.genwdg(Q = 12, P = 10, m = 3, cs = 1, layers = 2)
+    data.genwdg(Q = 12, P = 10, m = 3, coil_span = 1, layers = 2)
     data.analyse_wdg()
     #  bc, txt = data.get_basic_characteristics()
     #  print(bc)

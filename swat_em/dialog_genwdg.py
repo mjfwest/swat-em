@@ -103,7 +103,7 @@ class GenWinding2(QDialog):
         self.data = datamodel()
         self.data.set_machinedata(Q = self.Q, m = self.m, p = self.P/2)
         ret = wdggenerator.genwdg(self.Q, self.P, self.m, self.cs, self.layers, Qes)
-        self.data.set_phases(S = ret['phases'], cs = ret['coilspan'])
+        self.data.set_phases(S = ret['phases'], coil_span = ret['coilspan'])
         self.data.set_valid(ret['valid'], ret['error'], ret['info'])
         self.data.set_num_empty_slots(ret['Qes'])
         bc, bc_str = self.data.get_basic_characteristics()
@@ -217,7 +217,7 @@ class GenWindingCombinations(QDialog):
                 d = datamodel()
                 d.set_machinedata(Q = kQ, m = self.m, p = kP/2)
                 ret = wdggenerator.genwdg(kQ, kP, self.m, coilspan, self.layers, empty_slots)
-                d.set_phases(S = ret['phases'], cs = ret['coilspan'])
+                d.set_phases(S = ret['phases'], coil_span = ret['coilspan'])
                 d.set_valid(ret['valid'], ret['error'], ret['info'])
                 d.set_num_empty_slots(ret['Qes'])
                 bc, bc_str = d.get_basic_characteristics()
@@ -271,7 +271,7 @@ class GenWindingCombinations(QDialog):
                         self.table.setItem(iQ, iP, QTableWidgetItem(txt))
                         q = bc['q']
 
-                        if self.data[iQ][iP].get_coilspan() == 1: 
+                        if self.data[iQ][iP].get_coil_span() == 1: 
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#ADD8E6'))
                         elif q.denominator == 1:
                             self.table.item(iQ, iP).setBackground(QtGui.QColor('#E6C3AD'))
@@ -339,7 +339,7 @@ class GenWindingCombinations(QDialog):
                 ret['Q'] = self.data[row][column].get_num_slots()
                 ret['P'] = 2*self.data[row][column].get_num_polepairs()
                 ret['m'] = self.data[row][column].get_num_phases()
-                ret['coilspan'] = self.data[row][column].get_coilspan()
+                ret['coilspan'] = self.data[row][column].get_coil_span()
                 ret['layers'] = self.layers
                 ret['Qes'] = self.data[row][column].get_num_empty_slots()
                 ret['overwrite'] = overwrite

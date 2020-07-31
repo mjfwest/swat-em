@@ -20,7 +20,7 @@ def test_image_export():
 
     
     data = datamodel()
-    data.genwdg(Q = 12, P = 2, m = 3, cs = -1, layers = 1, turns = 1000)
+    data.genwdg(Q = 12, P = 2, m = 3, coil_span = -1, layers = 1, turns = 1000)
     data.analyse_wdg()
     
     print('Test image export')
@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     # interactive usage:
     #  data = datamodel()
-    #  data.genwdg(Q = 12, P = 2, m = 3, w = -1, layers = 1, turns = 1000)
+    #  data.genwdg(Q = 12, P = 2, m = 3, coil_span = -1, layers = 1, turns = 1000)
     #  data.analyse_wdg()
     #  data.plot_layout('plot_layout.png', res = [1200, 900], show = True)
 

@@ -363,8 +363,8 @@ class layout(QDialog):
             Q = self.data.get_num_slots()
             p = self.data.get_num_polepairs()
             m = self.data.get_num_phases()
-            w = self.data.get_windingstep()      
-            ret = {'phases': phases, 'Q': Q, 'P': 2*p, 'm': m, 'w': w, 
+            w = self.data.get_coil_span()      
+            ret = {'phases': phases, 'Q': Q, 'P': 2*p, 'm': m, 'coilspan': w, 
             'layers': layers, 'overwrite': overwrite, 'turns': turns}
             return ret
         else:

@@ -23,7 +23,7 @@ def test_xlsx_export():
     data = datamodel()
     data.set_title('Q = 12, 2p = 10')
     data.set_notes('Example winding')
-    data.genwdg(Q = 12, P = 10, m = 3, cs = 1, layers = 2)
+    data.genwdg(Q = 12, P = 10, m = 3, coil_span = 1, layers = 2)
     data.analyse_wdg()
     bc, txt = data.get_basic_characteristics()
     data.export_xlsx('export.xlsx')

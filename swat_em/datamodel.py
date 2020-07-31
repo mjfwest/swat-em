@@ -46,7 +46,7 @@ class datamodel:
             txt.append('Number of slots:  {}'.format(self.get_num_slots()))        
             txt.append('Number of poles:  {}'.format(2*self.get_num_polepairs()))
             txt.append('Number of phases: {}'.format(self.get_num_phases()))
-            txt.append('coil span       : {}'.format(self.get_coilspan()))
+            txt.append('coil span       : {}'.format(self.get_coil_span()))
             
             txt.append('Number of slots per pole per phase: {}'.format(self.get_q()))
             wf = [str(round(k, 3)) for k in self.get_fundamental_windingfactor()]
@@ -157,22 +157,22 @@ class datamodel:
             self.set_num_empty_slots(int(Qes))
         
         
-    def set_phases(self, S, turns = 1, cs = None):
+    def set_phases(self, S, turns = 1, coil_span = None):
         '''
         setting the winding layout
         
         Parameters
         ----------
-        S : list of lists
-            winding layout for every phase, for example:
-            S = [[1,-2], [3,-4], [5,-6]]. This means there are 3 phases
-            with phase 1 in in slot 1 and in slot 2 with negativ winding direction. 
-            For double layer windings there must be additional lists:
-            S = [[[1, -4], [-3, 6]], [[3, -6], [-5, 2]], [[-2, 5], [4, -1]]]
-            Hint: [[[first layer], [second layer]], ... ]
+        S :         list of lists
+                    winding layout for every phase, for example:
+                    S = [[1,-2], [3,-4], [5,-6]]. This means there are 3 phases
+                    with phase 1 in in slot 1 and in slot 2 with negativ winding direction. 
+                    For double layer windings there must be additional lists:
+                    S = [[[1, -4], [-3, 6]], [[3, -6], [-5, 2]], [[-2, 5], [4, -1]]]
+                    Hint: [[[first layer], [second layer]], ... ]
                      
-        cs : integer
-             coil span (slots as unit)
+        coil_span : integer
+                    coil span (slots as unit)
         ''' 
         if not hasattr(S[0][0], '__iter__'):
             for k in range(len(S)):
@@ -186,8 +186,8 @@ class datamodel:
         self.set_turns(turns)
         self.set_machinedata(m = len(S))
         self.machinedata['phasenames'] = [string.ascii_uppercase[k] for k in range(len(S))]
-        if cs:
-            self.set_coilspan(cs)
+        if coil_span:
+            self.set_coilspan(coil_span)
         
 
     def set_valid(self, valid, error, info = ''):
@@ -196,7 +196,7 @@ class datamodel:
         self.generator_info['info'] = info
     
     
-    def genwdg(self, Q, P, m, layers, cs = -1, turns = 1, 
+    def genwdg(self, Q, P, m, layers, coil_span = -1, turns = 1, 
                empty_slots = 0, analyse = True):
         '''
         Generates a winding layout and stores it in the datamodel
@@ -209,7 +209,7 @@ class datamodel:
                       number of poles
         m :           integer
                       number of phases
-        cs :          integer
+        coil_span :   integer
                       coil span (1 for tooth coils)
         layers :      integer
                       number of coil sides per slot    
@@ -225,12 +225,12 @@ class datamodel:
                       >0: Manual defined number of empty slots
         '''
         
-        wdglayout = wdggenerator.genwdg(Q, P, m, cs, layers, empty_slots)
+        wdglayout = wdggenerator.genwdg(Q, P, m, coil_span, layers, empty_slots)
         if wdglayout is None:
             return
         self.set_machinedata(Q, int(P/2), m, wdglayout['Qes'])
         
-        self.set_phases(S = wdglayout['phases'], turns = turns, cs = wdglayout['coilspan'])
+        self.set_phases(S = wdglayout['phases'], turns = turns, coil_span = wdglayout['coilspan'])
         self.set_valid(valid = wdglayout['valid'], error = wdglayout['error'], info = wdglayout['info'])
         if analyse:
             self.analyse_wdg()
@@ -273,7 +273,7 @@ class datamodel:
                ['Number of phases ',   rep.italic('m: '),  str(self.get_num_phases())],
                ['slots per 2p per m ', rep.italic('q: '),  str(bc['q'])],
                ['Number of layers ', rep.italic('layer: '),  str(self.get_num_layers())],
-               ['coil span  ', rep.italic('cs: '),  str(self.get_coilspan())]]
+               ['coil span  ', rep.italic('cs: '),  str(self.get_coil_span())]]
         
         for i, k in enumerate(bc['kw1']):
             dat.append(['winding factor (m={}) '.format(i+1), rep.italic('kw1: '), str(round(k,3)) ])
@@ -525,7 +525,7 @@ class datamodel:
         self.machinedata['m'] = m
     
     
-    def get_coilspan(self):
+    def get_coil_span(self):
         '''
         Returns the coil span
 
@@ -1412,8 +1412,8 @@ def load_models_from_file(fname):
             data = datamodel()
             for key, value in m['machinedata'].items():
                 data.machinedata[key] = value
-            if type(data.get_coilspan()) == type(''):
-                data.set_coilspan(fractions.Fraction(data.get_coilspan()))
+            if type(data.get_coil_span()) == type(''):
+                data.set_coilspan(fractions.Fraction(data.get_coil_span()))
             data.set_title(m['title'])
             data.set_notes(m['notes'])
             data.analyse_wdg()
