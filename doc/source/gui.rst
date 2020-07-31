@@ -24,16 +24,16 @@ SWAT-EM comes with an QT based graphical user interface (GUI). The layout of the
 Workspace
 =========
 
-A SWAT-EM project, that can be saved as \*.wdg file can contain several different windings system. So, one can define and compare these windings in the same window. The workspace shows all the windings of the project. By clicking of the name all outputs (text and plots) gets updated. The buttons on the left of (1) in figure (:ref:`fig:mainwindow`) modifies the windings in the workspace
+A SWAT-EM project, that can be saved as \*.wdg file, can contain several different windings systems. So, one can define and compare these windings in the same window. The workspace contains all  windings of the project. By clicking of a name all outputs (text and plots) gets updated. The buttons on the left of (1) in figure (:ref:`fig:mainwindow`) modifies the windings in the workspace
 
 New winding
     Opens a dialog with all existing winding generator (see section :ref:`winding generators<sec:winding_generators>`). One can choose any of these generators to create a winding layout.
 
-Notes
-    If there a many windings in the project it might be a good idea to add some notes to the different layouts.
-
 Clone
     For modifying windings one can clone/duplicate an existing one. So a switch-back to the initial state and a comparison is possible.
+
+Notes
+    If there a many windings in the project it might be a good idea to add some notes to the different layouts.
 
 Delete
     Deletes the selected winding.
@@ -153,7 +153,7 @@ with :math:`p` pole pairs and the number of stator slots :math:`Q`. If the coil 
 
 .. math:: E_i = e^{j\alpha_i}
 
-All phasors of a phase are getting grouped a vectorial summed up which is shown as (1) in figure :ref:`phasors plot<fig:phasors>`. The dotted line represents the vectorial sum. The amplitude and the phase of
+All phasors of a phase are getting grouped a vectorial summed up which is shown as (1) in figure :ref:`phasors plot<fig:mainwindowphasors>`. The dotted line represents the vectorial sum. The amplitude and the phase of
 this is shown in (2).
 
 .. _fig:mainwindowphasors:
@@ -220,7 +220,7 @@ For evaluation of the winding the so called "Magnetomotive force" or short MMF i
 The plot also shows the fundamental and some of the harmonics. The number of harmonics which are plotted can be defined relative to the fundamental. Please consider the "Tools" :math:`\rightarrow`  "Settings" dialog. Table (3) in the window displays the harmonic analyses of the MMF. With the slider (4) one can define the phase angle of the AC current system for the MMF plot. Note that the phase angle has no effect on the harmonic content of the MMF, so the harmonic analyses is independent from it.
 
 
-.. sec:winding_generators:
+.. _sec:winding_generators:
 
 Winding Generators
 ==================
@@ -228,7 +228,7 @@ Winding Generators
 SWAT-EM comes with many different winding generators. Each of them have different features.
 
 
-.. sec:manual_generator:
+.. _sec:manual_generator:
 
 Manual layout
 -------------
@@ -260,7 +260,7 @@ overwrite winding
     There are two different possible action while exiting an generator dialog with the ok button. If the radio button "add new winding" is selected, the winding in the generator winding is added to the workspace in the main window. If "overwrite" is selected, than the actual selected winding of the workspace getting overwritten. Be relaxed, if you have overwritten your winding accidentally, there is an undo function in the main window.
 
 
-.. sec:automatic_generator:
+.. _sec:automatic_generator:
 
 Automatic layout
 ----------------
@@ -308,7 +308,7 @@ This generator gives an overview about possible slot/poles combinations. So it's
 While clicking on a item in the upper table, the winding characteristics shown on the left side and the winding layout is shown on the bottom table. As with the other generators the selected winding can be transferred to the workspace in the main window.
 
 For some slot/pole combinations there are many winding system possible where this generator shows the winding with the highest
-fundamental winding factor :math:`k_{w,1}`. At this time there is no way to modify the windings (changing winding steps for example). For more control you have to use other generators like :ref:`sec:Manual generator<manual_generator>` or :ref:`automatic generator<sec:automatic_generator>`.
+fundamental winding factor :math:`k_{w,1}`. At this time there is no way to modify the windings (changing winding steps for example). For more control you have to use other generators like :ref:`Manual generator<sec:manual_generator>` or :ref:`automatic generator<sec:automatic_generator>`.
 
 .. _fig:winding_table:
 
