@@ -144,7 +144,7 @@ def gen_slot_filling(Q, bz, hz):
         if k == 0:
             x += [x1, x1+bz/2, np.nan]
         elif k == Q:
-            x += [x1+bz/2, x1+bz/2, np.nan]
+            x += [x1-bz/2, x1, np.nan]
         else:
             x += [x1-bz/2, x1+bz/2, np.nan]
         y += [hz, hz, np.nan]
