@@ -14,9 +14,9 @@
    viewBox="0 0 48 48"
    width="48"
    id="svg625"
-   sodipodi:docname="choose.svg"
+   sodipodi:docname="scatter.svg"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   inkscape:export-filename="/home/martin/SWAT-EM/swat-em/swat_em/ui/icons/choose.png"
+   inkscape:export-filename="/home/martin/SWAT-EM/swat-em/swat_em/ui/icons/scatter.png"
    inkscape:export-xdpi="128"
    inkscape:export-ydpi="128">
   <metadata
@@ -45,9 +45,9 @@
      id="namedview627"
      showgrid="true"
      units="px"
-     inkscape:zoom="5.6568542"
-     inkscape:cx="29.832548"
-     inkscape:cy="39.155045"
+     inkscape:zoom="7.9999999"
+     inkscape:cx="-4.6226414"
+     inkscape:cy="11.354429"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -106,7 +106,7 @@
      inkscape:connector-curvature="0"
      id="path862"
      d="M 5,42 H 45"
-     style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+     style="fill:#000000;fill-rule:evenodd;stroke:#666666;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   <path
      sodipodi:nodetypes="cc"
      inkscape:export-ydpi="96"
@@ -114,7 +114,7 @@
      inkscape:connector-curvature="0"
      id="path867"
      d="M 7,44 V 3"
-     style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+     style="fill:#000000;fill-rule:evenodd;stroke:#666666;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   <ellipse
      style="opacity:0.98000004;fill:#36688a;fill-opacity:1;stroke:none;stroke-width:4.17479897;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="path4561"
