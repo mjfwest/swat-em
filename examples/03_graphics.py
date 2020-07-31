@@ -12,6 +12,13 @@ wdg.genwdg(Q = 12, P = 2, m = 3, layers = 1)
 # coil sides of all phases
 wdg.plot_layout('plot_layout.png')
 
+# Visualization of the winding overhang (connection of the coil sides)
+wdg.plot_overhang('overhang.png')
+
+# Visualization of the winding layout and overhang (connection of the coil sides)
+# in polar coordinates
+wdg.plot_polar_layout('layout_polar.png', draw_poles = True)
+
 # The winding factor is analyzes by the slot voltage phasors. 
 # The following is the corresponding visualization.
 wdg.plot_star('plot_star.png')

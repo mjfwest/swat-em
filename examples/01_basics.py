@@ -23,7 +23,7 @@ P = 2                   # number of pole pairs
 cs = 1                  # coil span for the coil in slots
 
 # generate winding automatically
-wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, cs = cs) 
+wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, coil_span = cs) 
 print(wdg)             # print infos for the winding
 
 
@@ -33,7 +33,7 @@ wdg = datamodel()
 Q = 12
 P = 2
 cs = 5     # without shortening cs would be 6 for this winding
-wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, cs = cs) 
+wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, coil_span = cs) 
 print(wdg)
 
 
