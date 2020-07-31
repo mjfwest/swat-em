@@ -744,7 +744,9 @@ class create_wdg_overhang:
             and negative coil sides 'Sn'
             '''
             if len(Sp) != len(Sn):
-                raise Exception('Number of positive and negative coils sides must be equal')
+                #  raise Exception('Number of positive and negative coils sides must be equal')
+                print('Number of positive and negative coils sides must be equal')
+                return []
 
             con = []
             for kp in range(len(Sp)):

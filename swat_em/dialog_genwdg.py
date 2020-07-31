@@ -99,17 +99,27 @@ class GenWinding2(QDialog):
         elif self.radioButton_dlayer.isChecked():
             self.layers = 2
 
+        
+        self.table = self.tableWindingLayout
+        self.table.clear()
+        self.textBrowser_wdginfo.clear()
+        
+        
         self.data = datamodel()
         self.data.set_machinedata(Q = self.Q, m = self.m, p = self.P/2)
         ret = wdggenerator.genwdg(self.Q, self.P, self.m, self.w, self.layers, Qes)
+        if ret is None:
+            return
+        if ret['valid'] == False:
+            return
+            
         self.data.set_phases(S = ret['phases'], wstep = ret['wstep'])
         self.data.set_valid(ret['valid'], ret['error'], ret['info'])
         self.data.set_num_empty_slots(ret['Qes'])
         bc, bc_str = self.data.get_basic_characteristics()
         self.textBrowser_wdginfo.setHtml(bc_str)
         
-        self.table = self.tableWindingLayout
-        self.table.clear()
+        
         if bc['sym'] and self.data.generator_info['valid'] :            
             self.table.setRowCount(self.layers)
             self.table.setColumnCount(self.data.get_num_slots())
@@ -216,10 +226,13 @@ class GenWindingCombinations(QDialog):
                 d = datamodel()
                 d.set_machinedata(Q = kQ, m = self.m, p = kP/2)
                 ret = wdggenerator.genwdg(kQ, kP, self.m, wstep, self.layers, empty_slots)
-                d.set_phases(S = ret['phases'], wstep = ret['wstep'])
-                d.set_valid(ret['valid'], ret['error'], ret['info'])
-                d.set_num_empty_slots(ret['Qes'])
-                bc, bc_str = d.get_basic_characteristics()
+                if ret:
+                    d.set_phases(S = ret['phases'], wstep = ret['wstep'])
+                    d.set_valid(ret['valid'], ret['error'], ret['info'])
+                    d.set_num_empty_slots(ret['Qes'])
+                    bc, bc_str = d.get_basic_characteristics()
+                else:
+                    d.set_valid(False, '', '')
                 self.data[iQ].append(d)
         self.update_table()
                 
