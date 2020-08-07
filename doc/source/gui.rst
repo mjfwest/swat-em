@@ -315,7 +315,7 @@ fundamental winding factor :math:`k_{w,1}`. At this time there is no way to modi
     :alt: Alternative text
     :figclass: align-center
 
-    Table of possible windings for diffrent slot/pole combinations
+    Table of possible windings for different slot/pole combinations
 
 
 Number of slots
@@ -365,6 +365,90 @@ plot value
 
     sigma_d (:math:`\sigma_d`)
         The coefficient of the double linkead leakage flux is a measure of the harmonic content of the MMF in the airgap caused by the winding. As higher the number as higher the harmonics.
+
+
+
+Combination Sniffer
+-------------------
+
+The combination sniffer is a powerfull winding generator. With it one can find the best winding for the users requirements. For a given number of slots and poles or - even a range of both - all possible windings (which are implemented in SWAT-EM) are evaluated. The user can select from different target values for the plot:
+
+:math:`Q`
+    Number of stator slots
+
+:math:`2p`
+    Number of poles
+
+:math:`m`
+    Number of phases
+
+:math:`q`
+    Number of slots per pole per phase :math:`q=\frac{Q}{2pm}`
+
+:math:`cs`
+    Coil span (in slots)
+
+:math:`kw1`
+    Fundamental winding factor (for separate for each phase)
+
+:math:`\sigma_d`
+    Double linked leakage (based on MMF)
+
+:math:`lcm(Q,P)`
+    Least common multiplier of number of slots an pole pairs. For permanent-magnet machines this is the first harmonic  number of the cogging torque
+
+:math:`t`
+    Periodicity of the base winding :math:`t = gcd(Q, p)`.
+
+:math:`a`
+    Number of possible parallel winding circuit. (In most cases :math:`a` is equal to :math:`t`)
+
+:math:`r`
+    Radial force modes excited by the winding.
+
+
+The scatter plot in :ref:`fig:combination_sniffer` is interactively usable. By clicking on a point the corresponding winding ist selected and shown.
+
+.. _fig:combination_sniffer:
+
+.. figure:: fig/Combination_Sniffer.png
+    :alt: Alternative text
+    :figclass: align-center
+
+    Combination Sniffer - Find the best winding 
+
+
+Number of slots
+    The number or a range of numbers of slots :math:`Q` to evaluate windings for.
+
+Number of poles
+    The number or a range of poles :math:`2p`. Only even integer values :math:`\geq2` are valid.
+
+Number of phases
+    The number of phases :math:`m` in the machine. Every integer value :math:`>1` is valid.
+
+Single layer winding
+    If checked single layer winding are allowed
+
+Double layer winding
+    If checked double layer winding are allowed
+
+Allow empty slots
+    If checked dead coil windings are allows (slots without coil sides)
+
+overwrite winding
+    There are two different possible action while exiting an generator dialog with the OK button. If the radio button "add new winding" is selected, the winding in the generator winding is added to the workspace in the main window. If "overwrite" is selected, than the actual selected winding of the workspace getting overwritten. Be relaxed, if you have overwritten your winding accidentally, there is an undo function in the main window.
+
+Winding designs can also selected with the table view (:ref:`fig:combination_sniffer_table`).
+
+.. _fig:combination_sniffer_table:
+
+.. figure:: fig/Combination_Sniffer_table.png
+    :alt: Alternative text
+    :figclass: align-center
+
+    Combination Sniffer - Choosing windings by table 
+
 
 
 Import winding
