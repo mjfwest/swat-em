@@ -2,7 +2,8 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import numpy as np
 from swat_em.datamodel import datamodel
@@ -52,7 +53,7 @@ def test_lcmQP():
     assert wdg.get_lcmQP() == 12
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_is_symmetric()
     test_fundamental_winding_factor()
     test_num_series_turns()

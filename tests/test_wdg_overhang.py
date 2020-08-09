@@ -2,11 +2,11 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import numpy as np
 from swat_em import datamodel
-
 
 
 wdg = datamodel()
@@ -27,8 +27,7 @@ wdg = datamodel()
 wdg.genwdg(Q=18, P=4, m=3, w=-1, layers=1)  # fractional slot
 
 #  plot_overhang(self, filename, res = None, show = False, optimize_overhang = False)
-wdg.plot_overhang('overhang.png')
-
+wdg.plot_overhang("overhang.png")
 
 
 #  S = [[1, 2, -7, -8], [5, 6, -11, -12], [-3, -4, 9, 10]]
