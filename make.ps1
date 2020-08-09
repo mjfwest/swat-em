@@ -11,6 +11,7 @@ Remove-Item -Recurse -Force -ErrorAction Ignore SWAT-EM_Setup.exe
 git pull
 
 # make docs
+.\doc\make.bat clean
 .\doc\make.bat latexpdf
 mkdir -Force swat_em\doc
 Copy-Item "doc\build\latex\SWAT-EM.pdf" -Destination "swat_em\doc\SWAT-EM_manual.pdf"
