@@ -45,7 +45,7 @@ induction machines:
     Number of poles:  2
     Number of phases: 3
     Number of layers: 1
-    Winding step    : 3
+    Coil span       : 3
     Number of slots per pole per phase: 1
     Fundamental winding factor: 1.0, 1.0, 1.0
 
@@ -64,7 +64,7 @@ In the same way we can create a tooth-coil winding
 
     Winding layout with 3 slots, 2 poles and 3 phases
 
-We can set the winding step explicite with the keyword 'stepwidth'. 
+We can set the Coil span explicite with the keyword 'coil_span'. 
 Compared to the overlapping winding we need only 3 slots for
 the two poles. To get a coil around every tooth, we need two 
 winding layers:
@@ -72,12 +72,12 @@ winding layers:
 .. code-block:: python
 
     >>> wdg = datamodel()      # generate a datamodel for the winding
-    >>> Q = 3                   # number of slots
-    >>> P = 2                   # number of pole pairs
-    >>> w = 1                   # step width for the coil in slots
+    >>> Q = 3                  # number of slots
+    >>> P = 2                  # number of pole pairs
+    >>> cs = 1                 # coil span for the coil in slots
 
     >>> # generate winding automatically
-    >>> wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
+    >>> wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, coil_span = cs) 
     >>> print(wdg)             # print infos for the winding
     WINDING DATAMODEL
     =================
@@ -87,7 +87,7 @@ winding layers:
     Number of poles:  2
     Number of phases: 3
     Number of layers: 1
-    Winding step    : 1
+    Coil span       : 1
     Number of slots per pole per phase: 1/2
     Fundamental winding factor: 0.866, 0.866, 0.866
 
@@ -110,8 +110,8 @@ A more complex winding (overlapping full pitch winding with coil shortening)
     >>> wdg = datamodel()
     >>> Q = 12
     >>> P = 2
-    >>> w = 5     # without shortening w would be 6 for this winding
-    >>> wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, w = w) 
+    >>> cs = 5     # without shortening coil span would be 6 for this winding
+    >>> wdg.genwdg(Q = Q, P = P, m = 3, layers = 2, coil_span = cs) 
     >>> print(wdg)
     WINDING DATAMODEL
     =================
@@ -121,7 +121,7 @@ A more complex winding (overlapping full pitch winding with coil shortening)
     Number of poles:  2
     Number of phases: 3
     Number of layers: 2
-    Winding step    : 5
+    Coil span       : 5
     Number of slots per pole per phase: 2
     Fundamental winding factor: 0.933, 0.933, 0.933
 
@@ -140,8 +140,8 @@ After generating a winding, swat-em analyze it and provides the results:
     >>> wdg.genwdg(Q = 12, P = 2, m = 3, layers = 1) 
     >>> print('fundamental winding factor: ', wdg.get_fundamental_windingfactor())
     fundamental winding factor:  [0.9659258262890683, 0.9659258262890683, 0.9659258262890684]
-    >>> print('winding step: ', wdg.get_windingstep())
-    winding step:  6
+    >>> print('coil span: ', wdg.get_coilspan())
+    coil span:  6
 
 
 
@@ -190,7 +190,7 @@ have direct access:
 .. code-block:: python
 
     >>> print('Data for the machine: ', wdg.machinedata.keys())
-    Data for the machine:  dict_keys(['Q', 'p', 'm', 'phases', 'wstep', 'turns', 'phasenames'])
+    Data for the machine:  dict_keys(['Q', 'p', 'm', 'phases', 'cs', 'turns', 'phasenames'])
     >>> # ... and all results:
     >>> print('Data for the machine: ', wdg.results.keys())
     Data for the machine:  dict_keys(['q', 'nu_el', 'Ei_el', 'kw_el', 'phaseangle_el', 'nu_mech', 'Ei_mech', 'kw_mech', 'phaseangle_mech', 'valid', 'error', 't', 'wdg_is_symmetric', 'wdg_periodic', 'MMK', 'basic_char'])
