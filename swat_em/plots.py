@@ -156,6 +156,19 @@ def gen_slot_filling(Q, bz, hz):
     return x, y, y_neg
 
 
+def group_on_nan(x, y):
+    xt, yt = [[]], [[]]
+    for k in range(len(x)):
+        if np.isnan(x[k]) or np.isnan(y[k]):
+            if len(xt[-1]) > 0:
+                xt.append([])
+                yt.append([])
+        else:
+            xt[-1].append(x[k])
+            yt[-1].append(y[k])
+    return xt, yt
+
+
 def _pg_clear_legend(leg):
     """
     clear the legend of a pyqtgraph legend
@@ -327,8 +340,13 @@ class _slot_plot:
                     x1[idx2] = np.nan
 
                 pen = pg.mkPen(magnet_colors[kpole], width=magnet_linewidth)
-                curve = pg.PlotCurveItem(x1, y1, pen=pen, connect="finite")
-                self.fig.addItem(curve)
+
+                # Bug in pyqtgraph / PyQt5 > v5.12.1
+                #  curve = pg.PlotCurveItem(x1, y1, pen=pen, connect="finite")
+                #  self.fig.addItem(curve)
+                for xtmp, ytmp in zip(*group_on_nan(x1, y1)):
+                    curve = pg.PlotCurveItem(xtmp, ytmp, pen=pen, connect="finite")
+                    self.fig.addItem(curve)
 
         self.fig.autoRange()
         if self.show:
@@ -455,10 +473,18 @@ class _polar_layout_plot:
                 x += [x1, x2, np.nan]
                 y += [y1, y2, np.nan]
             pen = pg.mkPen(get_phase_color(km), width=1.5)
-            curve = pg.PlotCurveItem(
-                x, y, pen=pen, name="Phase " + str(km + 1), connect="finite"
-            )
-            self.fig.addItem(curve)
+
+            # Bug in pyqtgraph / PyQt5 > v5.12.1
+            #  curve = pg.PlotCurveItem(
+            #  x, y, pen=pen, name="Phase " + str(km + 1), connect="finite"
+            #  )
+            #  self.fig.addItem(curve)
+
+            for xtmp, ytmp in zip(*group_on_nan(x, y)):
+                curve = pg.PlotCurveItem(
+                    xtmp, ytmp, pen=pen, name="Phase " + str(km + 1), connect="finite"
+                )
+                self.fig.addItem(curve)
 
         # draw poles
         if draw_poles:
@@ -555,10 +581,20 @@ class _overhang_plot:
         # plot slots - filling
         brush = pg.mkBrush(color="#BFBFBF")
         x, y_upper, y_lower = gen_slot_filling(Q, bz=self.bz, hz=self.hz)
-        c1 = pg.PlotCurveItem(x, y_upper, connect="finite")
-        c2 = pg.PlotCurveItem(x, y_lower, connect="finite")
-        fill = pg.FillBetweenItem(c1, c2, brush=brush)
-        self.fig.addItem(fill)
+
+        # Bug in pyqtgraph / PyQt5 > v5.12.1
+        #  c1 = pg.PlotCurveItem(x, y_upper, connect="finite")
+        #  c2 = pg.PlotCurveItem(x, y_lower, connect="finite")
+        #  fill = pg.FillBetweenItem(c1, c2, brush=brush)
+        #  self.fig.addItem(fill)
+
+        _, y_upper = group_on_nan(x, y_upper)
+        x, y_lower = group_on_nan(x, y_lower)
+        for xtmp, y_upper_tmp, y_lower_tmp in zip(x, y_upper, y_lower):
+            c1 = pg.PlotCurveItem(xtmp, y_upper_tmp, connect="finite")
+            c2 = pg.PlotCurveItem(xtmp, y_lower_tmp, connect="finite")
+            fill = pg.FillBetweenItem(c1, c2, brush=brush)
+            self.fig.addItem(fill)
 
         ovh = analyse.create_wdg_overhang(S, Q, num_layers)
         if optimize_overhang:
@@ -626,10 +662,19 @@ class _overhang_plot:
                 self.fig.addItem(arrow)
 
             pen = pg.mkPen(color=get_phase_color(i - 1), width=config["plt"]["lw"])
-            curve = pg.PlotCurveItem(
-                x, y, pen=pen, connect="finite", name="Phase " + str(i)
-            )
-            self.fig.addItem(curve)
+
+            # Bug in pyqtgraph / PyQt5 > v5.12.1
+            #  curve = pg.PlotCurveItem(
+            #  x, y, pen=pen, connect="finite", name="Phase " + str(i)
+            #  )
+            #  self.fig.addItem(curve)
+
+            for xtmp, ytmp in zip(*group_on_nan(x, y)):
+                curve = pg.PlotCurveItem(
+                    xtmp, ytmp, pen=pen, connect="finite", name="Phase " + str(i)
+                )
+                self.fig.addItem(curve)
+
             i += 1
 
         # plot slot number
