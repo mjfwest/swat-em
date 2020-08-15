@@ -480,11 +480,14 @@ class _polar_layout_plot:
             #  )
             #  self.fig.addItem(curve)
 
+            i_name = 0
             for xtmp, ytmp in zip(*group_on_nan(x, y)):
+                name = "Phase " + str(km + 1) if i_name == 0 else None
                 curve = pg.PlotCurveItem(
-                    xtmp, ytmp, pen=pen, name="Phase " + str(km + 1), connect="finite"
+                    xtmp, ytmp, pen=pen, name=name, connect="finite"
                 )
                 self.fig.addItem(curve)
+                i_name += 1
 
         # draw poles
         if draw_poles:
@@ -669,11 +672,14 @@ class _overhang_plot:
             #  )
             #  self.fig.addItem(curve)
 
+            i_name = 0
             for xtmp, ytmp in zip(*group_on_nan(x, y)):
+                name = "Phase " + str(i) if i_name == 0 else None
                 curve = pg.PlotCurveItem(
-                    xtmp, ytmp, pen=pen, connect="finite", name="Phase " + str(i)
+                    xtmp, ytmp, pen=pen, connect="finite", name=name
                 )
                 self.fig.addItem(curve)
+                i_name += 1
 
             i += 1
 
