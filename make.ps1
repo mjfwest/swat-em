@@ -17,6 +17,9 @@ mkdir -Force swat_em\doc
 Copy-Item "doc\build\latex\SWAT-EM.pdf" -Destination "swat_em\doc\SWAT-EM_manual.pdf"
 
 # build to exe
+$wsh = New-Object -ComObject Wscript.Shell
+$wsh.Popup("Please define version-number in 'pack.nsi' before")
+
 pyinstaller swat_em\main.py --name swat-em --noconsole  --exclude scipy --exclude matplotlib --icon=swat_em\ui\icons\app_icon.ico
 
 # copy necessary data
