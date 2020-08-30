@@ -1038,7 +1038,17 @@ class _mmk:
         )
         phi = np.array(phi)
         threshold = config["threshold_MMF_harmonics"]
-        nu, A, phase = self.data.get_MMF_harmonics(threshold=threshold)
+        #  nu, A, phase = self.data.get_MMF_harmonics(threshold = threshold)
+
+        HA = analyse.DFT(MMK[:-1])
+        A = np.abs(HA)
+        phase = np.angle(HA)
+        nu = np.arange(len(HA))
+
+        idx = A > np.max(A) * threshold
+        nu = nu[idx]
+        A = A[idx]
+        phase = phase[idx]
 
         self.fig1.clear()
         self.fig1.disableAutoRange()  # disable because of porformance
