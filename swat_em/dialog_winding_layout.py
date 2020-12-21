@@ -34,7 +34,7 @@ class layout(QDialog):
     """
 
     def __init__(self, data):
-        self.data = data
+        self.data = data.copy()
         super().__init__()
         # Set up the user interface from Designer.
         uic.loadUi(os.path.join(__dir__, "ui", "winding_layout.ui"), self)

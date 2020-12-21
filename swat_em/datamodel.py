@@ -95,6 +95,12 @@ class datamodel:
         for key in self.results_keys:
             self.results[key] = None
 
+    def copy(self):
+        """
+        Returns a copy of the winding
+        """
+        return copy.deepcopy(self)
+
     def set_title(self, title):
         """
         Set the title of the winding 
