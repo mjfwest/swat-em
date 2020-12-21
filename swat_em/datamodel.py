@@ -64,6 +64,19 @@ class datamodel:
             txt.append("-- NO WINDING DEFINED IN THIS MODEL --")
         return "\n".join(txt)
 
+
+    def __eq__(self, other):
+        ret = []
+        ret.append(self.machinedata == other.machinedata)
+        for rk in self.results_keys:
+            if type(self.results[rk]) == type([]):  # lists are filled with numpy arrays
+                ret.append(np.allclose(self.results[rk], other.results[rk]))
+            else:
+                ret.append(self.results[rk] == other.results[rk])
+        return np.all(ret)
+
+
+
     def reset_data(self):
         """
         resets all data of the datamodel

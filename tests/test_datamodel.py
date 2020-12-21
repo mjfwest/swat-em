@@ -24,10 +24,18 @@ def test1():
     data2 = datamodel()
     data2.load_from_file("savefile.wdg")
     os.remove("savefile.wdg")
-
+    
+    # proof, that both winding models are equal
+    print('windings equal: ', data==data2)
     assert data.machinedata == data2.machinedata
-    #  assert data.results == data2.results
+
+
+
+
+
 
 
 if __name__ == "__main__":
     test1()
+
+
