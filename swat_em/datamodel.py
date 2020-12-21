@@ -64,7 +64,6 @@ class datamodel:
             txt.append("-- NO WINDING DEFINED IN THIS MODEL --")
         return "\n".join(txt)
 
-
     def __eq__(self, other):
         ret = []
         ret.append(self.machinedata == other.machinedata)
@@ -74,8 +73,6 @@ class datamodel:
             else:
                 ret.append(self.results[rk] == other.results[rk])
         return np.all(ret)
-
-
 
     def reset_data(self):
         """

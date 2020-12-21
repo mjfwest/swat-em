@@ -237,10 +237,14 @@ class GenWindingCombinations(QDialog):
                     kQ, kP, self.m, wstep, self.layers, empty_slots
                 )
                 if ret:
-                    d.set_phases(S=ret["phases"], w=ret["wstep"])
-                    d.set_valid(ret["valid"], ret["error"], ret["info"])
-                    d.set_num_empty_slots(ret["Qes"])
-                    bc, bc_str = d.get_basic_characteristics()
+                    if wstep == 1 and ret["wstep"] != 1:
+                        d.set_valid(False, "", "")
+                    else:
+                        d.set_phases(S=ret["phases"], w=ret["wstep"])
+                        d.set_valid(ret["valid"], ret["error"], ret["info"])
+                        d.set_num_empty_slots(ret["Qes"])
+                        bc, bc_str = d.get_basic_characteristics()
+
                 else:
                     d.set_valid(False, "", "")
                 self.data[iQ].append(d)
@@ -334,6 +338,11 @@ class GenWindingCombinations(QDialog):
             row = sel.row()
             column = sel.column()
             d = self.data[row][column]
+
+            if not d.generator_info["valid"]:
+                self.tableWindingLayout.clear()
+                return None, None
+
             bc, bc_text = d.get_basic_characteristics()
             self.textBrowser_wdginfo.setHtml(bc_text)
 
