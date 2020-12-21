@@ -84,7 +84,7 @@ def get_init_config():
 
 def get_phase_color(num):
     cols = config["plt"]["phase_colors"]
-    while num > len(cols):
+    while num >= len(cols):
         num -= len(cols)  # periodic colors
     return cols[num]
 
