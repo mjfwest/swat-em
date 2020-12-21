@@ -417,9 +417,9 @@ class _polar_layout_plot:
 
         ovh = analyse.create_wdg_overhang(S, Q, num_layers)
         if optimize_overhang:
-            head = ovh.get_overhang(wstep=None)
+            head = ovh.get_overhang(w=None)
         else:
-            head = ovh.get_overhang(wstep=w)
+            head = ovh.get_overhang(w=w)
 
         def get_pos(num, r=1):
             """
@@ -744,6 +744,11 @@ class _slot_star:
 
         self.fig.clear()
         _pg_clear_legend(self.leg)
+        
+        if len(self.data.results["Ei_el"]) == 0: # no data to plot
+            if self.table is not None:
+                self.table.clear()
+            return
 
         self.fig.disableAutoRange()  # disable because of porformance
         # (a lot of elements are plottet)
@@ -913,7 +918,11 @@ class _windingfactor:
             nu = np.array(self.data.results["nu_el"])
             kw = np.array(self.data.results["kw_el"])
 
-        #  gap = 0.2
+        if len(kw) == 0: # no data to plot
+            if self.table is not None:
+                self.table.clear()
+            return
+        
         N = np.shape(kw)[1]
         for k in range(N):
             dx = nu[1] - nu[0]

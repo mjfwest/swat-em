@@ -540,9 +540,12 @@ class MainWindow(QMainWindow):
         bc, bc_str = self.data.get_basic_characteristics()
         self.textBrowser_wdginfo.setHtml(bc_str)
         idx_old = self.comboBox_star_harmonics.currentText()
-        idx = (
-            self.data.results["nu_el"].index(int(idx_old)) if idx_old else None
-        )  # remember ordinal number
+        
+        idx = None
+        if idx_old:
+            if int(idx_old) in self.data.results["nu_el"]:
+                idx = self.data.results["nu_el"].index(int(idx_old))
+
         self.comboBox_star_harmonics.blockSignals(
             True
         )  # prevent double plotting on startup
