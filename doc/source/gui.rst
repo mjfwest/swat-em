@@ -289,8 +289,8 @@ Machine data
 layer
     Double layer winding means, that in every slot there are two coil sides (from the same or from different phases)
 
-winding step
-    Every coil has an "in" and an "out" conductor, which are connected via the winding overhang. The winding step defines the distance between "in" and "out" in slots. If winding-step is 1 a tooth-coil winding will be created. Note: For single layer windings there are some restriction to accommodate all coil sides, so in this case the winding step can't be influenced.
+coil span
+    Every coil has an "in" and an "out" conductor, which are connected via the winding overhang. The coil span defines the distance between "in" and "out" in slots. If coil span is 1 a tooth-coil winding will be created. Note: For single layer windings there are some restriction to accommodate all coil sides, so in this case the coil span can't be influenced.
 
 overwrite winding
     There are two different possible action while exiting an generator dialog with the ok button. If the radio button "add new winding" is selected, the winding in the generator winding is added to the workspace in the main window. If "overwrite" is selected, than the actual selected winding of the workspace getting overwritten. Be relaxed, if you have overwritten your winding accidentally, there is an undo function in the main window.
@@ -307,7 +307,7 @@ This generator gives an overview about possible slot/poles combinations. So it's
 While clicking on a item in the upper table, the winding characteristics is shown on the left side and the winding layout is shown on the bottom table. As with the other generators the selected winding can be transferred to the workspace in the main window.
 
 For some slot/pole combinations there are many winding system possible (different coil span) where this generator shows the winding with the highest
-fundamental winding factor :math:`k_{w,1}`. At this time there is no way to modify the windings (changing winding steps for example). For more control you have to use other generators like :ref:`Manual generator<sec:manual_generator>` or :ref:`automatic generator<sec:automatic_generator>`.
+fundamental winding factor :math:`k_{w,1}`. At this time there is no way to modify the windings (changing coil span for example). For more control you have to use other generators like :ref:`Manual generator<sec:manual_generator>` or :ref:`automatic generator<sec:automatic_generator>`.
 
 .. _fig:winding_table:
 
@@ -337,7 +337,7 @@ layers
     Defines the number of layers for the table. At this time only single layer and double layer windings are possible.
 
 Force tooth coil winding
-    In some cases you may want to realize tooth coil windings, even when the winding factor isn't very high. In this case  the winding step is set to :math:`w=1`. 
+    In some cases you may want to realize tooth coil windings, even when the winding factor isn't very high. In this case  the coil span is set to :math:`w=1`. 
 
 overwrite winding
     There are two different possible action while exiting an generator dialog with the OK button. If the radio button "add new winding" is selected, the winding in the generator winding is added to the workspace in the main window. If "overwrite" is selected, than the actual selected winding of the workspace getting overwritten. Be relaxed, if you have overwritten your winding accidentally, there is an undo function in the main window.

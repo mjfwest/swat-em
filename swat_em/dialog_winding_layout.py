@@ -368,7 +368,7 @@ class layout(QDialog):
             Q = self.data.get_num_slots()
             p = self.data.get_num_polepairs()
             m = self.data.get_num_phases()
-            w = self.data.get_windingstep()
+            w = self.data.get_coilspan()
             ret = {
                 "phases": phases,
                 "Q": Q,

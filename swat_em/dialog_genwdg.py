@@ -112,7 +112,7 @@ class GenWinding2(QDialog):
         if ret["valid"] == False:
             return
 
-        self.data.set_phases(S=ret["phases"], wstep=ret["wstep"])
+        self.data.set_phases(S=ret["phases"], w=ret["wstep"])
         self.data.set_valid(ret["valid"], ret["error"], ret["info"])
         self.data.set_num_empty_slots(ret["Qes"])
         bc, bc_str = self.data.get_basic_characteristics()
@@ -237,7 +237,7 @@ class GenWindingCombinations(QDialog):
                     kQ, kP, self.m, wstep, self.layers, empty_slots
                 )
                 if ret:
-                    d.set_phases(S=ret["phases"], wstep=ret["wstep"])
+                    d.set_phases(S=ret["phases"], w=ret["wstep"])
                     d.set_valid(ret["valid"], ret["error"], ret["info"])
                     d.set_num_empty_slots(ret["Qes"])
                     bc, bc_str = d.get_basic_characteristics()
@@ -295,7 +295,7 @@ class GenWindingCombinations(QDialog):
                         self.table.setItem(iQ, iP, QTableWidgetItem(txt))
                         q = bc["q"]
 
-                        if self.data[iQ][iP].get_windingstep() == 1:
+                        if self.data[iQ][iP].get_coilspan() == 1:
                             self.table.item(iQ, iP).setBackground(
                                 QtGui.QColor("#ADD8E6")
                             )
@@ -373,7 +373,7 @@ class GenWindingCombinations(QDialog):
                 ret["Q"] = self.data[row][column].get_num_slots()
                 ret["P"] = 2 * self.data[row][column].get_num_polepairs()
                 ret["m"] = self.data[row][column].get_num_phases()
-                ret["w"] = self.data[row][column].get_windingstep()
+                ret["w"] = self.data[row][column].get_coilspan()
                 ret["layers"] = self.layers
                 ret["Qes"] = self.data[row][column].get_num_empty_slots()
                 ret["overwrite"] = overwrite

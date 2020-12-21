@@ -482,7 +482,7 @@ class MainWindow(QMainWindow):
 
             data = datamodel()
             data.set_machinedata(Q=ret["Q"], p=ret["P"] // 2, m=ret["m"])
-            data.set_phases(ret["phases"], wstep=ret["w"], turns=ret["turns"])
+            data.set_phases(ret["phases"], w=ret["w"], turns=ret["turns"])
             data.analyse_wdg()
             if ret["overwrite"]:
                 data.set_title(self.data.get_title())  # use existing title

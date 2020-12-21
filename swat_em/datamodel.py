@@ -55,13 +55,13 @@ class datamodel:
             txt.append("Number of poles:  {}".format(2 * self.get_num_polepairs()))
             txt.append("Number of phases: {}".format(self.get_num_phases()))
             txt.append("Number of layers: {}".format(self.get_num_layers()))
-            txt.append("Winding step    : {}".format(self.get_windingstep()))
+            txt.append("Coil span       : {}".format(self.get_coilspan()))
 
             txt.append("Number of slots per pole per phase: {}".format(self.get_q()))
             wf = [str(round(k, 3)) for k in self.get_fundamental_windingfactor()]
             txt.append("Fundamental winding factor: {}".format(", ".join(wf)))
         else:
-            txt.append("-- NOW WINDING DEFINED IN THIS MODEL --")
+            txt.append("-- NO WINDING DEFINED IN THIS MODEL --")
         return "\n".join(txt)
 
     def reset_data(self):
@@ -154,7 +154,7 @@ class datamodel:
         if Qes:
             self.set_num_empty_slots(int(Qes))
 
-    def set_phases(self, S, turns=1, wstep=None):
+    def set_phases(self, S, turns=1, w=None):
         """
         setting the winding layout
         
@@ -168,8 +168,8 @@ class datamodel:
             S = [[[1, -4], [-3, 6]], [[3, -6], [-5, 2]], [[-2, 5], [4, -1]]]
             Hint: [[[first layer], [second layer]], ... ]
                      
-        wstep : integer
-                winding step (slots as unit)
+        w : integer
+            coil span (slots as unit)
         """
         if not hasattr(S[0][0], "__iter__"):
             for k in range(len(S)):
@@ -185,8 +185,8 @@ class datamodel:
         self.machinedata["phasenames"] = [
             string.ascii_uppercase[k] for k in range(len(S))
         ]
-        if wstep:
-            self.set_windingstep(wstep)
+        if w:
+            self.set_coilspan(w)
 
     def set_valid(self, valid, error, info=""):
         self.generator_info["valid"] = valid
@@ -206,7 +206,7 @@ class datamodel:
         m :      integer
                  number of phases
         w :      integer
-                 winding step (1 for tooth coils)
+                 coil span (1 for tooth coils)
         layers : integer
                  number of coil sides per slot    
         turns  : integer
@@ -226,7 +226,7 @@ class datamodel:
             return
         self.set_machinedata(Q, int(P / 2), m, wdglayout["Qes"])
 
-        self.set_phases(S=wdglayout["phases"], turns=turns, wstep=wdglayout["wstep"])
+        self.set_phases(S=wdglayout["phases"], turns=turns, w=wdglayout["wstep"])
         self.set_valid(
             valid=wdglayout["valid"], error=wdglayout["error"], info=wdglayout["info"]
         )
@@ -276,7 +276,7 @@ class datamodel:
             ["Number of poles ", rep.italic("2p: "), str(2 * self.get_num_polepairs())],
             ["Number of phases ", rep.italic("m: "), str(self.get_num_phases())],
             ["slots per 2p per m ", rep.italic("q: "), str(bc["q"])],
-            ["winding step ", rep.italic("ws: "), str(self.get_windingstep())],
+            ["coil span ", rep.italic("ws: "), str(self.get_coilspan())],
         ]
 
         for i, k in enumerate(bc["kw1"]):
@@ -531,25 +531,25 @@ class datamodel:
         """
         self.machinedata["m"] = m
 
-    def get_windingstep(self):
+    def get_coilspan(self):
         """
-        Returns the winding step 
+        Returns the coil span
 
         Returns
         -------
         w: integer
-           winding step
+           coil span
         """
         return self.machinedata["wstep"]
 
-    def set_windingstep(self, w):
+    def set_coilspan(self, w):
         """
-        Sets the winding step w
+        Sets the coil span w
 
         Parameters
         ----------
         w : integer
-            winding step
+            coil span
         """
         self.machinedata["wstep"] = w
 
@@ -1390,8 +1390,8 @@ def load_models_from_file(fname):
             data = datamodel()
             for key, value in m["machinedata"].items():
                 data.machinedata[key] = value
-            if type(data.get_windingstep()) == type(""):
-                data.set_windingstep(fractions.Fraction(data.get_windingstep()))
+            if type(data.get_coilspan()) == type(""):
+                data.set_coilspan(fractions.Fraction(data.get_coilspan()))
             data.set_title(m["title"])
             data.set_notes(m["notes"])
             data.analyse_wdg()

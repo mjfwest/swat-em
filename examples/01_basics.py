@@ -15,12 +15,12 @@ print(wdg)  # print infos for the winding
 
 
 # Generate a simple tooth-coil winding
-# Therefore we have to define the winding stepwidth = 1 and
+# Therefore we have to define the coil span = 1 and
 # a lower number of slots
 wdg = datamodel()  # generate a datamodel for the winding
 Q = 3  # number of slots
 P = 2  # number of pole pairs
-w = 1  # step width for the coil in slots
+w = 1  # coil span for the coil in slots
 
 # generate winding automatically
 wdg.genwdg(Q=Q, P=P, m=3, layers=2, w=w)

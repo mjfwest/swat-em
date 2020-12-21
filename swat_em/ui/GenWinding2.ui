@@ -180,7 +180,7 @@
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Winding step w</string>
+            <string>Coil span w</string>
            </property>
           </widget>
          </item>
