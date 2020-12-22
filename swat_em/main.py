@@ -128,6 +128,8 @@ class MainWindow(QMainWindow):
         self.project_listWidget.itemChanged.connect(
             self.projectlist_rename
         )  # item renamed
+        self.project_listWidget.model().rowsMoved.connect(self.projectlist_reorder)
+
 
         # context-menu on project models
         self.project_listWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
@@ -360,7 +362,19 @@ class MainWindow(QMainWindow):
         idx = self.project_listWidget.currentRow()
         newname = self.project_listWidget.item(idx).text()
         self.project.rename_by_index(idx, newname)
-
+        
+    def projectlist_reorder(self, event, start, end, dest, row):
+        """
+        user moved items in projectlist
+        start: index from starting
+        row:   index where dropped
+        """
+        self.save_undo_state()
+        if row > start:
+            row -=1
+        self.project.move_model(start, row)
+        self.update_project_list()
+        
     def update_MMK_phase_edit(self):
         """slider for MMK phase moved"""
         self.MMK_phase_edit.setText(str(self.MMK_phase_slider.value()))

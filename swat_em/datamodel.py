@@ -1281,6 +1281,10 @@ class project:
     def delete_model_by_index(self, idx):
         """deletes the model with the index 'idx' """
         del self.models[idx]
+        
+    def move_model(self, idx_from, idx_to):
+        mod = self.models.pop(idx_from)
+        self.models.insert(idx_to, mod)
 
     def clone_by_index(self, idx):
         """duplicates the model with the index 'idx' """
