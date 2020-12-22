@@ -278,6 +278,7 @@ class datamodel:
             )
             bc["sigma_d"] = self.get_double_linked_leakage()
             bc["t"] = self.get_periodicity_t()
+            bc["NL"] = self.get_num_layers()
             self.results["basic_char"] = bc
         else:
             bc = self.results["basic_char"]
@@ -292,6 +293,7 @@ class datamodel:
             ["Number of poles ", rep.italic("2p: "), str(2 * self.get_num_polepairs())],
             ["Number of phases ", rep.italic("m: "), str(self.get_num_phases())],
             ["slots per 2p per m ", rep.italic("q: "), str(bc["q"])],
+            ["Number of layers ", rep.italic("NL"), str(self.get_num_layers())],
             ["coil span ", rep.italic("ws: "), str(self.get_coilspan())],
         ]
 

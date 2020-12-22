@@ -65,6 +65,9 @@ The text field (2) in figure (:ref:`fig:mainwindow`) shows a summary of actual w
 :math:`q`
     Number of slots per pole per phase :math:`q=\frac{Q}{2pm}`
 
+:math: `NL`
+    Number of layers / coil sides per slot
+
 :math:`layer`
     Number of winding layers
 

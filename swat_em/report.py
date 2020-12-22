@@ -438,6 +438,9 @@ class TextReport:
         self._txt.append(
             "Number of phases       m: {}".format(self.data.get_num_phases())
         )
+        self._txt.append(
+            "Number of layers      NL: {}".format(self.data.get_num_layers())
+        )
         self._txt.append("Number of slots/phase  q: {}".format(self.data.get_q()))
         self._txt.append("\n")
 
