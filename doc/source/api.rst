@@ -339,7 +339,7 @@ We can also load an existing winding from file:
 .. code-block:: python
 
     >>> wdg2 = datamodel()
-
+    >>> wdg2.load_from_file("myfile.wdg")
 
 Proof, that the data of the two objects is equal:
 
