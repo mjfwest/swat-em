@@ -39,6 +39,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.coverage'
 # scheint noch nicht zu funktionieren
 #  extensions = ['sphinxcontrib.fulltoc']
 
+bibtex_bibfiles = ['literature.bib']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
