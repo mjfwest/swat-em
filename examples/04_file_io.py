@@ -18,8 +18,7 @@ wdg2 = datamodel()
 wdg2.load_from_file("myfile.wdg")
 
 # proof, that the data of the two objects is equal:
-print("same data?:", wdg.machinedata == wdg2.machinedata)
-print("same results?:", wdg.results == wdg2.results)
+print('windings equal: ', wdg==wdg2)
 
 
 # export data to Excel xlsx files:

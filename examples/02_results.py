@@ -9,7 +9,7 @@ wdg = datamodel()
 wdg.genwdg(Q=12, P=2, m=3, layers=1)
 
 print("fundamental winding factor: ", wdg.get_fundamental_windingfactor())
-print("winding step              : ", wdg.get_windingstep())
+print("coil span                 : ", wdg.get_coilspan())
 
 
 # Get the winding layout. For each phase there is a list of the 1st and

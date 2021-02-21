@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>930</width>
-    <height>887</height>
+    <width>923</width>
+    <height>809</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,29 +72,33 @@
             </layout>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_singlelayer">
-             <property name="text">
-              <string>Single layer winding</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <item>
+              <widget class="QCheckBox" name="checkBox_singlelayer">
+               <property name="text">
+                <string>Single layer winding</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkBox_emptyslots">
+               <property name="text">
+                <string>Allow empty slots</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
             <widget class="QCheckBox" name="checkBox_doublelayer">
              <property name="text">
               <string>Double layer winding</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_emptyslots">
-             <property name="text">
-              <string>Allow empty slots</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -624,13 +628,13 @@
        <property name="minimumSize">
         <size>
          <width>200</width>
-         <height>100</height>
+         <height>105</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>100</height>
+         <height>16777215</height>
         </size>
        </property>
        <property name="alternatingRowColors">
@@ -710,9 +714,6 @@
   <tabstop>spinBox_P1</tabstop>
   <tabstop>spinBox_P2</tabstop>
   <tabstop>spinBox_m</tabstop>
-  <tabstop>checkBox_singlelayer</tabstop>
-  <tabstop>checkBox_doublelayer</tabstop>
-  <tabstop>checkBox_emptyslots</tabstop>
   <tabstop>Button_find</tabstop>
   <tabstop>textBrowser_wdginfo</tabstop>
   <tabstop>tableWindingLayout</tabstop>

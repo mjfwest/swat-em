@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>620</width>
-    <height>468</height>
+    <height>473</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -180,7 +180,7 @@
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Winding step w</string>
+            <string>Coil span w</string>
            </property>
           </widget>
          </item>
@@ -283,7 +283,7 @@
      <property name="minimumSize">
       <size>
        <width>200</width>
-       <height>100</height>
+       <height>105</height>
       </size>
      </property>
      <property name="alternatingRowColors">

@@ -198,7 +198,7 @@ class CombSniffer(QDialog):
         self.data["q"] = [bc["q"] for bc in self.bc_list]
         self.data["w"] = []
         for wdg in self.wdg_list:
-            w = wdg.get_windingstep()
+            w = wdg.get_coilspan()
             if type(w) == type([]):
                 self.data["w"].append(np.mean(w))
             else:

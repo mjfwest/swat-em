@@ -156,6 +156,19 @@ def gen_slot_filling(Q, bz, hz):
     return x, y, y_neg
 
 
+def group_on_nan(x, y):
+    xt, yt = [[]], [[]]
+    for k in range(len(x)):
+        if np.isnan(x[k]) or np.isnan(y[k]):
+            if len(xt[-1]) > 0:
+                xt.append([])
+                yt.append([])
+        else:
+            xt[-1].append(x[k])
+            yt[-1].append(y[k])
+    return xt, yt
+
+
 def _pg_clear_legend(leg):
     """
     clear the legend of a pyqtgraph legend
@@ -263,7 +276,7 @@ class _slot_plot:
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
         P = self.data.get_num_polepairs() * 2
-        self.devide = "v" if self.data.get_windingstep() == 1 else "h"
+        self.devide = "v" if self.data.get_coilspan() == 1 else "h"
 
         def add_text(slot, phase, pos, wdir):
             dx = slot
@@ -327,8 +340,13 @@ class _slot_plot:
                     x1[idx2] = np.nan
 
                 pen = pg.mkPen(magnet_colors[kpole], width=magnet_linewidth)
-                curve = pg.PlotCurveItem(x1, y1, pen=pen, connect="finite")
-                self.fig.addItem(curve)
+
+                # Bug in pyqtgraph / PyQt5 > v5.12.1
+                #  curve = pg.PlotCurveItem(x1, y1, pen=pen, connect="finite")
+                #  self.fig.addItem(curve)
+                for xtmp, ytmp in zip(*group_on_nan(x1, y1)):
+                    curve = pg.PlotCurveItem(xtmp, ytmp, pen=pen, connect="finite")
+                    self.fig.addItem(curve)
 
         self.fig.autoRange()
         if self.show:
@@ -388,7 +406,7 @@ class _polar_layout_plot:
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
         P = self.data.get_num_polepairs() * 2
-        w = self.data.get_windingstep()
+        w = self.data.get_coilspan()
         num_layers = self.data.get_num_layers()
 
         self.fig.clear()
@@ -399,9 +417,9 @@ class _polar_layout_plot:
 
         ovh = analyse.create_wdg_overhang(S, Q, num_layers)
         if optimize_overhang:
-            head = ovh.get_overhang(wstep=None)
+            head = ovh.get_overhang(w=None)
         else:
-            head = ovh.get_overhang(wstep=w)
+            head = ovh.get_overhang(w=w)
 
         def get_pos(num, r=1):
             """
@@ -455,10 +473,21 @@ class _polar_layout_plot:
                 x += [x1, x2, np.nan]
                 y += [y1, y2, np.nan]
             pen = pg.mkPen(get_phase_color(km), width=1.5)
-            curve = pg.PlotCurveItem(
-                x, y, pen=pen, name="Phase " + str(km + 1), connect="finite"
-            )
-            self.fig.addItem(curve)
+
+            # Bug in pyqtgraph / PyQt5 > v5.12.1
+            #  curve = pg.PlotCurveItem(
+            #  x, y, pen=pen, name="Phase " + str(km + 1), connect="finite"
+            #  )
+            #  self.fig.addItem(curve)
+
+            i_name = 0
+            for xtmp, ytmp in zip(*group_on_nan(x, y)):
+                name = "Phase " + str(km + 1) if i_name == 0 else None
+                curve = pg.PlotCurveItem(
+                    xtmp, ytmp, pen=pen, name=name, connect="finite"
+                )
+                self.fig.addItem(curve)
+                i_name += 1
 
         # draw poles
         if draw_poles:
@@ -537,7 +566,7 @@ class _overhang_plot:
 
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
-        w = self.data.get_windingstep()
+        w = self.data.get_coilspan()
         num_layers = self.data.get_num_layers()
 
         self.fig.clear()
@@ -555,16 +584,26 @@ class _overhang_plot:
         # plot slots - filling
         brush = pg.mkBrush(color="#BFBFBF")
         x, y_upper, y_lower = gen_slot_filling(Q, bz=self.bz, hz=self.hz)
-        c1 = pg.PlotCurveItem(x, y_upper, connect="finite")
-        c2 = pg.PlotCurveItem(x, y_lower, connect="finite")
-        fill = pg.FillBetweenItem(c1, c2, brush=brush)
-        self.fig.addItem(fill)
+
+        # Bug in pyqtgraph / PyQt5 > v5.12.1
+        #  c1 = pg.PlotCurveItem(x, y_upper, connect="finite")
+        #  c2 = pg.PlotCurveItem(x, y_lower, connect="finite")
+        #  fill = pg.FillBetweenItem(c1, c2, brush=brush)
+        #  self.fig.addItem(fill)
+
+        _, y_upper = group_on_nan(x, y_upper)
+        x, y_lower = group_on_nan(x, y_lower)
+        for xtmp, y_upper_tmp, y_lower_tmp in zip(x, y_upper, y_lower):
+            c1 = pg.PlotCurveItem(xtmp, y_upper_tmp, connect="finite")
+            c2 = pg.PlotCurveItem(xtmp, y_lower_tmp, connect="finite")
+            fill = pg.FillBetweenItem(c1, c2, brush=brush)
+            self.fig.addItem(fill)
 
         ovh = analyse.create_wdg_overhang(S, Q, num_layers)
         if optimize_overhang:
-            head = ovh.get_overhang(wstep=None)
+            head = ovh.get_overhang(w=None)
         else:
-            head = ovh.get_overhang(wstep=w)
+            head = ovh.get_overhang(w=w)
 
         i = 1
         for phase in head:
@@ -626,10 +665,22 @@ class _overhang_plot:
                 self.fig.addItem(arrow)
 
             pen = pg.mkPen(color=get_phase_color(i - 1), width=config["plt"]["lw"])
-            curve = pg.PlotCurveItem(
-                x, y, pen=pen, connect="finite", name="Phase " + str(i)
-            )
-            self.fig.addItem(curve)
+
+            # Bug in pyqtgraph / PyQt5 > v5.12.1
+            #  curve = pg.PlotCurveItem(
+            #  x, y, pen=pen, connect="finite", name="Phase " + str(i)
+            #  )
+            #  self.fig.addItem(curve)
+
+            i_name = 0
+            for xtmp, ytmp in zip(*group_on_nan(x, y)):
+                name = "Phase " + str(i) if i_name == 0 else None
+                curve = pg.PlotCurveItem(
+                    xtmp, ytmp, pen=pen, connect="finite", name=name
+                )
+                self.fig.addItem(curve)
+                i_name += 1
+
             i += 1
 
         # plot slot number
@@ -693,6 +744,11 @@ class _slot_star:
 
         self.fig.clear()
         _pg_clear_legend(self.leg)
+        
+        if len(self.data.results["Ei_el"]) == 0: # no data to plot
+            if self.table is not None:
+                self.table.clear()
+            return
 
         self.fig.disableAutoRange()  # disable because of porformance
         # (a lot of elements are plottet)
@@ -862,7 +918,11 @@ class _windingfactor:
             nu = np.array(self.data.results["nu_el"])
             kw = np.array(self.data.results["kw_el"])
 
-        #  gap = 0.2
+        if len(kw) == 0: # no data to plot
+            if self.table is not None:
+                self.table.clear()
+            return
+        
         N = np.shape(kw)[1]
         for k in range(N):
             dx = nu[1] - nu[0]
@@ -987,7 +1047,17 @@ class _mmk:
         )
         phi = np.array(phi)
         threshold = config["threshold_MMF_harmonics"]
-        nu, A, phase = self.data.get_MMF_harmonics(threshold=threshold)
+        #  nu, A, phase = self.data.get_MMF_harmonics(threshold = threshold)
+
+        HA = analyse.DFT(MMK[:-1])
+        A = np.abs(HA)
+        phase = np.angle(HA)
+        nu = np.arange(len(HA))
+
+        idx = A > np.max(A) * threshold
+        nu = nu[idx]
+        A = A[idx]
+        phase = phase[idx]
 
         self.fig1.clear()
         self.fig1.disableAutoRange()  # disable because of porformance

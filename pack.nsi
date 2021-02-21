@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "SWAT-EM"
-!define PRODUCT_VERSION "0.5.1"
+!define PRODUCT_VERSION "0.6.0"
 !define PRODUCT_PUBLISHER "Martin Baun"
 !define PRODUCT_WEB_SITE "https://www.gitlab.com/martinbaun/swat-em"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\swat-em.exe"

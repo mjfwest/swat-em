@@ -34,7 +34,7 @@ class layout(QDialog):
     """
 
     def __init__(self, data):
-        self.data = data
+        self.data = data.copy()
         super().__init__()
         # Set up the user interface from Designer.
         uic.loadUi(os.path.join(__dir__, "ui", "winding_layout.ui"), self)
@@ -368,7 +368,7 @@ class layout(QDialog):
             Q = self.data.get_num_slots()
             p = self.data.get_num_polepairs()
             m = self.data.get_num_phases()
-            w = self.data.get_windingstep()
+            w = self.data.get_coilspan()
             ret = {
                 "phases": phases,
                 "Q": Q,

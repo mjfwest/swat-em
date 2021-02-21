@@ -30,7 +30,7 @@ def genwdg(Q, P, m, w, layers, empty_slots=0):
     m :      integer
              number of phases
     w :      integer
-             winding step (1 for tooth coils)
+             coil span (1 for tooth coils)
     layers : integer
              number of coil sides per slot
     empty_slots : integer
