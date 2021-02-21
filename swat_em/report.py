@@ -99,6 +99,50 @@ def num2str(number, maxlen=8):
     return numstring
 
 
+def ascii_table2(head, dat, space=3):
+    """
+    Returns a formatted table as a string including end of line
+    
+    Parameters
+    ----------
+    head  : list of strings
+            header of the columns
+    dat   : 2d array_like with strings / list of lists of strings
+            data for the table
+    space : integer
+            Distance between columens
+    
+    Returns
+    -------
+    return : string
+             Formatted table
+    """
+    Ncol = len(head)  # Anzahl der Spalten
+    if Ncol != len(dat):
+        print("WARNUNG: Number of header elements != number of data columns")
+
+    len_col = []
+    for k in range(Ncol):
+        maxlen = 0
+        for s in range(len(dat[0])):
+            if maxlen < len(dat[k][s]):
+                maxlen = len(dat[k][s])
+        len_col.append(max(maxlen, len(head[k])))
+
+    out = ""
+    for k in range(Ncol):
+        diff = len_col[k] - len(head[k]) + space
+        out += head[k] + " " * diff
+    out += "\n"
+
+    for s in range(len(dat[0])):
+        for k in range(Ncol):
+            diff = len_col[k] - len(dat[k][s]) + space
+            out += dat[k][s] + " " * diff
+        out += "\n"
+    return out
+
+
 class HtmlReport:
     def __init__(self, data):
         """
@@ -450,8 +494,40 @@ class TextReport:
         self._txt.append("Layer_1: " + " | ".join([k for k in ls[0, :]]))
         if self.data.get_num_layers() > 1:
             self._txt.append("Layer_2: " + " | ".join([k for k in ls[1, :]]))
-
         self._txt.append("\n")
+
+        self._txt.append("COIL CONNECTION (END WINDINGS)")
+        self._txt.append("==============================")
+        self._txt.append("'from_slot' contains the positive coil sides")
+        self._txt.append("'direction': clockwise (1) or counter clockwise (-1)")
+        ov = self.data.get_wdg_overhang()
+        head = [
+            "Phase",
+            "from_slot",
+            "to_slot",
+            "coil_span",
+            "direction",
+            "from_layer",
+            "to_layer",
+        ]
+        data = []
+        for km in range(len(ov)):
+            #  print(ov[km])
+            for line in ov[km]:
+                data.append(
+                    [
+                        str(km + 1),
+                        str(line[0][0]),
+                        str(line[0][1]),
+                        str(line[1]),
+                        str(line[2]),
+                        str(line[3][0]),
+                        str(line[3][1]),
+                    ]
+                )
+        t = ascii_table2(head, np.array(data).T).split("\n")
+        self._txt += t
+        self._txt.append("")
 
         bc, txt = self.data.get_basic_characteristics()
         self._txt.append("WINDING FACTOR")

@@ -1171,6 +1171,40 @@ class datamodel:
         txt_rep = rep.TextReport(self)
         return txt_rep.get_report()
 
+    def get_wdg_overhang(self, optimize_overhang=False):
+        """
+        Returns the winding overhang (connection of the coil sides).
+
+        Parameters
+        ----------
+        optimize_overhang : Bool 
+                            Optimize for short winding connection (experimental!)
+                 
+        Returns
+        -------
+        return : list 
+                 Winding connections for all phases, len = num_phases,
+                 format: [[(from_slot, to_slot), stepwidth, direction, (from_layer, to_layer)], [(), ()], ...]
+                 from_to_slot: tuple of (from_slot (positive coil side), to_slot (negative coil side))
+                 stepwidth: distance between from_slot to to_slot
+                 direction: winding direction (1: from left to right, -1: from right to left)
+                 layer: tuple of the layer of 'from_slot' and 'to_slot' 
+        """
+        S = self.get_phases()
+        Q = self.get_num_slots()
+        w = self.get_coilspan()
+        num_layers = self.get_num_layers()
+
+        # TODO: Test if wdg_overhang is already calculated
+
+        ovh = analyse.create_wdg_overhang(S, Q, num_layers)
+        if optimize_overhang:
+            head = ovh.get_overhang(w=None)
+        else:
+            head = ovh.get_overhang(w=w)
+
+        return head
+
 
 class project:
     """
@@ -1283,7 +1317,7 @@ class project:
     def delete_model_by_index(self, idx):
         """deletes the model with the index 'idx' """
         del self.models[idx]
-        
+
     def move_model(self, idx_from, idx_to):
         mod = self.models.pop(idx_from)
         self.models.insert(idx_to, mod)

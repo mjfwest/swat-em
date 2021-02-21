@@ -57,13 +57,12 @@ def double_linked_leakage(kw, nu, p):
     """
     kw = np.abs(kw)
     kw1 = kw[list(nu).index(p)]
+    if kw1 == 0:
+        return -1
+
     sigma_d = np.sum((kw / (nu / p)) ** 2)
     sigma_d -= (kw1) ** 2
-
-    if kw1 != 0:
-        sigma_d /= kw1 ** 2
-    else:
-        sigma_d = -1
+    sigma_d /= kw1 ** 2
     return sigma_d
 
 
@@ -716,7 +715,7 @@ class create_wdg_overhang:
         -------
         return : list 
                  Winding connections for all phases, len = num_phases,
-                 format: [[(from_slot, to_slot, stepwidth, direction), ()], [(), ()], ...]
+                 format: [[(from_slot, to_slot), stepwidth, direction, (from_layer, to_layer)], [(), ()], ...]
                  from_slot: slot with positive coil side of the coil
                  to_slot:   slot with negative coil side of the coil
                  stepwidth: distance between from_slot to to_slot
@@ -781,7 +780,7 @@ class create_wdg_overhang:
 
                 start, end = Sp[kp], Sn[idx]
                 diff, direct = self.diff_and_direct(start, end)
-                con.append([start, end, diff, direct, layer])
+                con.append([(start, end), diff, direct, layer])
                 Sn = np.delete(Sn, idx)
             return con
 

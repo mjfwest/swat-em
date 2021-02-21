@@ -406,20 +406,13 @@ class _polar_layout_plot:
         S = self.data.get_phases()
         Q = self.data.get_num_slots()
         P = self.data.get_num_polepairs() * 2
-        w = self.data.get_coilspan()
-        num_layers = self.data.get_num_layers()
 
         self.fig.clear()
         _pg_clear_legend(self.leg)
 
         self.fig.disableAutoRange()  # disable because of porformance
         # (a lot of elements are plottet)
-
-        ovh = analyse.create_wdg_overhang(S, Q, num_layers)
-        if optimize_overhang:
-            head = ovh.get_overhang(w=None)
-        else:
-            head = ovh.get_overhang(w=w)
+        head = self.data.get_wdg_overhang(optimize_overhang=optimize_overhang)
 
         def get_pos(num, r=1):
             """
@@ -466,10 +459,10 @@ class _polar_layout_plot:
         for km in range(len(head)):
             x, y = [], []
             for line in head[km]:
-                cs1_layer = line[4][0]
-                cs2_layer = line[4][1]
-                x1, y1 = get_pos(line[0] - 1, r=self.r_cs[cs1_layer])
-                x2, y2 = get_pos(line[1] - 1, r=self.r_cs[cs2_layer])
+                cs1_layer = line[3][0]
+                cs2_layer = line[3][1]
+                x1, y1 = get_pos(line[0][0] - 1, r=self.r_cs[cs1_layer])
+                x2, y2 = get_pos(line[0][1] - 1, r=self.r_cs[cs2_layer])
                 x += [x1, x2, np.nan]
                 y += [y1, y2, np.nan]
             pen = pg.mkPen(get_phase_color(km), width=1.5)
@@ -599,28 +592,24 @@ class _overhang_plot:
             fill = pg.FillBetweenItem(c1, c2, brush=brush)
             self.fig.addItem(fill)
 
-        ovh = analyse.create_wdg_overhang(S, Q, num_layers)
-        if optimize_overhang:
-            head = ovh.get_overhang(w=None)
-        else:
-            head = ovh.get_overhang(w=w)
+        head = self.data.get_wdg_overhang(optimize_overhang=optimize_overhang)
 
         i = 1
         for phase in head:
             x = []
             y = []
             for coil in phase:
-                w = coil[2]
+                w = coil[1]
                 x_, y_ = gen_coil_lines(
-                    coil[2], h1=self.h1, h2=0.5 + w / 6, db1=self.db1, Np1=self.Np1
+                    coil[1], h1=self.h1, h2=0.5 + w / 6, db1=self.db1, Np1=self.Np1
                 )
                 x_, y_ = np.array(x_), np.array(y_)
 
-                direct = coil[3]
+                direct = coil[2]
                 if direct > 0:
-                    x_ += coil[0] - 1
+                    x_ += coil[0][0] - 1
                 else:
-                    x_ += coil[1] - 1
+                    x_ += coil[0][1] - 1
 
                 # split coil on right border
                 x_2 = x_.copy()
@@ -646,10 +635,10 @@ class _overhang_plot:
                     pen={"color": get_phase_color(i - 1)},
                     brush=get_phase_color(i - 1),
                 )
-                if coil[3] > 0:
-                    arrow.setPos(coil[0] - 1 + self.db1, 0)
+                if coil[2] > 0:
+                    arrow.setPos(coil[0][0] - 1 + self.db1, 0)
                 else:
-                    arrow.setPos(coil[0] - 1 - self.db1, 0)
+                    arrow.setPos(coil[0][0] - 1 - self.db1, 0)
                 self.fig.addItem(arrow)
 
                 arrow = pg.ArrowItem(
@@ -658,10 +647,10 @@ class _overhang_plot:
                     pen={"color": get_phase_color(i - 1)},
                     brush=get_phase_color(i - 1),
                 )
-                if coil[3] > 0:
-                    arrow.setPos(coil[1] - 1 - self.db1, 0)
+                if coil[2] > 0:
+                    arrow.setPos(coil[0][1] - 1 - self.db1, 0)
                 else:
-                    arrow.setPos(coil[1] - 1 + self.db1, 0)
+                    arrow.setPos(coil[0][1] - 1 + self.db1, 0)
                 self.fig.addItem(arrow)
 
             pen = pg.mkPen(color=get_phase_color(i - 1), width=config["plt"]["lw"])
@@ -744,8 +733,8 @@ class _slot_star:
 
         self.fig.clear()
         _pg_clear_legend(self.leg)
-        
-        if len(self.data.results["Ei_el"]) == 0: # no data to plot
+
+        if len(self.data.results["Ei_el"]) == 0:  # no data to plot
             if self.table is not None:
                 self.table.clear()
             return
@@ -918,11 +907,11 @@ class _windingfactor:
             nu = np.array(self.data.results["nu_el"])
             kw = np.array(self.data.results["kw_el"])
 
-        if len(kw) == 0: # no data to plot
+        if len(kw) == 0:  # no data to plot
             if self.table is not None:
                 self.table.clear()
             return
-        
+
         N = np.shape(kw)[1]
         for k in range(N):
             dx = nu[1] - nu[0]

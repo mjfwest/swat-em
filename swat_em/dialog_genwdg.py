@@ -319,9 +319,7 @@ class GenWindingCombinations(QDialog):
                             QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
                         )  # note editable
 
-        for iP, kP in enumerate(self.Plist):
-            self.table.resizeColumnToContents(iP)
-            #  self.table.setColumnWidth(k1, 25)
+        self.table.resizeColumnsToContents()
 
         # reset table with winding layout because there is noting choosed
         self.tableWindingLayout.clear()

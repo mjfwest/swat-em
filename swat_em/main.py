@@ -47,7 +47,8 @@ from swat_em import dialog_combination_sniffer
 from swat_em import dialog_settings
 from swat_em.config import config, save_config, get_config
 from swat_em import datamodel, project
-from swat_em import wdggenerator
+
+# from swat_em import wdggenerator
 from swat_em import plots
 from swat_em import report
 from swat_em.analyse import _get_float
@@ -129,7 +130,6 @@ class MainWindow(QMainWindow):
             self.projectlist_rename
         )  # item renamed
         self.project_listWidget.model().rowsMoved.connect(self.projectlist_reorder)
-
 
         # context-menu on project models
         self.project_listWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
@@ -362,7 +362,7 @@ class MainWindow(QMainWindow):
         idx = self.project_listWidget.currentRow()
         newname = self.project_listWidget.item(idx).text()
         self.project.rename_by_index(idx, newname)
-        
+
     def projectlist_reorder(self, event, start, end, dest, row):
         """
         user moved items in projectlist
@@ -371,10 +371,10 @@ class MainWindow(QMainWindow):
         """
         self.save_undo_state()
         if row > start:
-            row -=1
+            row -= 1
         self.project.move_model(start, row)
         self.update_project_list()
-        
+
     def update_MMK_phase_edit(self):
         """slider for MMK phase moved"""
         self.MMK_phase_edit.setText(str(self.MMK_phase_slider.value()))
@@ -554,7 +554,7 @@ class MainWindow(QMainWindow):
         bc, bc_str = self.data.get_basic_characteristics()
         self.textBrowser_wdginfo.setHtml(bc_str)
         idx_old = self.comboBox_star_harmonics.currentText()
-        
+
         idx = None
         if idx_old:
             if int(idx_old) in self.data.results["nu_el"]:
