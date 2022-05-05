@@ -11,11 +11,12 @@ import string
 import gzip
 import gc
 import numpy as np
+
 from swat_em import analyse
 from swat_em import report as rep
 from swat_em import wdggenerator
 from swat_em.config import config, get_phase_color
-from swat_em import plots
+#from swat_em import plots
 
 
 class datamodel:
@@ -959,6 +960,7 @@ class datamodel:
         show: Bool
               If true the window pops up for interactive usage
         """
+        assert(False, "not implemented")
         if res == None:
             res = config["plt"]["res"]
         plt = plots._slot_plot(None, None, self)

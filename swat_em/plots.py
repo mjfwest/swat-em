@@ -3,9 +3,9 @@
 Provides functions for plotting
 """
 
-from PyQt5.QtWidgets import QTableWidgetItem, QApplication
-from PyQt5.QtGui import QFont, QSyntaxHighlighter, QTextCursor, QTextCharFormat, QColor
-from PyQt5 import QtCore
+# from PyQt5.QtWidgets import QTableWidgetItem, QApplication
+# from PyQt5.QtGui import QFont, QSyntaxHighlighter, QTextCursor, QTextCharFormat, QColor
+# from PyQt5 import QtCore
 
 
 from swat_em.config import get_phase_color, get_line_color, config
@@ -22,8 +22,8 @@ import re
 #  PyQt5.QtGui.QPrinter = QPrinter
 #  PyQt5.QtGui.QPrintDialog = QPrintDialog
 
-import pyqtgraph as pg
-import pyqtgraph.exporters
+# import pyqtgraph as pg
+# import pyqtgraph.exporters
 
 pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import uic
-from PyQt5.QtWidgets import QDialog, QMessageBox
+# from PyQt5 import uic
+# from PyQt5.QtWidgets import QDialog, QMessageBox
 import sys
 import os
 from swat_em import config

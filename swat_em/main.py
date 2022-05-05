@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 import sys
 import os
-from PyQt5 import uic
-from PyQt5.QtWidgets import (
-    QMainWindow,
-    QApplication,
-    QFileDialog,
-    QInputDialog,
-    QMessageBox,
-    QListWidgetItem,
-    QMenu,
-    QAction,
-    QSplashScreen,
-    QGraphicsScene,
-)
-from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon, QPixmap, QPainter
-from PyQt5.QtPrintSupport import QPrintDialog, QPrinter
-from PyQt5 import QtCore
+#from PyQt5 import uic
+# from PyQt5.QtWidgets import (
+#     QMainWindow,
+#     QApplication,
+#     QFileDialog,
+#     QInputDialog,
+#     QMessageBox,
+#     QListWidgetItem,
+#     QMenu,
+#     QAction,
+#     QSplashScreen,
+#     QGraphicsScene,
+# )
+# from PyQt5.QtGui import QIntValidator, QDoubleValidator, QIcon, QPixmap, QPainter
+# from PyQt5.QtPrintSupport import QPrintDialog, QPrinter
+# from PyQt5 import QtCore
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
