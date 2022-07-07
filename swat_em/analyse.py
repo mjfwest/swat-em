@@ -222,27 +222,27 @@ def calc_phaseangle_starvoltage(Ei):
     return seqeunce:   list
                        sequence of the flux wave: 1 or -1
     """
+    sequence = []
     phaseangle = []
     for knu in Ei:  # for every nu
         phaseangle.append([])
-        angle = [np.angle(sum(km)) * 180 / np.pi for km in knu]  # for every phase
+        kmSum = [sum(km) for km in knu] # get the sum phasor for every phase
+        angle = [np.angle(kPhase) * 180 / np.pi for kPhase in kmSum] # calculate the phasor angle for every phase
+        if len(angle) > 1:
+            # if phasor of w(=kmSum[2]) nearly equals phasor of u shifted by 120deg (=kmSum[0]*np.exp(1j*2*np.pi/3); 
+            # mathematically positive), then the phase order is inverted (uwv instead of uvw) and 
+            # the rotation direction is clockwise
+            if np.abs(kmSum[2]-kmSum[0]*np.exp(1j*2*np.pi/3))<1e-9: 
+                sequence.append(-1) # math. negative
+            else:
+            # otherwise its counter clockwise
+                sequence.append(1) # math. positive
+        else:
+            sequence.append(0)
         for a in angle:
             while a < 0:
                 a += 360.0
             phaseangle[-1].append(a)
-
-    sequence = []
-    for p in phaseangle:
-        if len(p) > 1:
-            if p[1] > p[0]:
-                sequence.append(1)
-            else:
-                sequence.append(-1)
-        else:
-            sequence.append(0)
-    #  if sequence[0] < 0:  # related to the fundamental
-    #  sequence = [-k for k in sequence]
-
     return phaseangle, sequence
 
 
