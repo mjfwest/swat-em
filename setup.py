@@ -19,7 +19,7 @@ setuptools.setup(
                               'ui/bitmaps/*', 'doc', 'doc/*',
                               'template/*']},
     platforms="any",
-    install_requires=['numpy', 'xlsxwriter'],
+    install_requires=['numpy'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

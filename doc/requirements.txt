@@ -1,5 +1,2 @@
 numpy
-PyQt5
-pyqtgraph
-xlsxwriter
 sphinxcontrib-bibtex

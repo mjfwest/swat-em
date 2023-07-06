@@ -5,7 +5,7 @@ Provides functions for reports
 import os
 import tempfile
 import numpy as np
-import xlsxwriter
+#import xlsxwriter
 import re
 from swat_em import analyse
 from swat_em.config import config
@@ -314,137 +314,139 @@ class HtmlReport:
 
 
 def export_xlsx(fname, data):
-    layout = True
-    phasors = True
-    windingfactor_el = True
-    windingfactor_mech = True
+    raise NotImplementedError("export_xlsx removed")
 
-    workbook = xlsxwriter.Workbook(fname)
+    # layout = True
+    # phasors = True
+    # windingfactor_el = True
+    # windingfactor_mech = True
 
-    if layout:
-        worksheet = workbook.add_worksheet("layout")
+    # workbook = xlsxwriter.Workbook(fname)
 
-        i = 0
-        cell_format = workbook.add_format({"font_size": 14})
-        worksheet.write(i, 0, "Windinglayout", cell_format)
-        i += 1
+    # if layout:
+    #     worksheet = workbook.add_worksheet("layout")
 
-        cell_format = workbook.add_format({"align": "center"})
-        for k in range(data.machinedata["Q"]):
-            worksheet.write(i, 1 + k, k + 1, cell_format)
-        i += 1
+    #     i = 0
+    #     cell_format = workbook.add_format({"font_size": 14})
+    #     worksheet.write(i, 0, "Windinglayout", cell_format)
+    #     i += 1
 
-        cell_format = workbook.add_format({"align": "right"})
-        worksheet.write(i - 1, 0, "slot No.", cell_format)
-        for k in range(data.get_num_layers()):
-            worksheet.write(i + k, 0, "Layer " + str(k + 1))
+    #     cell_format = workbook.add_format({"align": "center"})
+    #     for k in range(data.machinedata["Q"]):
+    #         worksheet.write(i, 1 + k, k + 1, cell_format)
+    #     i += 1
 
-        l, ls, lcol = data.get_layers()
-        for k1 in range(np.shape(l)[0]):
-            for k2 in range(np.shape(l)[1]):
-                cell_format = workbook.add_format(
-                    {"bg_color": lcol[k1, k2], "align": "center"}
-                )
-                worksheet.write(k1 + 2, k2 + 1, ls[k1, k2], cell_format)
+    #     cell_format = workbook.add_format({"align": "right"})
+    #     worksheet.write(i - 1, 0, "slot No.", cell_format)
+    #     for k in range(data.get_num_layers()):
+    #         worksheet.write(i + k, 0, "Layer " + str(k + 1))
 
-        worksheet.set_column(0, 0, width=15)
-        worksheet.set_column(1, data.machinedata["Q"], width=4.5)
-        i += data.get_num_layers()
-        i += 2
+    #     l, ls, lcol = data.get_layers()
+    #     for k1 in range(np.shape(l)[0]):
+    #         for k2 in range(np.shape(l)[1]):
+    #             cell_format = workbook.add_format(
+    #                 {"bg_color": lcol[k1, k2], "align": "center"}
+    #             )
+    #             worksheet.write(k1 + 2, k2 + 1, ls[k1, k2], cell_format)
 
-        if type(data.machinedata["turns"]) == type([]):
-            cell_format = workbook.add_format({"font_size": 14})
-            worksheet.write(i, 0, "Number of turns", cell_format)
-            i += 1
-            for k in range(data.get_num_layers()):
-                worksheet.write(i + k, 0, "Layer " + str(k + 1))
+    #     worksheet.set_column(0, 0, width=15)
+    #     worksheet.set_column(1, data.machinedata["Q"], width=4.5)
+    #     i += data.get_num_layers()
+    #     i += 2
 
-            turns = data.machinedata["turns"]
-            for km, ph in enumerate(data.machinedata["phases"]):
-                col = get_phase_color(km)
-                cell_format = workbook.add_format({"bg_color": col, "align": "center"})
-                for kl in range(len(ph)):
-                    layer = ph[kl]
-                    for j, cs in enumerate(layer):
-                        if type(turns) == type([]):
-                            item = turns[km][kl][j]
-                        else:
-                            item = turns
-                        if cs > 0:
-                            worksheet.write(i + kl, 1 + cs - 1, item, cell_format)
-                        else:
-                            worksheet.write(i + kl, 1 + abs(cs) - 1, item, cell_format)
+    #     if type(data.machinedata["turns"]) == type([]):
+    #         cell_format = workbook.add_format({"font_size": 14})
+    #         worksheet.write(i, 0, "Number of turns", cell_format)
+    #         i += 1
+    #         for k in range(data.get_num_layers()):
+    #             worksheet.write(i + k, 0, "Layer " + str(k + 1))
 
-            i += data.get_num_layers()
-        else:
-            worksheet.write(i, 0, "Number of turns")
-            worksheet.write(i, 1, data.machinedata["turns"])
-        i += 2
+    #         turns = data.machinedata["turns"]
+    #         for km, ph in enumerate(data.machinedata["phases"]):
+    #             col = get_phase_color(km)
+    #             cell_format = workbook.add_format({"bg_color": col, "align": "center"})
+    #             for kl in range(len(ph)):
+    #                 layer = ph[kl]
+    #                 for j, cs in enumerate(layer):
+    #                     if type(turns) == type([]):
+    #                         item = turns[km][kl][j]
+    #                     else:
+    #                         item = turns
+    #                     if cs > 0:
+    #                         worksheet.write(i + kl, 1 + cs - 1, item, cell_format)
+    #                     else:
+    #                         worksheet.write(i + kl, 1 + abs(cs) - 1, item, cell_format)
 
-        cell_format = workbook.add_format({"font_size": 14})
-        worksheet.write(i, 0, "slot number per phase", cell_format)
-        i += 1
-        for kph, ph in enumerate(data.machinedata["phases"]):
-            for klay, lay in enumerate(ph):
-                worksheet.write(
-                    i, 0, "Phase " + str(kph + 1) + " layer " + str(klay + 1)
-                )
-                cell_format = workbook.add_format({"align": "center"})
-                worksheet.write_row(i, 1, lay, cell_format)
-                i += 1
+    #         i += data.get_num_layers()
+    #     else:
+    #         worksheet.write(i, 0, "Number of turns")
+    #         worksheet.write(i, 1, data.machinedata["turns"])
+    #     i += 2
 
-    if phasors:
-        worksheet = workbook.add_worksheet("phasors")
+    #     cell_format = workbook.add_format({"font_size": 14})
+    #     worksheet.write(i, 0, "slot number per phase", cell_format)
+    #     i += 1
+    #     for kph, ph in enumerate(data.machinedata["phases"]):
+    #         for klay, lay in enumerate(ph):
+    #             worksheet.write(
+    #                 i, 0, "Phase " + str(kph + 1) + " layer " + str(klay + 1)
+    #             )
+    #             cell_format = workbook.add_format({"align": "center"})
+    #             worksheet.write_row(i, 1, lay, cell_format)
+    #             i += 1
 
-        cell_format = workbook.add_format({"font_size": 14})
-        worksheet.write(0, 0, "Voltage phasors", cell_format)
-        max_i = 0
-        for knu in range(len(data.results["Ei_el"])):
-            i = max_i + 2
-            worksheet.write(i, 0, "nu = " + str(data.results["nu_el"][knu]))
-            i += 1
-            dx = 0
+    # if phasors:
+    #     worksheet = workbook.add_worksheet("phasors")
 
-            for m, phasors in enumerate(data.results["Ei_el"][knu]):
-                worksheet.write(i, dx + 0, "Phase" + str(m + 1) + "_real")
-                worksheet.write(i, dx + 1, "Phase" + str(m + 1) + "_imag")
-                for k in range(len(phasors)):
-                    worksheet.write(i + 1, dx, phasors[k].real)
-                    worksheet.write(i + 1, dx + 1, phasors[k].imag)
-                    i += 1
-                max_i = i if i > max_i else max_i
-                i -= len(phasors)  # go back for new columns
-                dx += 2
+    #     cell_format = workbook.add_format({"font_size": 14})
+    #     worksheet.write(0, 0, "Voltage phasors", cell_format)
+    #     max_i = 0
+    #     for knu in range(len(data.results["Ei_el"])):
+    #         i = max_i + 2
+    #         worksheet.write(i, 0, "nu = " + str(data.results["nu_el"][knu]))
+    #         i += 1
+    #         dx = 0
 
-    if windingfactor_el:
-        worksheet = workbook.add_worksheet("Winding_factor_el)")
-        cell_format = workbook.add_format({"font_size": 14})
-        worksheet.write(0, 0, "Winding factor (electrical)", cell_format)
+    #         for m, phasors in enumerate(data.results["Ei_el"][knu]):
+    #             worksheet.write(i, dx + 0, "Phase" + str(m + 1) + "_real")
+    #             worksheet.write(i, dx + 1, "Phase" + str(m + 1) + "_imag")
+    #             for k in range(len(phasors)):
+    #                 worksheet.write(i + 1, dx, phasors[k].real)
+    #                 worksheet.write(i + 1, dx + 1, phasors[k].imag)
+    #                 i += 1
+    #             max_i = i if i > max_i else max_i
+    #             i -= len(phasors)  # go back for new columns
+    #             dx += 2
 
-        worksheet.write(2, 0, "nu")
-        for km in range(data.get_num_phases()):
-            worksheet.write(2, km + 1, "phase" + str(km + 1))
+    # if windingfactor_el:
+    #     worksheet = workbook.add_worksheet("Winding_factor_el)")
+    #     cell_format = workbook.add_format({"font_size": 14})
+    #     worksheet.write(0, 0, "Winding factor (electrical)", cell_format)
 
-        nu, kw = data.get_windingfactor_el()
-        worksheet.write_column(3, 0, nu)
-        for km in range(data.get_num_phases()):
-            worksheet.write_column(3, km + 1, kw[:, km])
+    #     worksheet.write(2, 0, "nu")
+    #     for km in range(data.get_num_phases()):
+    #         worksheet.write(2, km + 1, "phase" + str(km + 1))
 
-    if windingfactor_mech:
-        worksheet = workbook.add_worksheet("Winding_factor_mech)")
-        cell_format = workbook.add_format({"font_size": 14})
-        worksheet.write(0, 0, "Winding factor (mechanical)", cell_format)
+    #     nu, kw = data.get_windingfactor_el()
+    #     worksheet.write_column(3, 0, nu)
+    #     for km in range(data.get_num_phases()):
+    #         worksheet.write_column(3, km + 1, kw[:, km])
 
-        worksheet.write(2, 0, "nu")
-        for km in range(data.get_num_phases()):
-            worksheet.write(2, km + 1, "phase" + str(km + 1))
+    # if windingfactor_mech:
+    #     worksheet = workbook.add_worksheet("Winding_factor_mech)")
+    #     cell_format = workbook.add_format({"font_size": 14})
+    #     worksheet.write(0, 0, "Winding factor (mechanical)", cell_format)
 
-        nu, kw = data.get_windingfactor_mech()
-        worksheet.write_column(3, 0, nu)
-        for km in range(data.get_num_phases()):
-            worksheet.write_column(3, km + 1, kw[:, km])
+    #     worksheet.write(2, 0, "nu")
+    #     for km in range(data.get_num_phases()):
+    #         worksheet.write(2, km + 1, "phase" + str(km + 1))
 
-    workbook.close()
+    #     nu, kw = data.get_windingfactor_mech()
+    #     worksheet.write_column(3, 0, nu)
+    #     for km in range(data.get_num_phases()):
+    #         worksheet.write_column(3, km + 1, kw[:, km])
+
+    # workbook.close()
 
 
 class TextReport:
