@@ -960,7 +960,7 @@ class datamodel:
         show: Bool
               If true the window pops up for interactive usage
         """
-        assert(False, "not implemented")
+        raise NotImplementedError("plot_layout has been removed")
         if res == None:
             res = config["plt"]["res"]
         plt = plots._slot_plot(None, None, self)
