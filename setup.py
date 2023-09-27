@@ -1,13 +1,13 @@
 import setuptools
-import swat_em
+#import swat_em
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="swat-em",
-    version=swat_em.__version__,
-    author=swat_em.__author__,
+    version="0.7.1",
+    author="Martin Baun",
     author_email="mar.baun@googlemail.com",
     description="Specific Winding Analysing Tool for Electrical Machines",
     long_description=long_description,
